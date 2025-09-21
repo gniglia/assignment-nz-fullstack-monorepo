@@ -1,0 +1,9 @@
+---
+description: Guard against breaking removals
+globs:
+  - "**/*"
+alwaysApply: true
+---
+
+- Do **not** delete or rename any exported function, type, component, prop, or field unless explicitly asked.
+- Before changing, renaming or deleting any exported function, type, component, or field, **search the codebase for references** and list affected files; maintain backward compatibility when possible.

@@ -1,0 +1,9 @@
+---
+description: Always lint & fix after edits
+globs:
+  - "**/*"
+alwaysApply: true
+---
+
+- After applying any change, run the lint command (see package.json) and keep iterating until there are **zero** lint errors or no further auto-fixes apply.
+- If lints remain that cannot be auto-fixed, update the code to satisfy the rule instead of suppressing it.

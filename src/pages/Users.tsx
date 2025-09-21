@@ -1,18 +1,16 @@
+import UserList from "@/components/UserList";
+
 export default function Users() {
   return (
-    <div>
+    <div className="p-6">
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-gray-900">Users</h1>
         <p className="mt-2 text-gray-600">
-          User management - implement user list, filters, and actions here.
+          Manage your users with React Query powered data fetching and caching.
         </p>
       </div>
 
-      <div className="bg-white rounded-lg shadow p-6">
-        <p className="text-gray-500">
-          Users page placeholder. Implement your user table, search, and filters here based on the design mockups.
-        </p>
-      </div>
+      <UserList />
     </div>
-  )
+  );
 }

@@ -18,7 +18,7 @@ Code Style and Structure
 - Prefer iteration and modularization over duplication.
 - Use descriptive variable names with auxiliary verbs (e.g., `isLoading`, `hasError`).
 - Use lowercase with dashes for directories (e.g., components/auth-wizard).
-- Favor named exports for components.
+- Favor named exports for components over default.
 - Use the Receive an Object, Return an Object (RORO) pattern.
 
 JavaScript/TypeScript
@@ -46,6 +46,7 @@ React
 - Use functional components and TypeScript types.
 - Use declarative JSX.
 - Use function, not const, for components.
+- **NEVER use inline arrow functions in JSX** (e.g., `onClick={() => setState(value)}`). Always create stable function references with `useCallback` to prevent unnecessary re-renders and improve performance.
 - Use Shadcn UI, Radix, and Tailwind Aria for components and styling.
 - Implement responsive design with Tailwind CSS.
 - Use mobile-first approach for responsive design.

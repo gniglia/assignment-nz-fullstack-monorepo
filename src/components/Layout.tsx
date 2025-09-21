@@ -1,21 +1,55 @@
-import { ReactNode } from 'react'
-import Sidebar from './Sidebar'
-import Header from './Header'
+import { ReactNode, useState, useCallback } from "react";
+import { Sidebar } from "@/components/Sidebar";
+import { Header } from "@/components/Header";
 
-interface LayoutProps {
-  children: ReactNode
-}
+type LayoutProps = {
+  children: ReactNode;
+};
 
-export default function Layout({ children }: LayoutProps) {
+export function Layout({ children }: LayoutProps) {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const handleCloseSidebar = useCallback(() => {
+    setSidebarOpen(false);
+  }, []);
+
+  const handleOpenSidebar = useCallback(() => {
+    setSidebarOpen(true);
+  }, []);
+
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      <Sidebar />
-      <div className="flex-1 flex flex-col">
-        <Header />
-        <main className="flex-1 p-6">
-          {children}
-        </main>
+    <div className="min-h-screen bg-gray-50">
+      {/* Mobile sidebar overlay */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 z-40 lg:hidden"
+          onClick={handleCloseSidebar}
+        >
+          <div className="fixed inset-0 bg-gray-600 bg-opacity-75" />
+        </div>
+      )}
+
+      {/* Sidebar - Mobile */}
+      <div
+        className={`
+        fixed inset-y-0 left-0 z-50 w-64 transform transition-transform duration-300 ease-in-out
+        lg:hidden
+        ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
+      `}
+      >
+        <Sidebar onClose={handleCloseSidebar} />
+      </div>
+
+      {/* Sidebar - Desktop */}
+      <div className="hidden lg:block lg:fixed lg:inset-y-0 lg:left-0 lg:z-50 lg:w-64 lg:transform lg:translate-x-0">
+        <Sidebar />
+      </div>
+
+      {/* Main content */}
+      <div className="flex flex-col min-h-screen lg:ml-64">
+        <Header onMenuClick={handleOpenSidebar} />
+        <main className="flex-1 p-6">{children}</main>
       </div>
     </div>
-  )
+  );
 }
