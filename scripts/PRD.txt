@@ -1,0 +1,239 @@
+<context>
+# Overview
+This project is a pixel-perfect Dashboard Application built with React + TypeScript and a modern stack.
+It demonstrates senior-level frontend development skills: consuming APIs, managing state, building responsive layouts, implementing accessibility, and adhering to a design system.
+The app is for evaluating frontend candidates’ ability to build production-quality interfaces.
+
+The product has three main sections:
+- Dashboard: high-level overview with metrics, a chart, and recent activity.
+- Analytics: deeper data visualizations with multiple chart types, date range filters, and export functionality.
+- Users: user management with table, search, filtering, sorting, pagination, and actions.
+
+It is valuable because it transforms clear requirements and design tokens into a working, extensible UI while showcasing best practices in architecture, testing, and performance.
+
+# Core Features
+Dashboard
+- Displays four metric cards: total users, active sessions, revenue, conversion rate.
+- Includes an “Analytics Overview” line chart.
+- Contains a recent activity list with avatars, actions, and timestamps.
+- Responsive across mobile, tablet, and desktop.
+
+Analytics
+- Displays a 2x2 grid of different chart types: line, bar, donut, and area.
+- Includes a date range picker and filter tabs.
+- Allows export of chart data to CSV and JSON.
+- Charts are interactive with hover, tooltips, and clicks.
+
+Users
+- Displays a table with user data: avatar, name, email, role, status, createdAt, lastLogin.
+- Supports search (debounced), filtering by role and status, sorting by multiple fields, and pagination (10 per page).
+- Includes placeholder modals for edit/delete actions.
+- On mobile, the table becomes card-based with swipe or stacked actions.
+
+Cross-cutting
+- Follows provided design tokens exactly for colors, typography, spacing, radii, and shadows.
+- Implements accessibility: ARIA, keyboard navigation, focus management, WCAG AA contrast.
+- Implements performance optimizations: memoization, lazy loading, debounce.
+
+# User Stories
+- As a **visitor**, I want to see total users, active sessions, revenue, and conversion rate so I can understand platform health at a glance.
+- As a **manager**, I want to view charts with different metrics, filter by date ranges, and export to CSV/JSON so I can share insights with my team.
+- As an **admin**, I want to search, filter, sort, and paginate users so I can manage the user base efficiently.
+- As a **mobile user**, I want the interface to adapt into stacked cards so I can access data easily on a small screen.
+- As a **user with accessibility needs**, I want clear focus states, ARIA labels, and semantic markup so I can navigate using a keyboard or screen reader.
+</context>
+
+<PRD>
+# Technical Architecture
+System Components
+- Frontend: React 18 with TypeScript, Vite for build tooling.
+- Navigation: React Router with routes `/`, `/analytics`, `/users`.
+- State management: Zustand for lightweight global state; React Query for data fetching, caching, retries, background refresh.
+- Styling: Tailwind CSS using design tokens; Shadcn UI for primitives (cards, buttons, inputs, dialogs); Lucide React for icons.
+- Charts: Recharts or Chart.js for rendering line, bar, donut, and area charts.
+- Testing: Vitest + React Testing Library.
+- API: JSON Server exposing mock endpoints.
+
+Data Models
+TypeScript interfaces to be used:
+```ts
+export interface User {
+  id: string
+  name: string
+  email: string
+  role: "admin" | "user" | "moderator"
+  status: "active" | "inactive" | "pending"
+  avatar: string
+  createdAt: string
+  lastLogin?: string
+}
+
+export interface Metric {
+  id: string
+  title: string
+  value: number
+  change: number
+  changeType: "increase" | "decrease"
+  icon: string
+}
+
+export interface AnalyticsPoint {
+  id: string
+  label: string
+  value: number
+  date: string
+}
+```
+
+APIs and Integrations
+- GET /users
+  - Supports `_search`, `_page`, `_limit`, `_sort`, `_order`
+- GET /metrics
+  - Returns 4 metrics
+- GET /analytics
+  - Returns time-series points for charts
+
+Example User JSON:
+```json
+{
+  "id": "1",
+  "name": "John Doe",
+  "email": "john.doe@example.com",
+  "role": "admin",
+  "status": "active",
+  "avatar": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150",
+  "createdAt": "2024-01-15T10:30:00Z",
+  "lastLogin": "2024-02-15T14:22:00Z"
+}
+```
+
+Infrastructure
+- Dev app runs at http://localhost:3000
+- Mock API runs at http://localhost:3001
+
+# Development Roadmap
+MVP Requirements
+- Implement navbar with Dashboard, Analytics, and Users links.
+- Dashboard: 4 metric cards from /metrics, line chart from /analytics, and recent activity list.
+- Analytics: 4 charts in 2x2 grid, date range picker, export CSV/JSON, interactive tooltips.
+- Users: data table with search, filters, sort, pagination, edit/delete modals.
+- Implement loading, error, and empty states.
+- Ensure responsiveness across breakpoints and accessibility compliance.
+
+Future Enhancements
+- Dark mode toggle.
+- Bulk user actions and infinite scroll.
+- Real-time updates via WebSocket/polling.
+- User preference persistence (localStorage).
+- Micro-interactions and animations.
+
+# Logical Dependency Chain
+Foundation
+- Set up project (Vite, React, TypeScript, Tailwind, Shadcn UI, Zustand, React Query).
+- Configure Tailwind with design tokens and typography.
+- Set up JSON Server with provided schema.
+
+First Usable Output
+- Implement navbar and routes with placeholder content.
+- Build Dashboard with static metric cards and placeholder chart.
+
+Feature Expansion
+- Connect Dashboard to /metrics and /analytics, implement recent activity list.
+- Build Analytics page with charts, filters, export.
+- Build Users page with table, search, filter, sort, pagination, and modals.
+- Add responsive behavior and accessibility.
+
+Polish
+- Add loading, error, and empty states.
+- Write unit and integration tests.
+- Apply performance optimizations (lazy load charts, debounce, memoization).
+- Ensure lint and tests pass.
+
+# Risks and Mitigations
+Technical Challenges
+- Chart rendering across breakpoints: mitigate by using established chart library.
+- Maintaining design fidelity: mitigate by mapping Tailwind tokens directly to design tokens.
+
+MVP Scoping
+- Risk of including optional features too early; mitigate by focusing on the three core pages and their must-have features.
+
+Resource Constraints
+- Limited time; prioritization of Dashboard, Analytics, and Users pages ensures core value delivery.
+
+# Appendix
+Design Specifications
+Colors
+- Primary Blue: #3b82f6 (primary-500)
+- Primary Blue Light: #dbeafe (primary-100)
+- Primary Blue Dark: #1d4ed8 (primary-700)
+- Gray scale: #f9fafb (gray-50) → #111827 (gray-900)
+- Success: #10b981 (green-500)
+- Warning: #f59e0b (yellow-500)
+- Error: #ef4444 (red-500)
+
+Typography
+- Font Family: Inter
+- H1: 24px, bold
+- H2: 20px, semibold
+- H3: 18px, medium
+- Body: 14px, normal
+- Captions: 12px, normal
+
+Spacing
+- Base unit: 4px
+- Component padding: 24px
+- Card padding: 24px
+- Section margins: 32px
+
+Layout
+- Header: auto height with py-4; search bar max width 320px on desktop; icons 24px
+- Main content: padding 24px, background #f9fafb, cards white with subtle shadow
+
+Responsive Breakpoints
+- Mobile: 320–768px
+- Tablet: 768–1024px
+- Desktop: 1024px+
+
+Interactive States
+Buttons
+- Default: Blue background, white text
+- Hover: Darker blue (#1d4ed8)
+- Active: Even darker blue with shadow
+- Disabled: Gray background, reduced opacity
+
+Form Inputs
+- Default: Gray border (border-gray-300)
+- Focus: Blue border and ring (focus:ring-primary-500)
+- Error: Red border and text
+- Success: Green border
+
+Cards
+- Default: White background, subtle shadow
+- Hover: Slightly elevated shadow
+
+Accessibility
+- Semantic HTML with nav, header, main, section
+- Keyboard navigation for all interactive elements
+- ARIA labels for icon-only buttons
+- aria-sort for sortable headers
+- Focus rings in primary blue (#3b82f6)
+- WCAG AA contrast compliance
+
+Performance
+- Lazy-load charts and routes
+- Memoize heavy components
+- Debounced search (≈300ms)
+
+Testing
+- Unit tests for components
+- Integration tests for flows
+- Mock API calls with MSW or fetch mocks
+- Accessibility assertions (roles, names, focus indicators)
+
+Setup Notes
+- npm install
+- npm run dev (http://localhost:3000)
+- npm run api (http://localhost:3001)
+- npm run lint
+- npm test
+</PRD>
