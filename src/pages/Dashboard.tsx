@@ -1,6 +1,8 @@
 import { useMetrics } from "@/hooks/use-api";
 import { Card } from "@/components/ui/Card";
 import { MetricCard } from "@/components/MetricCard";
+import { AnalyticsOverview } from "@/components/AnalyticsOverview";
+import { RecentActivity } from "@/components/RecentActivity";
 import { Users, DollarSign, Activity, TrendingUp } from "lucide-react";
 
 // Icon mapping for metrics
@@ -66,27 +68,11 @@ export default function Dashboard() {
             })}
           </div>
 
-          {/* Recent Activity - Placeholder for now */}
-          <Card className="p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
-              Recent Activity
-            </h2>
-            <div className="space-y-3">
-              <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                <div className="flex-shrink-0">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm text-gray-900">
-                    Dashboard metrics loaded successfully
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    {new Date().toLocaleString()}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </Card>
+          {/* Analytics Overview and Recent Activity */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <AnalyticsOverview />
+            <RecentActivity />
+          </div>
         </>
       ) : (
         <Card className="p-6">

@@ -4,7 +4,7 @@ import type {
   User,
   CreateUserData,
   UpdateUserData,
-  Analytics,
+  AnalyticsChartData,
   DashboardData,
 } from "@/types/api";
 
@@ -16,12 +16,14 @@ export const queryKeys = {
   dashboard: ["dashboard"] as const,
 } as const;
 
-// Custom hook for fetching users
-export function useUsers() {
+// Custom hook for fetching users with pagination
+export function useUsers(page: number = 1, limit: number = 10) {
   return useQuery({
-    queryKey: queryKeys.users,
+    queryKey: [...queryKeys.users, page, limit],
     queryFn: async (): Promise<User[]> => {
-      const response = await api.get<User[]>("/users");
+      const response = await api.get<User[]>(
+        `/users?_page=${page}&_limit=${limit}`,
+      );
       return response;
     },
   });
@@ -43,8 +45,8 @@ export function useUser(id: string) {
 export function useAnalytics() {
   return useQuery({
     queryKey: queryKeys.analytics,
-    queryFn: async (): Promise<Analytics> => {
-      const response = await api.get<Analytics>("/analytics");
+    queryFn: async (): Promise<AnalyticsChartData> => {
+      const response = await api.get<AnalyticsChartData>("/analytics");
       return response;
     },
     // Refetch every 30 seconds for real-time data

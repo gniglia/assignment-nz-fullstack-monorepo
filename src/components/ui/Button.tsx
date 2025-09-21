@@ -1,5 +1,5 @@
 import { ButtonHTMLAttributes, ReactNode } from "react";
-import { clsx } from "clsx";
+import { cn } from "./utils";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "primary" | "secondary" | "outline" | "ghost" | "destructive";
@@ -38,7 +38,7 @@ export default function Button({
 
   return (
     <button
-      className={clsx(
+      className={cn(
         baseClasses,
         variantClasses[variant],
         sizeClasses[size],

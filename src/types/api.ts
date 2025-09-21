@@ -4,6 +4,7 @@ export type User = {
   name: string;
   email: string;
   role: "admin" | "user" | "moderator";
+  status: "active" | "inactive" | "pending";
   avatar?: string;
   createdAt: string;
   updatedAt: string;
@@ -31,6 +32,14 @@ export type Analytics = {
     percentage: number;
   }>;
 };
+
+// Analytics chart data type for line charts
+export type AnalyticsChartData = Array<{
+  id: string;
+  label: string;
+  value: number;
+  date: string;
+}>;
 
 // Dashboard related types
 export type DashboardData = {

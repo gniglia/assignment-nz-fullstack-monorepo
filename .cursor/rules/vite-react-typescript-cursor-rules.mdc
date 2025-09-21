@@ -70,8 +70,18 @@ React
   - Ensure all server actions return the ActionResponse type
   - Implement consistent error handling and success responses using ActionResponse
 
+Package Management
+
+- **ALWAYS use pnpm** for all package management operations (install, add, remove, etc.)
+- Never use npm or yarn commands - always use pnpm equivalents
+- Use `pnpm install` for installing dependencies
+- Use `pnpm add <package>` for adding new packages
+- Use `pnpm remove <package>` for removing packages
+- Use `pnpm run <script>` for running package.json scripts
+
 Key Conventions
 
+1. **ALWAYS use pnpm** for package management.
 2. Prioritize Web Vitals (LCP, CLS, FID).
 3. Minimize 'use client' usage:
    - Prefer server components.
