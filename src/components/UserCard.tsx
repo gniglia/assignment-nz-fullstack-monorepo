@@ -1,18 +1,27 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import type { User } from "@/types/api";
 import { Card } from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
+import { EditUserModal, DeleteUserModal } from "@/components/UserModals";
 import { formatDistanceToNow } from "date-fns";
 import { Edit, Trash2, MoreVertical } from "lucide-react";
 
 type UserCardProps = {
   user: User;
-  onEdit: (user: User) => void; // eslint-disable-line no-unused-vars
-  onDelete: (user: User) => void; // eslint-disable-line no-unused-vars
+  onSave: (userData: Partial<User>) => void; // eslint-disable-line no-unused-vars
+  onConfirmDelete: () => void;
 };
 
-function UserCard({ user, onEdit, onDelete }: UserCardProps) {
+function UserCard({ user, onSave, onConfirmDelete }: UserCardProps) {
   const [showActions, setShowActions] = useState(false);
+
+  const handleToggleActions = useCallback(() => {
+    setShowActions((prev) => !prev);
+  }, []);
+
+  const handleCloseActions = useCallback(() => {
+    setShowActions(false);
+  }, []);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -69,7 +78,7 @@ function UserCard({ user, onEdit, onDelete }: UserCardProps) {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => setShowActions(!showActions)}
+            onClick={handleToggleActions}
             className="p-2"
           >
             <MoreVertical className="h-4 w-4" />
@@ -77,26 +86,24 @@ function UserCard({ user, onEdit, onDelete }: UserCardProps) {
 
           {showActions && (
             <div className="absolute right-0 top-8 bg-white border border-gray-200 rounded-md shadow-lg z-10 min-w-[120px]">
-              <button
-                onClick={() => {
-                  onEdit(user);
-                  setShowActions(false);
-                }}
-                className="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"
-              >
-                <Edit className="h-4 w-4 mr-2" />
-                Edit
-              </button>
-              <button
-                onClick={() => {
-                  onDelete(user);
-                  setShowActions(false);
-                }}
-                className="flex items-center w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50"
-              >
-                <Trash2 className="h-4 w-4 mr-2" />
-                Delete
-              </button>
+              <EditUserModal user={user} onSave={onSave}>
+                <button
+                  onClick={handleCloseActions}
+                  className="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                >
+                  <Edit className="h-4 w-4 mr-2" />
+                  Edit
+                </button>
+              </EditUserModal>
+              <DeleteUserModal user={user} onConfirm={onConfirmDelete}>
+                <button
+                  onClick={handleCloseActions}
+                  className="flex items-center w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50"
+                >
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Delete
+                </button>
+              </DeleteUserModal>
             </div>
           )}
         </div>
@@ -129,14 +136,15 @@ function UserCard({ user, onEdit, onDelete }: UserCardProps) {
       {/* Swipe actions for mobile */}
       <div className="absolute inset-0 flex items-center justify-end bg-red-500 opacity-0 hover:opacity-10 transition-opacity pointer-events-none">
         <div className="flex items-center space-x-2 pr-4">
-          <Button
-            variant="destructive"
-            size="sm"
-            onClick={() => onDelete(user)}
-            className="pointer-events-auto"
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
+          <DeleteUserModal user={user} onConfirm={onConfirmDelete}>
+            <Button
+              variant="destructive"
+              size="sm"
+              className="pointer-events-auto"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </DeleteUserModal>
         </div>
       </div>
     </Card>

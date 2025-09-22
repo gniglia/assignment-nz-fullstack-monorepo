@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useUsers, useDeleteUser, queryKeys } from "@/hooks/use-api";
+import { useUsersQuery, useDeleteUser, queryKeys } from "@/hooks/use-api";
 import { useQueryClient } from "@tanstack/react-query";
 import type { User } from "@/types/api";
 import Button from "@/components/ui/Button";
@@ -10,7 +10,7 @@ function UserList() {
   const queryClient = useQueryClient();
 
   // Fetch users using React Query
-  const { data: users, isLoading, error, refetch } = useUsers();
+  const { data: users, isLoading, error, refetch } = useUsersQuery();
 
   // Delete user mutation
   const deleteUserMutation = useDeleteUser();

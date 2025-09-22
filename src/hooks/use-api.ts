@@ -16,16 +16,28 @@ export const queryKeys = {
   dashboard: ["dashboard"] as const,
 } as const;
 
-// Custom hook for fetching users with pagination
-export function useUsers(page: number = 1, limit: number = 10) {
+// Types for user query parameters
+export type UserQueryParams = {
+  page?: number;
+  limit?: number;
+  q?: string; // search query
+  role?: string; // filter by role
+  status?: string; // filter by status
+  _sort?: string; // sort field
+  _order?: "asc" | "desc"; // sort order
+};
+
+// Custom hook for fetching all users (base data)
+export function useUsersQuery() {
   return useQuery({
-    queryKey: [...queryKeys.users, page, limit],
+    queryKey: [...queryKeys.users, "all"],
     queryFn: async (): Promise<User[]> => {
-      const response = await api.get<User[]>(
-        `/users?_page=${page}&_limit=${limit}`,
-      );
-      return response;
+      return await api.get<User[]>("/users");
     },
+    staleTime: 5 * 60 * 1000, // 5 minutes - data stays fresh longer
+    refetchOnWindowFocus: false, // Prevent refetch on window focus
+    // You can add refetchInterval here for future use:
+    // refetchInterval: 30000, // Refetch every 30 seconds
   });
 }
 

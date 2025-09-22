@@ -13,6 +13,7 @@
     "api": "json-server --watch db.json --port 3001"
   },
   "dependencies": {
+    "@radix-ui/react-dialog": "^1.1.15",
     "@tanstack/react-query": "^5.89.0",
     "@tanstack/react-query-devtools": "^5.89.0",
     "clsx": "^2.0.0",
@@ -22,7 +23,7 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.20.1",
     "recharts": "^3.2.1",
-    "zustand": "^4.4.7"
+    "zustand": "^4.5.7"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.1.4",

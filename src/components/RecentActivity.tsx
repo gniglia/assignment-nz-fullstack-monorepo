@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/Card";
-import { useUsers } from "@/hooks/use-api";
+import { useUsersQuery } from "@/hooks/use-api";
 import { formatDistanceToNow } from "date-fns";
 
 type ActivityItemProps = {
@@ -13,12 +13,11 @@ type ActivityItemProps = {
 
 function ActivityItem({
   name,
-  email,
   avatar,
   lastLogin,
   createdAt,
 }: ActivityItemProps) {
-  const getActivityText = (lastLogin?: string, createdAt: string) => {
+  const getActivityText = (lastLogin?: string) => {
     if (lastLogin) {
       return "Last logged in";
     }
@@ -66,7 +65,7 @@ function ActivityItem({
 }
 
 export function RecentActivity() {
-  const { data: users, isLoading, error } = useUsers();
+  const { data: users, isLoading, error } = useUsersQuery();
 
   if (isLoading) {
     return (

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -16,6 +16,33 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+
+  /* Design System CSS Variables from PRD */
+  --background: 0 0% 98%; /* #f9fafb (gray-50) */
+  --foreground: 220 13% 9%; /* #111827 (gray-900) */
+  --card: 0 0% 100%; /* white */
+  --card-foreground: 220 13% 9%; /* #111827 (gray-900) */
+  --popover: 0 0% 100%; /* white */
+  --popover-foreground: 220 13% 9%; /* #111827 (gray-900) */
+  --primary: 217 91% 60%; /* #3b82f6 (primary-500) */
+  --primary-foreground: 0 0% 100%; /* white */
+  --primary-100: 214 95% 93%; /* #dbeafe (primary-100) */
+  --primary-700: 217 91% 60%; /* #1d4ed8 (primary-700) */
+  --secondary: 210 20% 95%; /* #f3f4f6 (gray-100) */
+  --secondary-foreground: 220 13% 9%; /* #111827 (gray-900) */
+  --muted: 210 20% 95%; /* #f3f4f6 (gray-100) */
+  --muted-foreground: 220 9% 46%; /* #6b7280 (gray-500) */
+  --accent: 210 20% 95%; /* #f3f4f6 (gray-100) */
+  --accent-foreground: 220 13% 9%; /* #111827 (gray-900) */
+  --destructive: 0 84% 60%; /* #ef4444 (error from PRD) */
+  --destructive-foreground: 0 0% 100%; /* white */
+  --success: 158 64% 52%; /* #10b981 (success from PRD) */
+  --warning: 43 96% 56%; /* #f59e0b (warning from PRD) */
+  --error: 0 84% 60%; /* #ef4444 (error from PRD) */
+  --border: 220 13% 91%; /* #d1d5db (gray-300) */
+  --input: 220 13% 91%; /* #d1d5db (gray-300) */
+  --ring: 217 91% 60%; /* #3b82f6 (primary-500) */
+  --radius: 0.5rem;
 }
 
 @media (prefers-color-scheme: light) {
@@ -30,6 +57,9 @@ body {
   display: flex;
   min-width: 320px;
   min-height: 100vh;
+  background-color: hsl(
+    var(--background)
+  ); /* Main content background from PRD */
 }
 
 #root {
