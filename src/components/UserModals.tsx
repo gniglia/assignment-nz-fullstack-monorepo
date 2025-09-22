@@ -51,17 +51,12 @@ function EditUserModal({ user, children }: EditUserModalProps) {
     try {
       // Validate name uniqueness if it has changed
       if (data.name !== user.name && data.name.trim()) {
-        console.log("Validating name uniqueness on submit:", data.name);
         setIsValidating(true);
 
         try {
           const isUnique = await userApi.checkNameUnique(data.name, user.id);
-          console.log("Name unique result:", isUnique);
 
           if (!isUnique) {
-            console.log(
-              "Name is not unique, setting error and stopping submission",
-            );
             form.setError("name", {
               type: "manual",
               message:
@@ -69,6 +64,14 @@ function EditUserModal({ user, children }: EditUserModalProps) {
             });
             return; // Stop submission
           }
+        } catch (validationError) {
+          // Block submission when validation fails
+          toast.error("Unable to verify name availability. Please try again.", {
+            duration: 4000,
+          });
+          console.warn("Name validation failed:", validationError);
+          setIsValidating(false);
+          return; // Stop submission
         } finally {
           setIsValidating(false);
         }
@@ -85,7 +88,23 @@ function EditUserModal({ user, children }: EditUserModalProps) {
       await updateUserMutation.mutateAsync(updateData);
       toast.success("User updated successfully!");
     } catch (error) {
-      toast.error("Failed to update user. Please try again.");
+      // Check if it's a network error
+      const isNetworkError =
+        error instanceof Error && error.message.includes("Network");
+
+      if (isNetworkError) {
+        toast.error(
+          "Connection issue. Please check your internet and try again.",
+          {
+            duration: 5000,
+          },
+        );
+      } else {
+        toast.error("Failed to save user changes. Please try again.", {
+          duration: 4000,
+        });
+      }
+
       console.error("Update user error:", error);
     }
   };
