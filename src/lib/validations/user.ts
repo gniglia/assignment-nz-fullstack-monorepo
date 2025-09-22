@@ -32,6 +32,15 @@ const baseUserFormSchema = z.object({
 // Schema for editing existing users (basic validation, uniqueness handled separately)
 export const editUserFormSchema = baseUserFormSchema;
 
+// Schema for adding new users (includes name uniqueness validation)
+export const addUserFormSchema = baseUserFormSchema.refine(
+  (data) => data.name.trim().length > 0,
+  {
+    message: "Name is required",
+    path: ["name"],
+  },
+);
+
 export type UserFormData = z.infer<typeof baseUserFormSchema>;
 export type UserRole = (typeof ROLES)[number];
 export type UserStatus = (typeof STATUSES)[number];

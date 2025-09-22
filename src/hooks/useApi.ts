@@ -60,7 +60,7 @@ const buildEndpoint = (params: UserQueryParams): string => {
   return queryString ? `/users?${queryString}` : "/users";
 };
 
-// Custom hook for fetching users with server-side filtering, sorting, and pagination
+// Custom hook for fetching users with client-side filtering, sorting, and pagination
 export function useUsersQueryWithParams(params: UserQueryParams = {}) {
   return useQuery({
     queryKey: [...queryKeys.users, "filtered", params],
@@ -128,6 +128,24 @@ export function useUpdateUser() {
       ...userData
     }: { id: string } & UpdateUserData): Promise<User> => {
       const response = await api.put<User>(`/users/${id}`, userData);
+      return response;
+    },
+    onSuccess: () => {
+      // Invalidate users list to ensure consistency
+      queryClient.invalidateQueries({ queryKey: queryKeys.users });
+    },
+  });
+}
+
+// Custom hook for creating a user
+export function useCreateUser() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (
+      userData: Omit<User, "id" | "createdAt" | "updatedAt" | "lastLogin">,
+    ): Promise<User> => {
+      const response = await api.post<User>("/users", userData);
       return response;
     },
     onSuccess: () => {

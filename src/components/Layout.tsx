@@ -5,23 +5,23 @@ import { Sidebar } from "@/components/Sidebar";
 import { Header } from "@/components/Header";
 
 export function Layout() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // Lock body scroll when sidebar is open on mobile
-  useConditionalBodyLock(sidebarOpen);
+  useConditionalBodyLock(isSidebarOpen);
 
   const handleCloseSidebar = useCallback(() => {
-    setSidebarOpen(false);
+    setIsSidebarOpen(false);
   }, []);
 
   const handleOpenSidebar = useCallback(() => {
-    setSidebarOpen(true);
+    setIsSidebarOpen(true);
   }, []);
 
   return (
     <div className="min-h-screen bg-background">
       {/* Mobile sidebar overlay */}
-      {sidebarOpen && (
+      {isSidebarOpen && (
         <div
           className="fixed inset-0 z-40 lg:hidden"
           onClick={handleCloseSidebar}
@@ -35,7 +35,7 @@ export function Layout() {
         className={`
         fixed inset-y-0 left-0 z-50 w-64 transform transition-transform duration-300 ease-in-out
         lg:hidden
-        ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
+        ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
       `}
       >
         <Sidebar onClose={handleCloseSidebar} />

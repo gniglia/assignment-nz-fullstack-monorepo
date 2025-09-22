@@ -124,9 +124,15 @@ export default {
           "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)" /* Hover card shadow */,
       },
       screens: {
-        mobile: "320px" /* Mobile: 320–768px from PRD */,
-        tablet: "768px" /* Tablet: 768–1024px from PRD */,
-        desktop: "1024px" /* Desktop: 1024px+ from PRD */,
+        xs: "320px" /* Extra small devices */,
+        mobile: "480px" /* Mobile: 480–768px */,
+        sm: "640px" /* Small devices */,
+        tablet: "768px" /* Tablet: 768–1024px */,
+        md: "768px" /* Medium devices */,
+        lg: "1024px" /* Large devices */,
+        xl: "1280px" /* Extra large devices */,
+        desktop: "1024px" /* Desktop: 1024px+ */,
+        "2xl": "1536px" /* 2X large devices */,
       },
       padding: {
         header: "1rem" /* Header py-4 from PRD */,

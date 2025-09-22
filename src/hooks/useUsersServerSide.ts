@@ -5,16 +5,16 @@ import {
 } from "./useApi";
 
 /**
- * Hook for server-side filtering, sorting, and pagination using json-server
+ * Hook for client-side filtering, sorting, and pagination using json-server
  *
  * This hook:
  * 1. Manages filter/sort/pagination state locally
- * 2. Uses React Query to fetch data with server-side parameters
- * 3. Returns the filtered/sorted/paginated users from the server
+ * 2. Uses React Query to fetch data with client-side parameters
+ * 3. Returns the filtered/sorted/paginated users from the client
  *
  * Benefits:
- * - Server handles all filtering, sorting, and pagination
- * - Better performance for large datasets
+ * - Client handles all filtering, sorting, and pagination
+ * - Responsive interactions for smaller datasets
  * - Simpler client-side code
  * - Leverages json-server's built-in query capabilities
  */
@@ -72,7 +72,7 @@ export function useUsersServerSide() {
     filters.sortOrder,
   ]);
 
-  // Fetch data with server-side parameters and total count from headers
+  // Fetch data with client-side parameters and total count from headers
   const {
     data: result,
     isLoading,

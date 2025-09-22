@@ -106,7 +106,7 @@ export function AnalyticsOverview() {
                         transition={{ delay: 0.2 }}
                       >
                         <motion.h2
-                          className="text-xl font-semibold text-foreground flex items-center gap-2"
+                          className="text-lg font-medium text-foreground flex items-center gap-2"
                           whileHover={{ scale: 1.02 }}
                           transition={{ duration: 0.2 }}
                         >
@@ -147,7 +147,7 @@ export function AnalyticsOverview() {
                           onHoverStart={() => setHoveredMetric("total")}
                           onHoverEnd={() => setHoveredMetric(null)}
                         >
-                          <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                          <div className="text-sm md:text-lg font-bold text-blue-600 dark:text-blue-400">
                             {totalValue.toLocaleString()}
                           </div>
                           <div className="text-xs text-blue-600 dark:text-blue-400 font-medium">
@@ -164,7 +164,7 @@ export function AnalyticsOverview() {
                           onHoverStart={() => setHoveredMetric("average")}
                           onHoverEnd={() => setHoveredMetric(null)}
                         >
-                          <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+                          <div className="text-sm md:text-lg font-bold text-green-600 dark:text-green-400">
                             {avgValue.toLocaleString()}
                           </div>
                           <div className="text-xs text-green-600 dark:text-green-400 font-medium">
@@ -181,7 +181,7 @@ export function AnalyticsOverview() {
                           onHoverStart={() => setHoveredMetric("peak")}
                           onHoverEnd={() => setHoveredMetric(null)}
                         >
-                          <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">
+                          <div className="text-sm md:text-lg font-bold text-purple-600 dark:text-purple-400">
                             {maxValue.toLocaleString()}
                           </div>
                           <div className="text-xs text-purple-600 dark:text-purple-400 font-medium">

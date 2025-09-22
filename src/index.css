@@ -116,3 +116,134 @@ body {
 .dark .date-range-picker input[type="date"]::-moz-calendar-picker-indicator {
   filter: invert(0.8);
 }
+
+/* Select chevron styling for theme-aware dropdown arrows */
+select {
+  appearance: none; /* Hide native chevron */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  padding-right: 2rem; /* Space for chevron */
+  background-position: right 0.75rem center;
+  background-repeat: no-repeat;
+  background-size: 1rem;
+}
+
+/* Light mode select chevron */
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23111827' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+}
+
+/* Dark mode select chevron */
+.dark select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23f9fafb' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+}
+
+/* Essential cross-browser compatibility */
+* {
+  box-sizing: border-box;
+}
+
+/* Improve focus visibility */
+*:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+/* Reduced motion support for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Custom Toast Styles for Light and Dark Mode */
+.toast-custom {
+  background: hsl(var(--card)) !important;
+  color: hsl(var(--card-foreground)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.1),
+    0 10px 10px -5px rgb(0 0 0 / 0.04) !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  padding: 16px 20px !important;
+  max-width: 400px !important;
+  backdrop-filter: blur(8px) !important;
+  transition: all 0.3s ease !important;
+}
+
+/* Toast animations */
+.toast-custom[data-state="open"] {
+  animation: slideInRight 0.3s ease-out;
+}
+
+.toast-custom[data-state="closed"] {
+  animation: slideOutRight 0.3s ease-in;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+/* Success toast specific styling */
+.toast-custom[data-type="success"] {
+  border-left: 4px solid hsl(var(--success)) !important;
+  background: hsl(var(--success) / 0.05) !important;
+}
+
+/* Error toast specific styling */
+.toast-custom[data-type="error"] {
+  border-left: 4px solid hsl(var(--error)) !important;
+  background: hsl(var(--error) / 0.05) !important;
+}
+
+/* Loading toast specific styling */
+.toast-custom[data-type="loading"] {
+  border-left: 4px solid hsl(var(--primary)) !important;
+  background: hsl(var(--primary) / 0.05) !important;
+}
+
+/* Dark mode specific adjustments */
+.dark .toast-custom {
+  box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.3),
+    0 10px 10px -5px rgb(0 0 0 / 0.1) !important;
+  backdrop-filter: blur(12px) !important;
+}
+
+/* Toast close button styling */
+.toast-custom button[aria-label="Close"] {
+  background: transparent !important;
+  border: none !important;
+  color: hsl(var(--muted-foreground)) !important;
+  padding: 4px !important;
+  border-radius: 4px !important;
+  transition: all 0.2s ease !important;
+}
+
+.toast-custom button[aria-label="Close"]:hover {
+  background: hsl(var(--accent)) !important;
+  color: hsl(var(--accent-foreground)) !important;
+}

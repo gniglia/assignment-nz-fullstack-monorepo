@@ -11,7 +11,7 @@ describe("Button", () => {
   it("applies primary variant styles by default", () => {
     const { getByRole } = render(<Button>Primary</Button>);
     const button = getByRole("button");
-    expect(button).toHaveClass("bg-primary-600");
+    expect(button).toHaveClass("bg-primary");
   });
 
   it("applies secondary variant styles when specified", () => {
@@ -19,7 +19,7 @@ describe("Button", () => {
       <Button variant="secondary">Secondary</Button>,
     );
     const button = getByRole("button");
-    expect(button).toHaveClass("bg-gray-600");
+    expect(button).toHaveClass("bg-secondary");
   });
 
   it("disables button when loading", () => {
@@ -32,5 +32,23 @@ describe("Button", () => {
     const { getByRole } = render(<Button loading>Loading</Button>);
     const button = getByRole("button");
     expect(button).toContainHTML("svg");
+  });
+
+  it("applies hover styles for primary variant", () => {
+    const { getByRole } = render(<Button>Primary</Button>);
+    const button = getByRole("button");
+    expect(button).toHaveClass("hover:bg-primary-700");
+  });
+
+  it("applies active styles for primary variant", () => {
+    const { getByRole } = render(<Button>Primary</Button>);
+    const button = getByRole("button");
+    expect(button).toHaveClass("active:bg-primary-700", "active:shadow-lg");
+  });
+
+  it("applies disabled styles for primary variant", () => {
+    const { getByRole } = render(<Button disabled>Disabled</Button>);
+    const button = getByRole("button");
+    expect(button).toHaveClass("disabled:bg-gray-400", "disabled:opacity-50");
   });
 });

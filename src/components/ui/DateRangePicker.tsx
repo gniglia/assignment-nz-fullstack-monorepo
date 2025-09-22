@@ -130,7 +130,6 @@ export function DateRangePicker({
 
         <div className="flex gap-2">
           <Button
-            variant="outline"
             size="sm"
             onClick={handleExportCSV}
             disabled={isLoading}
@@ -140,7 +139,6 @@ export function DateRangePicker({
             Export CSV
           </Button>
           <Button
-            variant="outline"
             size="sm"
             onClick={handleExportJSON}
             disabled={isLoading}

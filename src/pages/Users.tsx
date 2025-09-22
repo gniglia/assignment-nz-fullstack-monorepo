@@ -28,7 +28,8 @@ function UsersHeader() {
         transition={{ delay: 0.4, duration: 0.6, ease: "easeOut" }}
       >
         Manage your user base with powerful tools for filtering, sorting, and
-        pagination. Built with server-side processing for optimal performance
+        pagination. Built with client-side processing for responsive
+        interactions
       </motion.p>
 
       {/* Animated feature indicators */}

@@ -18,22 +18,25 @@ import { Pagination } from "@/components/ui/Pagination";
 import { Avatar } from "@/components/ui/Avatar";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { UserCard } from "@/components/UserCard";
-import { EditUserModal, DeleteUserModal } from "@/components/UserModals";
+import {
+  EditUserModal,
+  DeleteUserModal,
+  AddUserModal,
+} from "@/components/UserModals";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
-import { Search, ArrowUpDown } from "lucide-react";
+import { Search, ArrowUpDown, Edit, Trash2 } from "lucide-react";
+import { formatRelativeTime } from "@/utils/format";
 
 // No props needed - all state is managed internally
 
 // Filter options
 const roleOptions = [
-  { value: "all", label: "All Roles" },
   { value: "admin", label: "Admin" },
   { value: "user", label: "User" },
   { value: "moderator", label: "Moderator" },
 ];
 
 const statusOptions = [
-  { value: "all", label: "All Statuses" },
   { value: "active", label: "Active" },
   { value: "inactive", label: "Inactive" },
   { value: "pending", label: "Pending" },
@@ -52,7 +55,7 @@ const sortOptions = [
 ];
 
 function UsersTable() {
-  // Get all data and actions from the server-side hook
+  // Get all data and actions from the client-side hook
   const {
     users,
     totalCount,
@@ -145,6 +148,16 @@ function UsersTable() {
           </h2>
         </div>
         <div className="flex flex-col sm:flex-row gap-2">
+          <AddUserModal>
+            <Button
+              variant="primary"
+              size="sm"
+              className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white"
+              disabled={isLoading || isFetching}
+            >
+              Add User
+            </Button>
+          </AddUserModal>
           <Button
             onClick={handleClearFilters}
             variant="outline"
@@ -160,7 +173,7 @@ function UsersTable() {
       {/* Search and Filter Controls */}
       <div className="mb-4 sm:mb-8 space-y-4">
         {/* Search Input */}
-        <div className="relative">
+        <div className="relative w-full sm:w-80">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
           <Input
             type="text"
@@ -173,7 +186,7 @@ function UsersTable() {
         </div>
 
         {/* Filter Controls */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <div>
             <label className="block text-sm font-medium text-foreground mb-1">
               Filter by Role
@@ -181,9 +194,8 @@ function UsersTable() {
             <Select
               options={roleOptions}
               onValueChange={setSelectedRole}
-              placeholder="All Roles"
               disabled={isLoading || isFetching}
-              value={filters.selectedRole}
+              value={filters.selectedRole === "all" ? "" : filters.selectedRole}
             />
           </div>
           <div>
@@ -193,9 +205,10 @@ function UsersTable() {
             <Select
               options={statusOptions}
               onValueChange={setSelectedStatus}
-              placeholder="All Statuses"
               disabled={isLoading || isFetching}
-              value={filters.selectedStatus}
+              value={
+                filters.selectedStatus === "all" ? "" : filters.selectedStatus
+              }
             />
           </div>
           <div>
@@ -208,7 +221,6 @@ function UsersTable() {
             <Select
               options={sortOptions}
               onValueChange={handleSortChange}
-              placeholder="Default"
               disabled={isLoading || isFetching}
               value={
                 filters.sortField
@@ -233,11 +245,11 @@ function UsersTable() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Avatar</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Email</TableHead>
                 <TableHead>Role</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead>Last Login</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -245,15 +257,17 @@ function UsersTable() {
               {users.map((user: User) => (
                 <TableRow key={user.id}>
                   <TableCell>
-                    <Avatar
-                      src={user.avatar}
-                      alt={user.name}
-                      name={user.name}
-                      size="md"
-                    />
-                  </TableCell>
-                  <TableCell className="font-medium text-foreground">
-                    {user.name}
+                    <div className="flex items-center gap-3">
+                      <Avatar
+                        src={user.avatar}
+                        alt={user.name}
+                        name={user.name}
+                        size="md"
+                      />
+                      <span className="font-medium text-foreground">
+                        {user.name}
+                      </span>
+                    </div>
                   </TableCell>
                   <TableCell className="text-muted-foreground">
                     {user.email}
@@ -276,25 +290,28 @@ function UsersTable() {
                       {user.status}
                     </span>
                   </TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {user.lastLogin
+                      ? formatRelativeTime(user.lastLogin)
+                      : "Never"}
+                  </TableCell>
                   <TableCell>
-                    <div className="flex items-center space-x-4">
+                    <div className="flex items-center space-x-3">
                       <EditUserModal user={user}>
-                        <Button
-                          variant="link"
-                          size="sm"
-                          className="px-0 py-0 text-xs font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-all duration-200"
+                        <button
+                          className="p-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:text-blue-400 dark:hover:text-blue-300 dark:hover:bg-blue-900/20 rounded-md transition-all duration-200"
+                          title="Edit user"
                         >
-                          EDIT
-                        </Button>
+                          <Edit className="h-4 w-4" />
+                        </button>
                       </EditUserModal>
                       <DeleteUserModal user={user}>
-                        <Button
-                          variant="link"
-                          size="sm"
-                          className="px-0 py-0 text-xs font-medium text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-all duration-200"
+                        <button
+                          className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-red-900/20 rounded-md transition-all duration-200"
+                          title="Delete user"
                         >
-                          DELETE
-                        </Button>
+                          <Trash2 className="h-4 w-4" />
+                        </button>
                       </DeleteUserModal>
                     </div>
                   </TableCell>

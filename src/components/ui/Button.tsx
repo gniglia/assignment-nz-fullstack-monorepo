@@ -32,7 +32,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     const variantClasses = {
       primary:
-        "bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/80 active:shadow-inner focus:ring-primary",
+        "bg-primary text-primary-foreground hover:bg-primary-700 active:bg-primary-700 active:shadow-lg focus:ring-primary disabled:bg-gray-400 disabled:opacity-50",
       secondary:
         "bg-secondary text-secondary-foreground hover:bg-secondary/80 active:bg-secondary/70 active:shadow-inner focus:ring-secondary",
       outline:
@@ -57,7 +57,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           baseClasses,
           variantClasses[variant],
           sizeClasses[size],
-          (disabled || loading) && "opacity-50 cursor-not-allowed",
+          (disabled || loading) && "cursor-not-allowed",
           className,
         )}
         disabled={disabled || loading}

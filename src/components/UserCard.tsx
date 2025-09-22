@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import { useClickAway } from "@uidotdev/usehooks";
 import type { User } from "@/types/api";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
@@ -18,9 +19,21 @@ function UserCard({ user }: UserCardProps) {
     setShowActions((prev) => !prev);
   }, []);
 
-  const handleCloseActions = useCallback(() => {
+  const dropdownRef = useClickAway<HTMLDivElement>((event) => {
+    const target = event.target as Element;
+
+    // Don't close if clicking on modal content
+    if (target && target.closest('[role="dialog"]')) {
+      return;
+    }
+
+    // Don't close if clicking on modal overlay/portal
+    if (target && target.closest("[data-radix-popper-content-wrapper]")) {
+      return;
+    }
+
     setShowActions(false);
-  }, []);
+  });
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -49,10 +62,10 @@ function UserCard({ user }: UserCardProps) {
   };
 
   return (
-    <Card variant="elevated" hover className="relative">
+    <Card variant="elevated" className="relative">
       {/* Header with avatar and actions */}
-      <div className="flex items-start justify-between">
-        <div className="flex items-center space-x-3">
+      <div className="relative flex items-start">
+        <div className="flex items-center space-x-3 pr-12">
           <Avatar
             src={user.avatar}
             alt={user.name}
@@ -60,13 +73,13 @@ function UserCard({ user }: UserCardProps) {
             size="lg"
           />
           <div>
-            <h3 className="font-semibold text-gray-900">{user.name}</h3>
-            <p className="text-sm text-gray-600">{user.email}</p>
+            <h3 className="font-semibold text-foreground">{user.name}</h3>
+            <p className="text-sm text-muted-foreground">{user.email}</p>
           </div>
         </div>
 
-        {/* Actions dropdown */}
-        <div className="relative">
+        {/* Actions dropdown - absolutely positioned */}
+        <div className="absolute right-0 top-0" ref={dropdownRef}>
           <Button
             variant="ghost"
             size="sm"
@@ -77,21 +90,15 @@ function UserCard({ user }: UserCardProps) {
           </Button>
 
           {showActions && (
-            <div className="absolute right-0 top-8 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-10 min-w-[140px] overflow-hidden">
+            <div className="absolute right-0 top-8 bg-card border border-border rounded-lg shadow-lg z-20 min-w-[140px] overflow-hidden">
               <EditUserModal user={user}>
-                <button
-                  onClick={handleCloseActions}
-                  className="flex items-center w-full px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-950/50 transition-all duration-200 group"
-                >
+                <button className="flex items-center w-full px-4 py-3 text-sm text-foreground hover:bg-accent transition-all duration-200 group">
                   <Pencil className="h-4 w-4 mr-3 transition-transform duration-200 group-hover:scale-110" />
                   Edit
                 </button>
               </EditUserModal>
               <DeleteUserModal user={user}>
-                <button
-                  onClick={handleCloseActions}
-                  className="flex items-center w-full px-4 py-3 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/50 transition-all duration-200 group"
-                >
+                <button className="flex items-center w-full px-4 py-3 text-sm text-destructive hover:bg-destructive/10 transition-all duration-200 group">
                   <Trash2 className="h-4 w-4 mr-3 transition-transform duration-200 group-hover:scale-110" />
                   Delete
                 </button>
@@ -120,23 +127,8 @@ function UserCard({ user }: UserCardProps) {
       </div>
 
       {/* Created date */}
-      <div className="mt-3 text-sm text-gray-500">
+      <div className="mt-3 text-sm text-muted-foreground">
         Created {safeFormatDistanceToNow(user.createdAt, { addSuffix: true })}
-      </div>
-
-      {/* Swipe actions for mobile */}
-      <div className="absolute inset-0 flex items-center justify-end bg-red-500 opacity-0 hover:opacity-10 transition-opacity pointer-events-none">
-        <div className="flex items-center space-x-2 pr-4">
-          <DeleteUserModal user={user}>
-            <Button
-              variant="destructive"
-              size="sm"
-              className="pointer-events-auto rounded-lg hover:scale-105 transition-transform duration-200"
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
-          </DeleteUserModal>
-        </div>
       </div>
     </Card>
   );

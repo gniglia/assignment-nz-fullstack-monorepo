@@ -2,7 +2,7 @@ import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { cn } from "./utils";
 import { X } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 const Dialog = DialogPrimitive.Root;
 
@@ -23,7 +23,7 @@ const DialogOverlay = React.forwardRef<
       className,
     )}
     style={{ backdropFilter: "blur(4px)" }}
-    {...props}
+    {...(props as any)}
   />
 ));
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
@@ -37,27 +37,30 @@ const DialogContent = React.forwardRef<
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        "fixed left-1/2 top-1/2 z-50 grid w-full max-w-lg -translate-x-1/2 -translate-y-1/2 gap-4 border border-gray-800 dark:border-gray-700 bg-background p-6 shadow-lg sm:rounded-lg",
+        "fixed left-1/2 top-1/2 z-50 grid w-full max-w-lg gap-4 border border-gray-800 dark:border-gray-700 bg-background p-6 shadow-lg sm:rounded-lg",
         className,
       )}
-      {...props}
+      {...(props as any)}
       asChild
     >
       <motion.div
         initial={{
           opacity: 0,
           scale: 0.95,
-          y: -20,
+          x: "-50%",
+          y: "-50%",
         }}
         animate={{
           opacity: 1,
           scale: 1,
-          y: 0,
+          x: "-50%",
+          y: "-50%",
         }}
         exit={{
           opacity: 0,
           scale: 0.95,
-          y: -20,
+          x: "-50%",
+          y: "-50%",
         }}
         transition={{
           duration: 0.2,
@@ -87,7 +90,7 @@ const DialogHeader = ({
     initial={{ opacity: 0, y: -10 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ delay: 0.1, duration: 0.3 }}
-    {...props}
+    {...(props as any)}
   />
 );
 DialogHeader.displayName = "DialogHeader";
@@ -98,13 +101,13 @@ const DialogFooter = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <motion.div
     className={cn(
-      "flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2",
+      "flex flex-col-reverse gap-3 sm:flex-row sm:justify-end sm:gap-2 sm:space-x-0",
       className,
     )}
     initial={{ opacity: 0, y: 10 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ delay: 0.2, duration: 0.3 }}
-    {...props}
+    {...(props as any)}
   />
 );
 DialogFooter.displayName = "DialogFooter";
@@ -119,7 +122,7 @@ const DialogTitle = React.forwardRef<
       "text-lg font-semibold leading-none tracking-tight",
       className,
     )}
-    {...props}
+    {...(props as any)}
   />
 ));
 DialogTitle.displayName = DialogPrimitive.Title.displayName;
@@ -131,7 +134,7 @@ const DialogDescription = React.forwardRef<
   <DialogPrimitive.Description
     ref={ref}
     className={cn("text-sm text-muted-foreground", className)}
-    {...props}
+    {...(props as any)}
   />
 ));
 DialogDescription.displayName = DialogPrimitive.Description.displayName;

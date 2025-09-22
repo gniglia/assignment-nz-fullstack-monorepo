@@ -203,7 +203,7 @@ export default function Analytics() {
 
       {/* Charts Section */}
       <motion.div
-        className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6"
+        className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6"
         variants={chartContainerVariants}
         initial="hidden"
         animate="visible"
@@ -222,7 +222,7 @@ export default function Analytics() {
               >
                 <LineChart
                   data={baseData}
-                  title="Line View"
+                  title="User Growth"
                   isLoading={isLoading}
                   color="#3b82f6"
                 />
@@ -236,7 +236,7 @@ export default function Analytics() {
               >
                 <BarChart
                   data={baseData}
-                  title="Bar View"
+                  title="Revenue by Month"
                   isLoading={isLoading}
                   color="#10b981"
                 />
@@ -250,7 +250,7 @@ export default function Analytics() {
               >
                 <PieChart
                   data={pieChartData}
-                  title="Distribution View"
+                  title="Traffic Sources"
                   isLoading={isLoading}
                 />
               </motion.div>
@@ -263,7 +263,7 @@ export default function Analytics() {
               >
                 <AreaChart
                   data={baseData}
-                  title="Area View"
+                  title="Conversions"
                   isLoading={isLoading}
                   color="#8b5cf6"
                 />

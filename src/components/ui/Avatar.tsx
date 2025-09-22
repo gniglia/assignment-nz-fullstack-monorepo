@@ -21,19 +21,19 @@ export function Avatar({
   size = "md",
   className = "",
 }: AvatarProps) {
-  const [imageError, setImageError] = useState(false);
+  const [isImageError, setIsImageError] = useState(false);
 
   const sizeClass = sizeClasses[size];
   const initials = name ? name.charAt(0).toUpperCase() : "?";
 
   return (
     <div className={`${sizeClass} ${className}`}>
-      {src && !imageError ? (
+      {src && !isImageError ? (
         <img
           src={src}
           alt={alt}
           className="w-full h-full rounded-full object-cover"
-          onError={() => setImageError(true)}
+          onError={() => setIsImageError(true)}
         />
       ) : (
         <div className="w-full h-full rounded-full bg-gray-300 flex items-center justify-center">

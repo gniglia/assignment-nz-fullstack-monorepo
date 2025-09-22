@@ -25,11 +25,15 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/Form";
-import { editUserFormSchema, type UserFormData } from "@/lib/validations/user";
-import { useUpdateUser, useDeleteUser } from "@/hooks/useApi";
+import {
+  editUserFormSchema,
+  addUserFormSchema,
+  type UserFormData,
+} from "@/lib/validations/user";
+import { useUpdateUser, useDeleteUser, useCreateUser } from "@/hooks/useApi";
 import { motion } from "framer-motion";
 import { staggerContainer, fadeInUp } from "@/lib/animations";
-import { Edit3, Trash2, AlertTriangle } from "lucide-react";
+import { Edit3, Trash2, AlertTriangle, Plus } from "lucide-react";
 
 type EditUserModalProps = {
   user: User;
@@ -39,6 +43,7 @@ type EditUserModalProps = {
 function EditUserModal({ user, children }: EditUserModalProps) {
   const updateUserMutation = useUpdateUser();
   const [isValidating, setIsValidating] = React.useState(false);
+  const [isOpen, setIsOpen] = React.useState(false);
 
   const form = useForm<UserFormData>({
     resolver: zodResolver(editUserFormSchema),
@@ -90,6 +95,9 @@ function EditUserModal({ user, children }: EditUserModalProps) {
 
       await updateUserMutation.mutateAsync(updateData);
       toast.success("User updated successfully!");
+
+      // Close modal after successful update
+      setIsOpen(false);
     } catch (error) {
       // Check if it's a network error
       const isNetworkError =
@@ -115,8 +123,21 @@ function EditUserModal({ user, children }: EditUserModalProps) {
   const isSubmitting = updateUserMutation.isPending;
   const isFormDisabled = isSubmitting || isValidating;
 
+  const handleOpenChange = (newOpen: boolean) => {
+    setIsOpen(newOpen);
+    if (!newOpen) {
+      // Reset form to original values when modal closes
+      form.reset({
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        status: user.status,
+      });
+    }
+  };
+
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px] shadow-xl">
         <DialogHeader>
@@ -346,4 +367,259 @@ function DeleteUserModal({ user, children }: DeleteUserModalProps) {
   );
 }
 
-export { EditUserModal, DeleteUserModal };
+type AddUserModalProps = {
+  children: React.ReactNode;
+};
+
+function AddUserModal({ children }: AddUserModalProps) {
+  const createUserMutation = useCreateUser();
+  const [isValidating, setIsValidating] = React.useState(false);
+  const [isOpen, setIsOpen] = React.useState(false);
+
+  const form = useForm<UserFormData>({
+    resolver: zodResolver(addUserFormSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      role: "user",
+      status: "active",
+    },
+  });
+
+  const onSubmit = async (data: UserFormData) => {
+    try {
+      // Validate name uniqueness
+      if (data.name.trim()) {
+        setIsValidating(true);
+
+        try {
+          const isUnique = await userApi.checkNameUnique(data.name);
+
+          if (!isUnique) {
+            form.setError("name", {
+              type: "manual",
+              message:
+                "This name is already in use by another user. Please choose a different name.",
+            });
+            return; // Stop submission
+          }
+        } catch (validationError) {
+          // Block submission when validation fails
+          toast.error("Unable to verify name availability. Please try again.", {
+            duration: 4000,
+          });
+          console.warn("Name validation failed:", validationError);
+          setIsValidating(false);
+          return; // Stop submission
+        } finally {
+          setIsValidating(false);
+        }
+      }
+
+      // Create user data with required fields
+      const userData = {
+        ...data,
+        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${data.name}&size=150`,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+
+      await createUserMutation.mutateAsync(userData);
+      toast.success("User created successfully!");
+
+      // Close modal after successful creation
+      setIsOpen(false);
+
+      // Reset form after successful creation
+      form.reset({
+        name: "",
+        email: "",
+        role: "user",
+        status: "active",
+      });
+    } catch (error) {
+      // Check if it's a network error
+      const isNetworkError =
+        error instanceof Error && error.message.includes("Network");
+
+      if (isNetworkError) {
+        toast.error(
+          "Connection issue. Please check your internet and try again.",
+          {
+            duration: 5000,
+          },
+        );
+      } else {
+        toast.error("Failed to create user. Please try again.", {
+          duration: 4000,
+        });
+      }
+
+      console.error("Create user error:", error);
+    }
+  };
+
+  const isSubmitting = createUserMutation.isPending;
+  const isFormDisabled = isSubmitting || isValidating;
+
+  const handleOpenChange = (newOpen: boolean) => {
+    setIsOpen(newOpen);
+    if (!newOpen) {
+      // Reset form when modal closes
+      form.reset({
+        name: "",
+        email: "",
+        role: "user",
+        status: "active",
+      });
+    }
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogContent className="sm:max-w-[425px] shadow-xl">
+        <DialogHeader>
+          <motion.div
+            className="flex items-center gap-3 mb-2"
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.1 }}
+          >
+            <div className="p-2 bg-blue-100 rounded-lg">
+              <Plus className="w-5 h-5 text-blue-600" />
+            </div>
+            <DialogTitle>Add New User</DialogTitle>
+          </motion.div>
+          <DialogDescription>
+            Create a new user account with the information below. Click save
+            when you&apos;re done.
+          </DialogDescription>
+        </DialogHeader>
+        <Form {...form}>
+          <motion.form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-4"
+            variants={staggerContainer}
+            initial="hidden"
+            animate="visible"
+          >
+            <motion.div variants={fadeInUp}>
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Enter user name"
+                        {...field}
+                        disabled={isFormDisabled}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </motion.div>
+
+            <motion.div variants={fadeInUp}>
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="email"
+                        placeholder="Enter user email"
+                        {...field}
+                        disabled={isFormDisabled}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </motion.div>
+
+            <motion.div variants={fadeInUp}>
+              <FormField
+                control={form.control}
+                name="role"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Role</FormLabel>
+                    <FormControl>
+                      <Select
+                        value={field.value}
+                        options={[
+                          { value: "user", label: "User" },
+                          { value: "admin", label: "Admin" },
+                          { value: "moderator", label: "Moderator" },
+                        ]}
+                        onValueChange={field.onChange}
+                        placeholder="Select role"
+                        disabled={isFormDisabled}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </motion.div>
+
+            <motion.div variants={fadeInUp}>
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Status</FormLabel>
+                    <FormControl>
+                      <Select
+                        value={field.value}
+                        options={[
+                          { value: "active", label: "Active" },
+                          { value: "inactive", label: "Inactive" },
+                          { value: "pending", label: "Pending" },
+                        ]}
+                        onValueChange={field.onChange}
+                        placeholder="Select status"
+                        disabled={isFormDisabled}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </motion.div>
+
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled={isFormDisabled}
+                >
+                  Cancel
+                </Button>
+              </DialogClose>
+              <Button type="submit" disabled={isFormDisabled}>
+                {isValidating
+                  ? "Validating..."
+                  : isSubmitting
+                  ? "Creating..."
+                  : "Create User"}
+              </Button>
+            </DialogFooter>
+          </motion.form>
+        </Form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+export { EditUserModal, DeleteUserModal, AddUserModal };

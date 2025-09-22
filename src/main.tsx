@@ -19,13 +19,14 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         </Suspense>
         <Toaster
           position="top-right"
+          gutter={12}
+          containerStyle={{
+            top: 20,
+            right: 20,
+          }}
           toastOptions={{
             duration: 4000,
-            style: {
-              background: "hsl(var(--card))",
-              color: "hsl(var(--card-foreground))",
-              border: "1px solid hsl(var(--border))",
-            },
+            className: "toast-custom",
             success: {
               duration: 3000,
               iconTheme: {
@@ -37,6 +38,12 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
               duration: 5000,
               iconTheme: {
                 primary: "hsl(var(--error))",
+                secondary: "hsl(var(--card-foreground))",
+              },
+            },
+            loading: {
+              iconTheme: {
+                primary: "hsl(var(--primary))",
                 secondary: "hsl(var(--card-foreground))",
               },
             },
