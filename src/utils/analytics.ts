@@ -68,14 +68,10 @@ export function exportToJSON(
   document.body.removeChild(link);
 }
 
-// Get default date range (last 6 months)
+// Get default date range (covers all available data)
 export function getDefaultDateRange(): DateRange {
-  const endDate = new Date();
-  const startDate = new Date();
-  startDate.setMonth(startDate.getMonth() - 6);
-
   return {
-    startDate: startDate.toISOString().split("T")[0],
-    endDate: endDate.toISOString().split("T")[0],
+    startDate: "2024-01-01",
+    endDate: "2024-12-31",
   };
 }

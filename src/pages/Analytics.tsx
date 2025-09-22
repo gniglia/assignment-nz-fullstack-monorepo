@@ -40,7 +40,7 @@ export default function Analytics() {
   const filteredData = filterDataByDateRange(analyticsData || [], dateRange);
 
   // Transform the filtered data for different chart types
-  const baseData = filteredData;
+  const baseData = filteredData.length > 0 ? filteredData : analyticsData || [];
 
   // For revenue chart, multiply values by 30 to simulate revenue
   const revenueData = baseData.map((item) => ({
