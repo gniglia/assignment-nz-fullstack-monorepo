@@ -1,19 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/utils/api";
-import type {
-  User,
-  CreateUserData,
-  UpdateUserData,
-  AnalyticsChartData,
-  DashboardData,
-} from "@/types/api";
+import type { User, UpdateUserData, AnalyticsChartData } from "@/types/api";
 
 // Query Keys - centralized for consistency
 export const queryKeys = {
   users: ["users"] as const,
-  user: (id: string) => ["users", id] as const,
   analytics: ["analytics"] as const,
-  dashboard: ["dashboard"] as const,
+  metrics: ["metrics"] as const,
 } as const;
 
 // Types for user query parameters using camelCase
@@ -29,20 +22,6 @@ export type UserQueryParams = {
   emailLike?: string; // search in email field
 };
 
-// Custom hook for fetching all users (base data)
-export function useUsersQuery() {
-  return useQuery({
-    queryKey: [...queryKeys.users, "all"],
-    queryFn: async (): Promise<User[]> => {
-      return await api.get<User[]>("/users");
-    },
-    staleTime: 5 * 60 * 1000, // 5 minutes - data stays fresh longer
-    refetchOnWindowFocus: false, // Prevent refetch on window focus
-    // You can add refetchInterval here for future use:
-    // refetchInterval: 30000, // Refetch every 30 seconds
-  });
-}
-
 // Functional helper to build query string from params
 const buildQueryString = (params: UserQueryParams): string => {
   const searchParams = new URLSearchParams();
@@ -53,10 +32,13 @@ const buildQueryString = (params: UserQueryParams): string => {
 
   // Add sorting params (convert to json-server format)
   if (params.sort) {
-    const sortField = params.sort.startsWith("-") ? params.sort : params.sort;
+    const isDescending = params.sort.startsWith("-");
+    const sortField = isDescending ? params.sort.substring(1) : params.sort;
+    const sortOrder = isDescending ? "desc" : "asc";
+
     searchParams.set("_sort", sortField);
+    searchParams.set("_order", sortOrder);
   }
-  if (params.order) searchParams.set("_order", params.order);
 
   // Add filtering params
   if (params.role && params.role !== "all")
@@ -91,15 +73,24 @@ export function useUsersQueryWithParams(params: UserQueryParams = {}) {
   });
 }
 
-// Custom hook for fetching a single user
-export function useUser(id: string) {
+// Enhanced hook that returns both users and total count from json-server headers
+export function useUsersQueryWithParamsAndTotal(params: UserQueryParams = {}) {
   return useQuery({
-    queryKey: queryKeys.user(id),
-    queryFn: async (): Promise<User> => {
-      const response = await api.get<User>(`/users/${id}`);
-      return response;
+    queryKey: [...queryKeys.users, "filtered-with-total", params],
+    queryFn: async (): Promise<{ users: User[]; totalCount: number }> => {
+      const endpoint = buildEndpoint(params);
+
+      const { data: users, headers } = await api.getWithHeaders<User[]>(
+        endpoint,
+      );
+
+      // Extract total count from json-server headers
+      const totalCount = parseInt(headers.get("X-Total-Count") || "0", 10);
+
+      return { users, totalCount };
     },
-    enabled: !!id, // Only run query if id exists
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    refetchOnWindowFocus: false,
   });
 }
 
@@ -116,40 +107,13 @@ export function useAnalytics() {
   });
 }
 
-// Custom hook for fetching dashboard data
-export function useDashboard() {
-  return useQuery({
-    queryKey: queryKeys.dashboard,
-    queryFn: async (): Promise<DashboardData> => {
-      const response = await api.get<DashboardData>("/dashboard");
-      return response;
-    },
-  });
-}
-
 // Custom hook for fetching metrics data
 export function useMetrics() {
   return useQuery({
-    queryKey: ["metrics"],
+    queryKey: queryKeys.metrics,
     queryFn: async () => {
       const response = await api.get("/metrics");
       return response;
-    },
-  });
-}
-
-// Custom hook for creating a user
-export function useCreateUser() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async (userData: CreateUserData): Promise<User> => {
-      const response = await api.post<User>("/users", userData);
-      return response;
-    },
-    onSuccess: () => {
-      // Invalidate and refetch users list
-      queryClient.invalidateQueries({ queryKey: queryKeys.users });
     },
   });
 }
@@ -166,9 +130,7 @@ export function useUpdateUser() {
       const response = await api.put<User>(`/users/${id}`, userData);
       return response;
     },
-    onSuccess: (data, variables) => {
-      // Update the specific user in cache
-      queryClient.setQueryData(queryKeys.user(variables.id), data);
+    onSuccess: () => {
       // Invalidate users list to ensure consistency
       queryClient.invalidateQueries({ queryKey: queryKeys.users });
     },
@@ -184,9 +146,7 @@ export function useDeleteUser() {
       await api.delete(`/users/${id}`);
       return id;
     },
-    onSuccess: (deletedId) => {
-      // Remove the user from cache
-      queryClient.removeQueries({ queryKey: queryKeys.user(deletedId) });
+    onSuccess: () => {
       // Invalidate users list
       queryClient.invalidateQueries({ queryKey: queryKeys.users });
     },

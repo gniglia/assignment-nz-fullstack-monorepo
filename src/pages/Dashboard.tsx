@@ -31,7 +31,7 @@ function DashboardHeader() {
       </motion.h1>
 
       <motion.p
-        className="mt-3 text-base sm:text-lg text-gray-700 max-w-2xl leading-relaxed"
+        className="mt-3 text-base sm:text-lg text-muted-foreground max-w-2xl leading-relaxed"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4, duration: 0.6, ease: "easeOut" }}
@@ -72,7 +72,7 @@ export default function Dashboard() {
 
       {/* Metric Cards Section */}
       <motion.div
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 items-stretch"
         variants={fadeInUp}
       >
         {isLoading ? (

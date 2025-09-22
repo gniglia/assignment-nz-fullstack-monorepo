@@ -31,20 +31,24 @@ export function MetricCard({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className="group"
+      className="group h-full"
     >
-      <Card variant="elevated" hover>
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm font-medium text-gray-600">{title}</p>
-            <p className="text-2xl font-bold text-gray-900">
-              <AnimatedValue value={value} />
-            </p>
+      <Card variant="elevated" hover className="h-full">
+        <div className="flex items-center justify-between h-full">
+          <div className="flex flex-col justify-between h-full">
+            <div>
+              <p className="text-sm font-medium text-muted-foreground">
+                {title}
+              </p>
+              <p className="text-2xl font-bold text-foreground">
+                <AnimatedValue value={value} />
+              </p>
+            </div>
             <ChangeIndicator change={change} changeType={changeType} />
           </div>
           <AnimatedIcon
             icon={icon}
-            className="flex items-center justify-center w-12 h-12 bg-primary-50 rounded-lg"
+            className="flex items-center justify-center w-12 h-12 bg-primary-100 rounded-lg flex-shrink-0"
           />
         </div>
       </Card>

@@ -43,7 +43,7 @@ function AnalyticsHeader() {
       </motion.h1>
 
       <motion.p
-        className="mt-3 text-base sm:text-lg text-gray-700 max-w-2xl leading-relaxed"
+        className="mt-3 text-base sm:text-lg text-muted-foreground max-w-2xl leading-relaxed"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4, duration: 0.6, ease: "easeOut" }}
@@ -60,7 +60,7 @@ function AnalyticsHeader() {
         transition={{ delay: 0.6, duration: 0.6 }}
       >
         <motion.div
-          className="flex items-center gap-2 text-sm text-gray-600"
+          className="flex items-center gap-2 text-sm text-muted-foreground"
           whileHover={{ scale: 1.05 }}
           transition={{ duration: 0.2 }}
         >
@@ -68,7 +68,7 @@ function AnalyticsHeader() {
           <span>Interactive Charts</span>
         </motion.div>
         <motion.div
-          className="flex items-center gap-2 text-sm text-gray-600"
+          className="flex items-center gap-2 text-sm text-muted-foreground"
           whileHover={{ scale: 1.05 }}
           transition={{ duration: 0.2 }}
         >
@@ -76,7 +76,7 @@ function AnalyticsHeader() {
           <span>Performance Metrics</span>
         </motion.div>
         <motion.div
-          className="flex items-center gap-2 text-sm text-gray-600"
+          className="flex items-center gap-2 text-sm text-muted-foreground"
           whileHover={{ scale: 1.05 }}
           transition={{ duration: 0.2 }}
         >
@@ -192,10 +192,10 @@ export default function Analytics() {
 
       {/* Charts Section Header */}
       <motion.div className="mb-8" variants={fadeInUp}>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+        <h2 className="text-2xl font-bold text-foreground mb-2">
           Analytics Data Visualization
         </h2>
-        <p className="text-gray-600">
+        <p className="text-muted-foreground">
           Explore your data through different chart representations and
           interactive insights
         </p>
@@ -211,25 +211,9 @@ export default function Analytics() {
       >
         <AnimatePresence mode="wait">
           {isLoading ? (
-            <motion.div
-              key="skeleton"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="col-span-full"
-            >
-              <ChartsSkeleton />
-            </motion.div>
+            <ChartsSkeleton key="skeleton" />
           ) : analyticsData && analyticsData.length > 0 ? (
-            <motion.div
-              key="charts"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="contents"
-            >
+            <div key="charts" className="contents">
               {/* Top Left - Analytics Data Line Chart */}
               <motion.div
                 variants={chartContainerVariants}
@@ -284,7 +268,7 @@ export default function Analytics() {
                   color="#8b5cf6"
                 />
               </motion.div>
-            </motion.div>
+            </div>
           ) : (
             <motion.div
               key="empty"

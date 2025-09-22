@@ -20,15 +20,7 @@ import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { UserCard } from "@/components/UserCard";
 import { EditUserModal, DeleteUserModal } from "@/components/UserModals";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
-import { safeFormatDistanceToNow } from "@/utils/format";
-import {
-  Edit,
-  Trash2,
-  Search,
-  ArrowUpDown,
-  ArrowUp,
-  ArrowDown,
-} from "lucide-react";
+import { Search, ArrowUpDown } from "lucide-react";
 
 // No props needed - all state is managed internally
 
@@ -45,6 +37,18 @@ const statusOptions = [
   { value: "active", label: "Active" },
   { value: "inactive", label: "Inactive" },
   { value: "pending", label: "Pending" },
+];
+
+const sortOptions = [
+  { value: "", label: "Default" },
+  { value: "name", label: "Name ↑" },
+  { value: "-name", label: "Name ↓" },
+  { value: "email", label: "Email ↑" },
+  { value: "-email", label: "Email ↓" },
+  { value: "createdAt", label: "Created Date ↑" },
+  { value: "-createdAt", label: "Created Date ↓" },
+  { value: "lastLogin", label: "Last Login ↑" },
+  { value: "-lastLogin", label: "Last Login ↓" },
 ];
 
 function UsersTable() {
@@ -70,23 +74,12 @@ function UsersTable() {
   const [localSearchQuery, setLocalSearchQuery] = useState(filters.searchQuery);
   const debouncedSearchQuery = useDebounce(localSearchQuery, 300);
 
-  // Track if search is in progress (local query differs from debounced)
-  const isSearching = localSearchQuery !== debouncedSearchQuery;
-
   // Sync debounced search to store
   React.useEffect(() => {
     setStoreSearchQuery(debouncedSearchQuery);
   }, [debouncedSearchQuery, setStoreSearchQuery]);
 
   // No need to sync current page - it's managed internally
-
-  // Handle sorting
-  const handleSort = useCallback(
-    (field: string) => {
-      setSort(field);
-    },
-    [setSort],
-  );
 
   // Handle clear filters
   const handleClearFilters = useCallback(() => {
@@ -102,15 +95,22 @@ function UsersTable() {
     [],
   );
 
-  // Get sort icon for table headers
-  const getSortIcon = (field: string) => {
-    if (filters.sortField !== field) return <ArrowUpDown className="h-4 w-4" />;
-    return filters.sortOrder === "asc" ? (
-      <ArrowUp className="h-4 w-4" />
-    ) : (
-      <ArrowDown className="h-4 w-4" />
-    );
-  };
+  // Handle sort change from dropdown
+  const handleSortChange = useCallback(
+    (sortValue: string) => {
+      if (sortValue === "") {
+        // Reset to default (no sorting)
+        setSort("", "asc");
+      } else {
+        // Parse the sort value to extract field and order
+        const isDescending = sortValue.startsWith("-");
+        const field = isDescending ? sortValue.substring(1) : sortValue;
+        const order = isDescending ? "desc" : "asc";
+        setSort(field, order);
+      }
+    },
+    [setSort],
+  );
 
   // Only show full loading screen for initial load, not for filter changes
   if (isLoading && !users) {
@@ -140,7 +140,7 @@ function UsersTable() {
     <Card variant="elevated" className="p-4 sm:p-6">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 sm:mb-8 gap-4">
         <div className="flex items-center gap-2">
-          <h2 className="text-xl sm:text-2xl font-bold">
+          <h2 className="text-xl sm:text-2xl font-bold text-foreground">
             Users ({totalCount})
           </h2>
         </div>
@@ -154,14 +154,6 @@ function UsersTable() {
           >
             Clear Filters
           </Button>
-          <Button
-            onClick={() => refetch()}
-            variant="outline"
-            className="w-full sm:w-auto"
-            disabled={isLoading || isFetching}
-          >
-            Refresh
-          </Button>
         </div>
       </div>
 
@@ -169,13 +161,7 @@ function UsersTable() {
       <div className="mb-4 sm:mb-8 space-y-4">
         {/* Search Input */}
         <div className="relative">
-          {isSearching ? (
-            <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
-            </div>
-          ) : (
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-          )}
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
           <Input
             type="text"
             placeholder="Search users by name or email..."
@@ -187,9 +173,9 @@ function UsersTable() {
         </div>
 
         {/* Filter Controls */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-900 mb-1">
+            <label className="block text-sm font-medium text-foreground mb-1">
               Filter by Role
             </label>
             <Select
@@ -197,10 +183,11 @@ function UsersTable() {
               onValueChange={setSelectedRole}
               placeholder="All Roles"
               disabled={isLoading || isFetching}
+              value={filters.selectedRole}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-900 mb-1">
+            <label className="block text-sm font-medium text-foreground mb-1">
               Filter by Status
             </label>
             <Select
@@ -208,6 +195,28 @@ function UsersTable() {
               onValueChange={setSelectedStatus}
               placeholder="All Statuses"
               disabled={isLoading || isFetching}
+              value={filters.selectedStatus}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-1">
+              <div className="flex items-center gap-2">
+                <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
+                Sort by
+              </div>
+            </label>
+            <Select
+              options={sortOptions}
+              onValueChange={handleSortChange}
+              placeholder="Default"
+              disabled={isLoading || isFetching}
+              value={
+                filters.sortField
+                  ? filters.sortOrder === "desc"
+                    ? `-${filters.sortField}`
+                    : filters.sortField
+                  : ""
+              }
             />
           </div>
         </div>
@@ -225,46 +234,10 @@ function UsersTable() {
             <TableHeader>
               <TableRow>
                 <TableHead>Avatar</TableHead>
-                <TableHead>
-                  <button
-                    onClick={() => handleSort("name")}
-                    className="flex items-center gap-1 text-gray-700 hover:text-gray-900 transition-colors"
-                  >
-                    Name {getSortIcon("name")}
-                  </button>
-                </TableHead>
-                <TableHead>
-                  <button
-                    onClick={() => handleSort("email")}
-                    className="flex items-center gap-1 text-gray-700 hover:text-gray-900 transition-colors"
-                  >
-                    Email {getSortIcon("email")}
-                  </button>
-                </TableHead>
-                <TableHead>
-                  <button
-                    onClick={() => handleSort("role")}
-                    className="flex items-center gap-1 text-gray-700 hover:text-gray-900 transition-colors"
-                  >
-                    Role {getSortIcon("role")}
-                  </button>
-                </TableHead>
-                <TableHead>
-                  <button
-                    onClick={() => handleSort("status")}
-                    className="flex items-center gap-1 text-gray-700 hover:text-gray-900 transition-colors"
-                  >
-                    Status {getSortIcon("status")}
-                  </button>
-                </TableHead>
-                <TableHead>
-                  <button
-                    onClick={() => handleSort("createdAt")}
-                    className="flex items-center gap-1 text-gray-700 hover:text-gray-900 transition-colors"
-                  >
-                    Created {getSortIcon("createdAt")}
-                  </button>
-                </TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Role</TableHead>
+                <TableHead>Status</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -279,10 +252,12 @@ function UsersTable() {
                       size="md"
                     />
                   </TableCell>
-                  <TableCell className="font-medium text-gray-900">
+                  <TableCell className="font-medium text-foreground">
                     {user.name}
                   </TableCell>
-                  <TableCell className="text-gray-700">{user.email}</TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {user.email}
+                  </TableCell>
                   <TableCell>
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 capitalize">
                       {user.role}
@@ -301,25 +276,24 @@ function UsersTable() {
                       {user.status}
                     </span>
                   </TableCell>
-                  <TableCell className="text-sm text-gray-600">
-                    {safeFormatDistanceToNow(user.createdAt, {
-                      addSuffix: true,
-                    })}
-                  </TableCell>
                   <TableCell>
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-4">
                       <EditUserModal user={user}>
-                        <Button variant="ghost" size="sm" className="p-2">
-                          <Edit className="h-4 w-4" />
+                        <Button
+                          variant="link"
+                          size="sm"
+                          className="px-0 py-0 text-xs font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-all duration-200"
+                        >
+                          EDIT
                         </Button>
                       </EditUserModal>
                       <DeleteUserModal user={user}>
                         <Button
-                          variant="ghost"
+                          variant="link"
                           size="sm"
-                          className="p-2 text-red-600 hover:text-red-700"
+                          className="px-0 py-0 text-xs font-medium text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-all duration-200"
                         >
-                          <Trash2 className="h-4 w-4" />
+                          DELETE
                         </Button>
                       </DeleteUserModal>
                     </div>
@@ -331,7 +305,7 @@ function UsersTable() {
         </div>
       ) : (
         /* No Results Message - Only when no users found and not loading */
-        <div className="text-center text-gray-500 py-12">
+        <div className="text-center text-muted-foreground py-12">
           <p className="text-lg">
             {filters.searchQuery ||
             filters.selectedRole !== "all" ||
@@ -347,8 +321,7 @@ function UsersTable() {
         /* Loading spinner during filtering/sorting - Mobile */
         <div className="md:hidden">
           <div className="text-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-2 text-gray-600">Loading users...</p>
+            <LoadingSpinner size="md" text="Loading users..." />
           </div>
         </div>
       ) : users && users.length > 0 ? (

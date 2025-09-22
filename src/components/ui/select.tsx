@@ -52,41 +52,45 @@ function Select({
         onClick={() => !disabled && setIsOpen(!isOpen)}
         disabled={disabled}
         className={cn(
-          "flex h-10 w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-colors",
-          "hover:border-gray-400 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500",
+          "flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground shadow-sm transition-colors",
+          "hover:border-input/80 focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring",
           "disabled:cursor-not-allowed disabled:opacity-50",
-          error && "border-red-300 focus:border-red-500 focus:ring-red-500",
+          error &&
+            "border-destructive focus:border-destructive focus:ring-destructive",
           success &&
-            "border-green-300 focus:border-green-500 focus:ring-green-500",
+            "border-green-500 focus:border-green-500 focus:ring-green-500",
           className,
         )}
       >
-        <span className={cn("truncate", !selectedOption && "text-gray-500")}>
+        <span
+          className={cn("truncate", !selectedOption && "text-muted-foreground")}
+        >
           {selectedOption ? selectedOption.label : placeholder}
         </span>
         <ChevronDown
           className={cn(
-            "h-4 w-4 text-gray-500 transition-transform",
+            "h-4 w-4 text-muted-foreground transition-transform",
             isOpen && "rotate-180",
           )}
         />
       </button>
 
       {isOpen && (
-        <div className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md border border-gray-300 bg-white py-1 shadow-lg">
+        <div className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md border border-border bg-popover py-1 shadow-xl ring-1 ring-black/5 dark:ring-white/10">
           {options.map((option) => (
             <button
               key={option.value}
               type="button"
               onClick={() => handleValueChange(option.value)}
               className={cn(
-                "flex w-full items-center px-3 py-2 text-sm text-gray-900 hover:bg-gray-100",
-                value === option.value && "bg-primary-50 text-primary-600",
+                "flex w-full items-center px-3 py-2 text-sm text-popover-foreground hover:bg-accent hover:text-accent-foreground transition-colors",
+                value === option.value &&
+                  "bg-primary/10 text-primary font-medium",
               )}
             >
               <span className="flex-1 text-left">{option.label}</span>
               {value === option.value && (
-                <Check className="h-4 w-4 text-primary-600" />
+                <Check className="h-4 w-4 text-primary" />
               )}
             </button>
           ))}

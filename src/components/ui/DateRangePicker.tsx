@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useRef } from "react";
-import { Calendar, Download } from "lucide-react";
+import React, { useState, useCallback } from "react";
+import { Download } from "lucide-react";
 import { Button } from "./Button";
 import { Card } from "./Card";
 
@@ -26,12 +26,27 @@ export function DateRangePicker({
     endDate: "2024-12-31",
   });
 
-  const startDateRef = useRef<HTMLInputElement>(null);
-  const endDateRef = useRef<HTMLInputElement>(null);
-
   const handleDateChange = useCallback(
     (field: keyof DateRange, value: string) => {
       const newDateRange = { ...dateRange, [field]: value };
+
+      // Validate date range
+      if (newDateRange.startDate && newDateRange.endDate) {
+        const startDate = new Date(newDateRange.startDate);
+        const endDate = new Date(newDateRange.endDate);
+
+        // If start date is after end date, adjust the other date
+        if (startDate > endDate) {
+          if (field === "startDate") {
+            // If start date is after end date, set end date to start date
+            newDateRange.endDate = newDateRange.startDate;
+          } else {
+            // If end date is before start date, set start date to end date
+            newDateRange.startDate = newDateRange.endDate;
+          }
+        }
+      }
+
       setDateRange(newDateRange);
       onDateRangeChange(newDateRange);
     },
@@ -60,33 +75,12 @@ export function DateRangePicker({
     onExport("json");
   }, [onExport]);
 
-  const handleStartDateIconClick = useCallback(() => {
-    if (startDateRef.current && !isLoading) {
-      startDateRef.current.showPicker();
-    }
-  }, [isLoading]);
-
-  const handleEndDateIconClick = useCallback(() => {
-    if (endDateRef.current && !isLoading) {
-      endDateRef.current.showPicker();
-    }
-  }, [isLoading]);
-
-  const handleInputClick = useCallback(
-    (e: React.MouseEvent<HTMLInputElement>) => {
-      // Prevent the default click behavior that opens the date picker
-      e.preventDefault();
-    },
-    [],
-  );
-
   return (
     <Card variant="elevated" className="p-4 sm:p-6 mb-8">
-      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+      <div className="date-range-picker flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
           <div className="flex items-center gap-2">
-            <Calendar className="h-5 w-5 text-gray-900 flex-shrink-0" />
-            <span className="text-sm font-medium text-gray-700">
+            <span className="text-sm font-medium text-muted-foreground">
               Date Range:
             </span>
           </div>
@@ -95,56 +89,41 @@ export function DateRangePicker({
             <div className="flex flex-col">
               <label
                 htmlFor="start-date"
-                className="text-xs text-gray-500 mb-1"
+                className="text-xs text-muted-foreground mb-1"
               >
                 Start Date
               </label>
-              <div className="relative">
-                <input
-                  ref={startDateRef}
-                  id="start-date"
-                  type="date"
-                  value={dateRange.startDate}
-                  onChange={handleStartDateChange}
-                  onClick={handleInputClick}
-                  className="px-3 py-2 pr-4 border border-gray-300 rounded-md text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  disabled={isLoading}
-                />
-                <button
-                  type="button"
-                  onClick={handleStartDateIconClick}
-                  disabled={isLoading}
-                  className="absolute inset-y-0 right-0 flex items-center pr-3 hover:bg-gray-50 rounded-r-md transition-colors"
-                >
-                  <Calendar className="h-4 w-4 text-gray-400 hover:text-gray-600" />
-                </button>
-              </div>
+              <input
+                id="start-date"
+                type="date"
+                value={dateRange.startDate}
+                onChange={handleStartDateChange}
+                max={dateRange.endDate}
+                onKeyDown={(e) => e.preventDefault()}
+                onPaste={(e) => e.preventDefault()}
+                className="px-3 py-2 border border-input rounded-md text-sm bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                disabled={isLoading}
+              />
             </div>
 
             <div className="flex flex-col">
-              <label htmlFor="end-date" className="text-xs text-gray-500 mb-1">
+              <label
+                htmlFor="end-date"
+                className="text-xs text-muted-foreground mb-1"
+              >
                 End Date
               </label>
-              <div className="relative">
-                <input
-                  ref={endDateRef}
-                  id="end-date"
-                  type="date"
-                  value={dateRange.endDate}
-                  onChange={handleEndDateChange}
-                  onClick={handleInputClick}
-                  className="px-3 py-2 pr-4 border border-gray-300 rounded-md text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  disabled={isLoading}
-                />
-                <button
-                  type="button"
-                  onClick={handleEndDateIconClick}
-                  disabled={isLoading}
-                  className="absolute inset-y-0 right-0 flex items-center pr-3 hover:bg-gray-50 rounded-r-md transition-colors"
-                >
-                  <Calendar className="h-4 w-4 text-gray-400 hover:text-gray-600" />
-                </button>
-              </div>
+              <input
+                id="end-date"
+                type="date"
+                value={dateRange.endDate}
+                onChange={handleEndDateChange}
+                min={dateRange.startDate}
+                onKeyDown={(e) => e.preventDefault()}
+                onPaste={(e) => e.preventDefault()}
+                className="px-3 py-2 border border-input rounded-md text-sm bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                disabled={isLoading}
+              />
             </div>
           </div>
         </div>

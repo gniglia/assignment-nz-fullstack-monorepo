@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/Button";
 import { Avatar } from "@/components/ui/Avatar";
 import { EditUserModal, DeleteUserModal } from "@/components/UserModals";
 import { safeFormatDistanceToNow } from "@/utils/format";
-import { Edit, Trash2, MoreVertical } from "lucide-react";
+import { Pencil, Trash2, MoreVertical } from "lucide-react";
 
 type UserCardProps = {
   user: User;
@@ -77,22 +77,22 @@ function UserCard({ user }: UserCardProps) {
           </Button>
 
           {showActions && (
-            <div className="absolute right-0 top-8 bg-white border border-gray-200 rounded-md shadow-lg z-10 min-w-[120px]">
+            <div className="absolute right-0 top-8 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-10 min-w-[140px] overflow-hidden">
               <EditUserModal user={user}>
                 <button
                   onClick={handleCloseActions}
-                  className="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                  className="flex items-center w-full px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-950/50 transition-all duration-200 group"
                 >
-                  <Edit className="h-4 w-4 mr-2" />
+                  <Pencil className="h-4 w-4 mr-3 transition-transform duration-200 group-hover:scale-110" />
                   Edit
                 </button>
               </EditUserModal>
               <DeleteUserModal user={user}>
                 <button
                   onClick={handleCloseActions}
-                  className="flex items-center w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50"
+                  className="flex items-center w-full px-4 py-3 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/50 transition-all duration-200 group"
                 >
-                  <Trash2 className="h-4 w-4 mr-2" />
+                  <Trash2 className="h-4 w-4 mr-3 transition-transform duration-200 group-hover:scale-110" />
                   Delete
                 </button>
               </DeleteUserModal>
@@ -131,7 +131,7 @@ function UserCard({ user }: UserCardProps) {
             <Button
               variant="destructive"
               size="sm"
-              className="pointer-events-auto"
+              className="pointer-events-auto rounded-lg hover:scale-105 transition-transform duration-200"
             >
               <Trash2 className="h-4 w-4" />
             </Button>

@@ -1,12 +1,16 @@
+import { LoadingSpinner } from "./ui/LoadingSpinner";
+
 export function LoadingFallback() {
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <div className="text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-        <p className="mt-4 text-gray-600 font-medium">Loading...</p>
-        <p className="mt-2 text-sm text-gray-500">
-          Please wait while we load the page
-        </p>
+    <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="text-center space-y-8">
+        <LoadingSpinner size="xl" className="mx-auto" />
+        <div className="space-y-3">
+          <p className="text-xl font-semibold text-foreground">Loading...</p>
+          <p className="text-muted-foreground max-w-md mx-auto leading-relaxed">
+            Please wait while we load the page
+          </p>
+        </div>
       </div>
     </div>
   );

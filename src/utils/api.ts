@@ -13,7 +13,7 @@ async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
   const url = `${API_BASE_URL}${endpoint}`;
 
   try {
-    // Add a 300ms delay to prevent flickering during quick operations
+    // Add a 5 second delay to test loading states
     const [response] = await Promise.all([
       fetch(url, {
         headers: {
@@ -41,8 +41,46 @@ async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
   }
 }
 
+// Enhanced request function that returns both data and headers
+async function requestWithHeaders<T>(
+  endpoint: string,
+  options?: RequestInit,
+): Promise<{ data: T; headers: Headers }> {
+  const url = `${API_BASE_URL}${endpoint}`;
+
+  try {
+    // Add a 5 second delay to test loading states
+    const [response] = await Promise.all([
+      fetch(url, {
+        headers: {
+          "Content-Type": "application/json",
+          ...options?.headers,
+        },
+        ...options,
+      }),
+      new Promise((resolve) => setTimeout(resolve, 500)),
+    ]);
+
+    if (!response.ok) {
+      throw createApiError(
+        `HTTP error! status: ${response.status}`,
+        response.status,
+      );
+    }
+
+    const data = await response.json();
+    return { data, headers: response.headers };
+  } catch (error) {
+    if (error instanceof Error && error.name === "ApiError") {
+      throw error;
+    }
+    throw createApiError("Network error occurred", 0);
+  }
+}
+
 export const api = {
   get: <T>(endpoint: string) => request<T>(endpoint),
+  getWithHeaders: <T>(endpoint: string) => requestWithHeaders<T>(endpoint),
   post: <T>(endpoint: string, data: unknown) =>
     request<T>(endpoint, {
       method: "POST",

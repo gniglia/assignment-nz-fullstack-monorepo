@@ -7,7 +7,7 @@ type ChangeIndicatorProps = {
 
 export function ChangeIndicator({ change, changeType }: ChangeIndicatorProps) {
   const changeColor =
-    changeType === "increase" ? "text-green-600" : "text-red-600";
+    changeType === "increase" ? "text-success" : "text-destructive";
   const changePrefix = changeType === "increase" ? "+" : "";
 
   return (

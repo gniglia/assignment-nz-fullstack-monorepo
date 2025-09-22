@@ -45,7 +45,7 @@ function ActivityItem({
 
   return (
     <motion.div
-      className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+      className="flex items-center space-x-3 p-3 bg-muted rounded-lg hover:bg-accent transition-colors"
       variants={listItemVariants}
       whileHover={{
         scale: 1.02,
@@ -60,8 +60,8 @@ function ActivityItem({
         <Avatar src={avatar} alt={`${name}'s avatar`} name={name} size="md" />
       </motion.div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-gray-900 truncate">{name}</p>
-        <p className="text-xs text-gray-500 truncate">
+        <p className="text-sm font-medium text-foreground truncate">{name}</p>
+        <p className="text-xs text-muted-foreground truncate">
           {getActivityText(isRecentUpdate)}{" "}
           {getTimestamp(isRecentUpdate, createdAt, updatedAt)}
         </p>
@@ -85,19 +85,19 @@ export function RecentActivity() {
   if (isLoading) {
     return (
       <Card variant="elevated" className="p-6">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">
+        <h2 className="text-xl font-semibold text-foreground mb-4">
           Recent Activity
         </h2>
         <div className="space-y-3">
           {[...Array(3)].map((_, index) => (
             <div
               key={index}
-              className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg animate-pulse"
+              className="flex items-center space-x-3 p-3 bg-muted rounded-lg animate-pulse"
             >
-              <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
+              <div className="w-8 h-8 bg-muted-foreground/20 rounded-full"></div>
               <div className="flex-1">
-                <div className="h-4 bg-gray-300 rounded w-3/4 mb-2"></div>
-                <div className="h-3 bg-gray-300 rounded w-1/2"></div>
+                <div className="h-4 bg-muted-foreground/20 rounded w-3/4 mb-2"></div>
+                <div className="h-3 bg-muted-foreground/20 rounded w-1/2"></div>
               </div>
             </div>
           ))}
@@ -109,7 +109,7 @@ export function RecentActivity() {
   if (error) {
     return (
       <Card variant="elevated" className="p-6">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">
+        <h2 className="text-xl font-semibold text-foreground mb-4">
           Recent Activity
         </h2>
         <Alert variant="destructive">
@@ -124,10 +124,10 @@ export function RecentActivity() {
   if (!users || users.length === 0) {
     return (
       <Card variant="elevated" className="p-6">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">
+        <h2 className="text-xl font-semibold text-foreground mb-4">
           Recent Activity
         </h2>
-        <div className="text-center text-gray-500">
+        <div className="text-center text-muted-foreground">
           <p>No recent activity available</p>
         </div>
       </Card>
@@ -141,7 +141,7 @@ export function RecentActivity() {
     <motion.div variants={fadeInRight} initial="hidden" animate="visible">
       <Card variant="elevated" className="p-6">
         <motion.h2
-          className="text-xl font-semibold text-gray-900 mb-4"
+          className="text-xl font-semibold text-foreground mb-4"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}

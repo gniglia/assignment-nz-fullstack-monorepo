@@ -20,28 +20,28 @@ export function Sidebar({ onClose }: SidebarProps) {
 
   return (
     <motion.div
-      className="h-full w-64 bg-white border-r border-gray-200 flex flex-col"
+      className="h-full w-64 bg-card border-r border-border flex flex-col"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3, ease: "easeOut" }}
     >
       {/* Header with close button for mobile */}
       <motion.div
-        className="p-5 flex items-center justify-between border-b border-gray-100"
+        className="p-5 flex items-center justify-between border-b border-border"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1, duration: 0.4 }}
       >
         <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg flex items-center justify-center">
-            <Home className="h-5 w-5 text-white" />
+          <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary-700 rounded-lg flex items-center justify-center">
+            <Home className="h-5 w-5 text-primary-foreground" />
           </div>
-          <h1 className="text-xl font-bold text-gray-900">Dashboard</h1>
+          <h1 className="text-xl font-bold text-foreground">Dashboard</h1>
         </div>
         {onClose && (
           <motion.button
             onClick={onClose}
-            className="lg:hidden p-2 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors"
+            className="lg:hidden p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent focus:outline-none focus:ring-2 focus:ring-primary transition-colors"
             aria-label="Close sidebar"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -69,10 +69,10 @@ export function Sidebar({ onClose }: SidebarProps) {
               to={item.href}
               onClick={handleNavClick}
               className={({ isActive }) =>
-                `group relative flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 ${
+                `group relative flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
                   isActive
-                    ? "text-primary-700 bg-primary-50"
-                    : "text-gray-700 hover:text-gray-900 hover:bg-gray-50"
+                    ? "text-primary-foreground bg-primary"
+                    : "text-foreground hover:text-foreground hover:bg-accent"
                 }`
               }
             >
@@ -86,8 +86,8 @@ export function Sidebar({ onClose }: SidebarProps) {
                   <motion.div
                     className={`p-2 rounded-lg transition-colors ${
                       isActive
-                        ? "bg-primary-100 text-primary-600"
-                        : "bg-gray-100 text-gray-600 group-hover:bg-primary-50 group-hover:text-primary-500"
+                        ? "bg-primary-foreground/20 text-primary-foreground"
+                        : "bg-muted text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary"
                     }`}
                     whileHover={{ scale: 1.1, rotate: 5 }}
                     transition={{ duration: 0.2 }}
@@ -101,18 +101,6 @@ export function Sidebar({ onClose }: SidebarProps) {
           ))}
         </motion.div>
       </nav>
-
-      {/* Footer */}
-      <motion.div
-        className="p-4 border-t border-gray-100"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, duration: 0.4 }}
-      >
-        <div className="text-xs text-gray-500 text-center">
-          Built with React & Tailwind
-        </div>
-      </motion.div>
     </motion.div>
   );
 }

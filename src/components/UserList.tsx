@@ -1,17 +1,22 @@
 import { useState } from "react";
-import { useUsersQuery, useDeleteUser, queryKeys } from "@/hooks/useApi";
+import {
+  useUsersQueryWithParams,
+  useDeleteUser,
+  queryKeys,
+} from "@/hooks/useApi";
 import { useQueryClient } from "@tanstack/react-query";
 import type { User } from "@/types/api";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
 function UserList() {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const queryClient = useQueryClient();
 
   // Fetch users using React Query
-  const { data: users, isLoading, error, refetch } = useUsersQuery();
+  const { data: users, isLoading, error, refetch } = useUsersQueryWithParams();
 
   // Delete user mutation
   const deleteUserMutation = useDeleteUser();
@@ -19,8 +24,7 @@ function UserList() {
   const handleDeleteUser = async (userId: string) => {
     try {
       await deleteUserMutation.mutateAsync(userId);
-      // Optionally show a success message
-      console.log("User deleted successfully");
+      // User deleted successfully
     } catch (error) {
       // Handle error (you might want to show a toast notification)
       console.error("Failed to delete user:", error);
@@ -41,8 +45,7 @@ function UserList() {
     return (
       <Card className="p-6">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-2 text-gray-600">Loading users...</p>
+          <LoadingSpinner size="md" text="Loading users..." />
         </div>
       </Card>
     );

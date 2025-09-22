@@ -10,6 +10,7 @@ import {
 import { Card } from "@/components/ui/Card";
 import { useAnalytics } from "@/hooks/useApi";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { motion, AnimatePresence } from "framer-motion";
 import { chartContainerVariants } from "@/lib/animations";
 import { TrendingUp } from "lucide-react";
@@ -41,7 +42,7 @@ export function AnalyticsOverview() {
                 transition={{ duration: 0.3 }}
                 className="flex items-center justify-center h-64"
               >
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                <LoadingSpinner size="md" />
               </motion.div>
             ) : error ? (
               <motion.div
@@ -66,7 +67,7 @@ export function AnalyticsOverview() {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.3 }}
-                className="flex items-center justify-center h-64 text-gray-500"
+                className="flex items-center justify-center h-64 text-muted-foreground"
               >
                 <p>No analytics data available</p>
               </motion.div>
@@ -105,7 +106,7 @@ export function AnalyticsOverview() {
                         transition={{ delay: 0.2 }}
                       >
                         <motion.h2
-                          className="text-xl font-semibold text-gray-900 flex items-center gap-2"
+                          className="text-xl font-semibold text-foreground flex items-center gap-2"
                           whileHover={{ scale: 1.02 }}
                           transition={{ duration: 0.2 }}
                         >
@@ -113,7 +114,7 @@ export function AnalyticsOverview() {
                         </motion.h2>
 
                         <motion.div
-                          className="flex items-center gap-2 text-sm text-gray-600"
+                          className="flex items-center gap-2 text-sm text-muted-foreground"
                           initial={{ opacity: 0, x: 10 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: 0.3 }}
@@ -138,55 +139,52 @@ export function AnalyticsOverview() {
                         transition={{ delay: 0.4 }}
                       >
                         <motion.div
-                          className="text-center p-3 rounded-lg bg-blue-50 border border-blue-200"
+                          className="text-center p-3 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800"
                           whileHover={{
                             scale: 1.05,
-                            backgroundColor: "#dbeafe",
                           }}
                           transition={{ duration: 0.2 }}
                           onHoverStart={() => setHoveredMetric("total")}
                           onHoverEnd={() => setHoveredMetric(null)}
                         >
-                          <div className="text-2xl font-bold text-blue-600">
+                          <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
                             {totalValue.toLocaleString()}
                           </div>
-                          <div className="text-xs text-blue-600 font-medium">
+                          <div className="text-xs text-blue-600 dark:text-blue-400 font-medium">
                             Total
                           </div>
                         </motion.div>
 
                         <motion.div
-                          className="text-center p-3 rounded-lg bg-green-50 border border-green-200"
+                          className="text-center p-3 rounded-lg bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800"
                           whileHover={{
                             scale: 1.05,
-                            backgroundColor: "#dcfce7",
                           }}
                           transition={{ duration: 0.2 }}
                           onHoverStart={() => setHoveredMetric("average")}
                           onHoverEnd={() => setHoveredMetric(null)}
                         >
-                          <div className="text-2xl font-bold text-green-600">
+                          <div className="text-2xl font-bold text-green-600 dark:text-green-400">
                             {avgValue.toLocaleString()}
                           </div>
-                          <div className="text-xs text-green-600 font-medium">
+                          <div className="text-xs text-green-600 dark:text-green-400 font-medium">
                             Average
                           </div>
                         </motion.div>
 
                         <motion.div
-                          className="text-center p-3 rounded-lg bg-purple-50 border border-purple-200"
+                          className="text-center p-3 rounded-lg bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800"
                           whileHover={{
                             scale: 1.05,
-                            backgroundColor: "#f3e8ff",
                           }}
                           transition={{ duration: 0.2 }}
                           onHoverStart={() => setHoveredMetric("peak")}
                           onHoverEnd={() => setHoveredMetric(null)}
                         >
-                          <div className="text-2xl font-bold text-purple-600">
+                          <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">
                             {maxValue.toLocaleString()}
                           </div>
-                          <div className="text-xs text-purple-600 font-medium">
+                          <div className="text-xs text-purple-600 dark:text-purple-400 font-medium">
                             Peak
                           </div>
                         </motion.div>
@@ -211,29 +209,36 @@ export function AnalyticsOverview() {
                             <CartesianGrid
                               strokeDasharray="3 3"
                               className="opacity-30"
-                              stroke="#e5e7eb"
+                              stroke="hsl(var(--border))"
                             />
                             <XAxis
                               dataKey="label"
                               className="text-sm"
-                              tick={{ fontSize: 12, fill: "#6b7280" }}
-                              axisLine={{ stroke: "#e5e7eb" }}
+                              tick={{
+                                fontSize: 12,
+                                fill: "hsl(var(--muted-foreground))",
+                              }}
+                              axisLine={{ stroke: "hsl(var(--border))" }}
                             />
                             <YAxis
                               className="text-sm"
-                              tick={{ fontSize: 12, fill: "#6b7280" }}
-                              axisLine={{ stroke: "#e5e7eb" }}
+                              tick={{
+                                fontSize: 12,
+                                fill: "hsl(var(--muted-foreground))",
+                              }}
+                              axisLine={{ stroke: "hsl(var(--border))" }}
                             />
                             <Tooltip
                               contentStyle={{
-                                backgroundColor: "white",
-                                border: "1px solid #e5e7eb",
+                                backgroundColor: "hsl(var(--card))",
+                                border: "1px solid hsl(var(--border))",
                                 borderRadius: "12px",
                                 boxShadow:
                                   "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+                                color: "hsl(var(--card-foreground))",
                               }}
                               labelStyle={{
-                                color: "#374151",
+                                color: "hsl(var(--foreground))",
                                 fontWeight: "500",
                               }}
                               formatter={(value: number) => [

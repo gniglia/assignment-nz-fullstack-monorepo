@@ -2,7 +2,13 @@ import React, { ButtonHTMLAttributes, ReactNode } from "react";
 import { cn } from "./utils";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "outline" | "ghost" | "destructive";
+  variant?:
+    | "primary"
+    | "secondary"
+    | "outline"
+    | "ghost"
+    | "destructive"
+    | "link";
   size?: "sm" | "md" | "lg";
   children: ReactNode;
   loading?: boolean;
@@ -26,15 +32,16 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     const variantClasses = {
       primary:
-        "bg-primary-600 text-white hover:bg-primary-700 active:bg-primary-800 active:shadow-inner focus:ring-primary-500",
+        "bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/80 active:shadow-inner focus:ring-primary",
       secondary:
-        "bg-gray-600 text-white hover:bg-gray-700 active:bg-gray-800 active:shadow-inner focus:ring-gray-500",
+        "bg-secondary text-secondary-foreground hover:bg-secondary/80 active:bg-secondary/70 active:shadow-inner focus:ring-secondary",
       outline:
-        "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 active:bg-gray-100 active:shadow-inner focus:ring-primary-500",
+        "border border-border bg-background text-foreground hover:bg-accent hover:text-accent-foreground active:bg-accent/80 active:shadow-inner focus:ring-primary",
       ghost:
-        "text-gray-700 hover:bg-gray-100 active:bg-gray-200 focus:ring-primary-500",
+        "text-foreground hover:bg-accent hover:text-accent-foreground active:bg-accent/80 focus:ring-primary",
       destructive:
-        "bg-red-600 text-white hover:bg-red-700 active:bg-red-800 active:shadow-inner focus:ring-red-500",
+        "bg-destructive text-destructive-foreground hover:bg-destructive/90 active:bg-destructive/80 active:shadow-inner focus:ring-destructive",
+      link: "text-foreground focus:ring-primary",
     };
 
     const sizeClasses = {

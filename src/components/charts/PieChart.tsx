@@ -33,9 +33,9 @@ export function PieChart({ data, title, isLoading = false }: PieChartProps) {
   if (isLoading) {
     return (
       <Card variant="elevated" className="p-4 sm:p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">{title}</h3>
+        <h3 className="text-lg font-semibold text-foreground mb-4">{title}</h3>
         <div className="h-64 flex items-center justify-center">
-          <div className="animate-pulse bg-gray-200 rounded-full w-48 h-48"></div>
+          <div className="animate-pulse bg-muted rounded-full w-48 h-48"></div>
         </div>
       </Card>
     );
@@ -44,7 +44,7 @@ export function PieChart({ data, title, isLoading = false }: PieChartProps) {
   return (
     <Card variant="elevated" className="p-4 sm:p-6">
       {title && (
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">{title}</h3>
+        <h3 className="text-lg font-semibold text-foreground mb-4">{title}</h3>
       )}
       <div className="h-64">
         <ResponsiveContainer width="100%" height="100%">
@@ -68,10 +68,11 @@ export function PieChart({ data, title, isLoading = false }: PieChartProps) {
             </Pie>
             <Tooltip
               contentStyle={{
-                backgroundColor: "white",
-                border: "1px solid #e5e7eb",
+                backgroundColor: "hsl(var(--card))",
+                border: "1px solid hsl(var(--border))",
                 borderRadius: "8px",
                 boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+                color: "hsl(var(--card-foreground))",
               }}
             />
             <Legend />

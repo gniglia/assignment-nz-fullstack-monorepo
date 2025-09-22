@@ -1,5 +1,8 @@
 import { useState, useMemo, useCallback } from "react";
-import { useUsersQueryWithParams, type UserQueryParams } from "./useApi";
+import {
+  useUsersQueryWithParamsAndTotal,
+  type UserQueryParams,
+} from "./useApi";
 
 /**
  * Hook for server-side filtering, sorting, and pagination using json-server
@@ -31,16 +34,12 @@ export function useUsersServerSide() {
   const queryParams: UserQueryParams = useMemo(() => {
     const params: UserQueryParams = {};
 
-    // Add pagination params
-    if (filters.currentPage > 1) {
-      params.page = filters.currentPage;
-    }
-    if (filters.pageSize !== 10) {
-      params.limit = filters.pageSize;
-    }
+    // Add pagination params (always include for consistent pagination)
+    params.page = filters.currentPage;
+    params.limit = filters.pageSize;
 
-    // Add search query
-    if (filters.searchQuery.trim()) {
+    // Add search query (minimum 3 characters)
+    if (filters.searchQuery.trim() && filters.searchQuery.trim().length >= 3) {
       params.search = filters.searchQuery.trim();
     }
 
@@ -73,18 +72,18 @@ export function useUsersServerSide() {
     filters.sortOrder,
   ]);
 
-  // Fetch data with server-side parameters
+  // Fetch data with server-side parameters and total count from headers
   const {
-    data: users = [],
+    data: result,
     isLoading,
     error,
     refetch,
     isFetching,
-  } = useUsersQueryWithParams(queryParams);
+  } = useUsersQueryWithParamsAndTotal(queryParams);
 
-  // For now, we'll use a simple approach - just use the current page data length
-  // In a real app, you'd get total count from API headers or a separate endpoint
-  const totalCount = users.length;
+  // Extract users and total count from the result
+  const users = result?.users || [];
+  const totalCount = result?.totalCount || 0;
   const totalPages = Math.ceil(totalCount / filters.pageSize);
 
   // Action functions - memoized to prevent infinite re-renders

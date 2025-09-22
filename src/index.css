@@ -17,7 +17,7 @@
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 
-  /* Design System CSS Variables from PRD */
+  /* Design System CSS Variables from PRD - Light Mode */
   --background: 0 0% 98%; /* #f9fafb (gray-50) */
   --foreground: 220 13% 9%; /* #111827 (gray-900) */
   --card: 0 0% 100%; /* white */
@@ -45,6 +45,34 @@
   --radius: 0.5rem;
 }
 
+/* Dark Mode Variables */
+.dark {
+  --background: 220 13% 9%; /* #111827 (gray-900) */
+  --foreground: 0 0% 98%; /* #f9fafb (gray-50) */
+  --card: 220 13% 11%; /* #1f2937 (gray-800) */
+  --card-foreground: 0 0% 98%; /* #f9fafb (gray-50) */
+  --popover: 220 13% 11%; /* #1f2937 (gray-800) */
+  --popover-foreground: 0 0% 98%; /* #f9fafb (gray-50) */
+  --primary: 217 91% 60%; /* #3b82f6 (primary-500) - same as light */
+  --primary-foreground: 0 0% 100%; /* white */
+  --primary-100: 214 95% 20%; /* darker version for dark mode */
+  --primary-700: 217 91% 70%; /* lighter version for dark mode */
+  --secondary: 220 13% 15%; /* #374151 (gray-700) */
+  --secondary-foreground: 0 0% 98%; /* #f9fafb (gray-50) */
+  --muted: 220 13% 15%; /* #374151 (gray-700) */
+  --muted-foreground: 220 9% 65%; /* #9ca3af (gray-400) */
+  --accent: 220 13% 15%; /* #374151 (gray-700) */
+  --accent-foreground: 0 0% 98%; /* #f9fafb (gray-50) */
+  --destructive: 0 84% 60%; /* #ef4444 (error from PRD) - same */
+  --destructive-foreground: 0 0% 100%; /* white */
+  --success: 158 64% 52%; /* #10b981 (success from PRD) - same */
+  --warning: 43 96% 56%; /* #f59e0b (warning from PRD) - same */
+  --error: 0 84% 60%; /* #ef4444 (error from PRD) - same */
+  --border: 220 13% 20%; /* #4b5563 (gray-600) */
+  --input: 220 13% 20%; /* #4b5563 (gray-600) */
+  --ring: 217 91% 60%; /* #3b82f6 (primary-500) - same */
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
@@ -64,4 +92,27 @@ body {
 
 #root {
   width: 100%;
+}
+
+/* Date input styling for better visibility in both light and dark modes */
+.date-range-picker input[type="date"] {
+  color-scheme: light dark;
+}
+
+.date-range-picker input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.3);
+  cursor: pointer;
+}
+
+.dark .date-range-picker input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.8);
+}
+
+.date-range-picker input[type="date"]::-moz-calendar-picker-indicator {
+  filter: invert(0.3);
+  cursor: pointer;
+}
+
+.dark .date-range-picker input[type="date"]::-moz-calendar-picker-indicator {
+  filter: invert(0.8);
 }

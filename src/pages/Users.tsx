@@ -22,7 +22,7 @@ function UsersHeader() {
       </motion.h1>
 
       <motion.p
-        className="mt-3 text-base sm:text-lg text-gray-700 max-w-2xl leading-relaxed"
+        className="mt-3 text-base sm:text-lg text-muted-foreground max-w-2xl leading-relaxed"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4, duration: 0.6, ease: "easeOut" }}
@@ -39,7 +39,7 @@ function UsersHeader() {
         transition={{ delay: 0.6, duration: 0.6 }}
       >
         <motion.div
-          className="flex items-center gap-2 text-sm text-gray-600"
+          className="flex items-center gap-2 text-sm text-muted-foreground"
           whileHover={{ scale: 1.05 }}
           transition={{ duration: 0.2 }}
         >
@@ -47,7 +47,7 @@ function UsersHeader() {
           <span>Advanced Search</span>
         </motion.div>
         <motion.div
-          className="flex items-center gap-2 text-sm text-gray-600"
+          className="flex items-center gap-2 text-sm text-muted-foreground"
           whileHover={{ scale: 1.05 }}
           transition={{ duration: 0.2 }}
         >
@@ -55,7 +55,7 @@ function UsersHeader() {
           <span>Smart Filtering</span>
         </motion.div>
         <motion.div
-          className="flex items-center gap-2 text-sm text-gray-600"
+          className="flex items-center gap-2 text-sm text-muted-foreground"
           whileHover={{ scale: 1.05 }}
           transition={{ duration: 0.2 }}
         >
