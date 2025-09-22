@@ -1,13 +1,14 @@
-import { ReactNode, useState, useCallback } from "react";
+import { useState, useCallback } from "react";
+import { Outlet } from "react-router-dom";
+import { useConditionalBodyLock } from "@/hooks/useConditionalBodyLock";
 import { Sidebar } from "@/components/Sidebar";
 import { Header } from "@/components/Header";
 
-type LayoutProps = {
-  children: ReactNode;
-};
-
-export function Layout({ children }: LayoutProps) {
+export function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Lock body scroll when sidebar is open on mobile
+  useConditionalBodyLock(sidebarOpen);
 
   const handleCloseSidebar = useCallback(() => {
     setSidebarOpen(false);
@@ -48,7 +49,9 @@ export function Layout({ children }: LayoutProps) {
       {/* Main content */}
       <div className="flex flex-col min-h-screen lg:ml-64">
         <Header onMenuClick={handleOpenSidebar} />
-        <main className="flex-1 p-6">{children}</main>
+        <main className="flex-1">
+          <Outlet />
+        </main>
       </div>
     </div>
   );

@@ -40,10 +40,12 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">🚀 Dashboard</h1>
-        <p className="mt-2 text-gray-600">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+          🚀 Dashboard
+        </h1>
+        <p className="mt-2 text-sm sm:text-base text-gray-600">
           Welcome to your React Query powered dashboard!
         </p>
       </div>
@@ -51,7 +53,7 @@ export default function Dashboard() {
       {metricsData && Array.isArray(metricsData) ? (
         <>
           {/* Summary Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {metricsData.map((metric) => {
               const IconComponent =
                 iconMap[metric.icon as keyof typeof iconMap] || Users;
@@ -69,13 +71,13 @@ export default function Dashboard() {
           </div>
 
           {/* Analytics Overview and Recent Activity */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
             <AnalyticsOverview />
             <RecentActivity />
           </div>
         </>
       ) : (
-        <Card className="p-6">
+        <Card className="p-4 sm:p-6">
           <div className="text-center text-gray-500">
             <p>No dashboard data available</p>
           </div>

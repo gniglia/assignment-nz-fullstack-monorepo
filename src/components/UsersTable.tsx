@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { Pagination } from "@/components/ui/Pagination";
+import { Avatar } from "@/components/ui/Avatar";
 import { UserCard } from "@/components/UserCard";
 import { EditUserModal, DeleteUserModal } from "@/components/UserModals";
 import { formatDistanceToNow } from "date-fns";
@@ -148,23 +149,34 @@ function UsersTable({
   }
 
   return (
-    <Card className="p-6">
-      <div className="flex justify-between items-center mb-6">
+    <Card className="p-4 sm:p-6">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 sm:mb-6 gap-4">
         <div className="flex items-center gap-2">
-          <h2 className="text-2xl font-bold">Users ({totalCount})</h2>
+          <h2 className="text-xl sm:text-2xl font-bold">
+            Users ({totalCount})
+          </h2>
         </div>
-        <div className="flex gap-2">
-          <Button onClick={handleClearFilters} variant="outline" size="sm">
+        <div className="flex flex-col sm:flex-row gap-2">
+          <Button
+            onClick={handleClearFilters}
+            variant="outline"
+            size="sm"
+            className="w-full sm:w-auto"
+          >
             Clear Filters
           </Button>
-          <Button onClick={() => refetch()} variant="outline">
+          <Button
+            onClick={() => refetch()}
+            variant="outline"
+            className="w-full sm:w-auto"
+          >
             Refresh
           </Button>
         </div>
       </div>
 
       {/* Search and Filter Controls */}
-      <div className="mb-6 space-y-4">
+      <div className="mb-4 sm:mb-6 space-y-4">
         {/* Search Input */}
         <div className="relative">
           {isSearching ? (
@@ -184,7 +196,7 @@ function UsersTable({
         </div>
 
         {/* Filter Controls */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-900 mb-1">
               Filter by Role
@@ -262,19 +274,12 @@ function UsersTable({
               {users.map((user: User) => (
                 <TableRow key={user.id}>
                   <TableCell>
-                    {user.avatar ? (
-                      <img
-                        src={user.avatar}
-                        alt={user.name}
-                        className="w-8 h-8 rounded-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-                        <span className="text-sm font-medium text-gray-600">
-                          {user.name.charAt(0).toUpperCase()}
-                        </span>
-                      </div>
-                    )}
+                    <Avatar
+                      src={user.avatar}
+                      alt={user.name}
+                      name={user.name}
+                      size="md"
+                    />
                   </TableCell>
                   <TableCell className="font-medium text-gray-900">
                     {user.name}

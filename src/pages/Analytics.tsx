@@ -86,23 +86,27 @@ export default function Analytics() {
   };
 
   return (
-    <div>
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Analytics</h1>
-        <p className="mt-2 text-gray-600">
+    <div className="p-4 sm:p-6">
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+          Analytics
+        </h1>
+        <p className="mt-2 text-sm sm:text-base text-gray-600">
           View detailed analytics and performance metrics.
         </p>
       </div>
 
       {/* Date Range Picker and Export Controls */}
-      <DateRangePicker
-        onDateRangeChange={handleDateRangeChange}
-        onExport={handleExport}
-        isLoading={isLoading}
-      />
+      <div className="mb-6 sm:mb-8">
+        <DateRangePicker
+          onDateRangeChange={handleDateRangeChange}
+          onExport={handleExport}
+          isLoading={isLoading}
+        />
+      </div>
 
       {/* 2x2 Grid Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
         {/* Top Left - User Growth Line Chart */}
         <LineChart
           data={baseData}

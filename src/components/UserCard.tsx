@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import type { User } from "@/types/api";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
+import { Avatar } from "@/components/ui/Avatar";
 import { EditUserModal, DeleteUserModal } from "@/components/UserModals";
 import { formatDistanceToNow } from "date-fns";
 import { Edit, Trash2, MoreVertical } from "lucide-react";
@@ -54,19 +55,12 @@ function UserCard({ user, onSave, onConfirmDelete }: UserCardProps) {
       {/* Header with avatar and actions */}
       <div className="flex items-start justify-between">
         <div className="flex items-center space-x-3">
-          {user.avatar ? (
-            <img
-              src={user.avatar}
-              alt={user.name}
-              className="w-12 h-12 rounded-full object-cover"
-            />
-          ) : (
-            <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center">
-              <span className="text-lg font-medium text-gray-600">
-                {user.name.charAt(0).toUpperCase()}
-              </span>
-            </div>
-          )}
+          <Avatar
+            src={user.avatar}
+            alt={user.name}
+            name={user.name}
+            size="lg"
+          />
           <div>
             <h3 className="font-semibold text-gray-900">{user.name}</h3>
             <p className="text-sm text-gray-600">{user.email}</p>

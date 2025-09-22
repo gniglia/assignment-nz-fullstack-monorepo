@@ -1,4 +1,5 @@
 import { Card } from "@/components/ui/Card";
+import { Avatar } from "@/components/ui/Avatar";
 import { useUsersQuery } from "@/hooks/useApi";
 import { formatDistanceToNow } from "date-fns";
 
@@ -42,19 +43,7 @@ function ActivityItem({
   return (
     <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
       <div className="flex-shrink-0">
-        {avatar ? (
-          <img
-            src={avatar}
-            alt={`${name}'s avatar`}
-            className="w-8 h-8 rounded-full object-cover"
-          />
-        ) : (
-          <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
-            <span className="text-sm font-medium text-gray-600">
-              {name.charAt(0).toUpperCase()}
-            </span>
-          </div>
-        )}
+        <Avatar src={avatar} alt={`${name}'s avatar`} name={name} size="md" />
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center space-x-2">

@@ -20,8 +20,8 @@ export function Sidebar({ onClose }: SidebarProps) {
   return (
     <div className="h-full w-64 bg-white shadow-sm border-r border-gray-200 flex flex-col">
       {/* Header with close button for mobile */}
-      <div className="p-6 flex items-center justify-between">
-        <h1 className="text-xl font-bold text-gray-900">Dashboard</h1>
+      <div className="p-4 sm:p-6 flex items-center justify-between">
+        <h1 className="text-lg sm:text-xl font-bold text-gray-900">Dashboard</h1>
         {onClose && (
           <button
             onClick={onClose}
@@ -35,7 +35,7 @@ export function Sidebar({ onClose }: SidebarProps) {
 
       {/* Navigation */}
       <nav
-        className="mt-6 flex-1"
+        className="mt-4 sm:mt-6 flex-1"
         role="navigation"
         aria-label="Main navigation"
       >
