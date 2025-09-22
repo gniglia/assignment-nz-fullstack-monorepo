@@ -1,5 +1,5 @@
 import { useState } from "react";
-import UsersTable from "@/components/UsersTable";
+import { UsersTable } from "@/components/UsersTable";
 
 export default function Users() {
   const [currentPage, setCurrentPage] = useState(1);

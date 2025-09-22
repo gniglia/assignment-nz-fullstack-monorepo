@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import { useUsersQuery } from "./use-api";
-import { useUsersStore } from "@/stores/users-store";
+import { useUsersQuery } from "./useApi";
+import { useUsersStore } from "@/stores/usersStore";
 
 /**
  * Integration hook that connects React Query (server state) with Zustand (client state)

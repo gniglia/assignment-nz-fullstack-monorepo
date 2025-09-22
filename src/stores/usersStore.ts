@@ -47,6 +47,10 @@ type UsersActions = {
   // Utility actions
   clearFilters: () => void;
   resetToFirstPage: () => void;
+
+  // Internal update methods
+  updateFilteredUsers: () => void;
+  updatePaginatedUsers: () => void;
 };
 /* eslint-enable no-unused-vars */
 

@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from "react";
-import { useUsersIntegration } from "@/hooks/use-users-integration";
-import { useDebounce } from "@/hooks/use-debounce";
+import { useUsersIntegration } from "@/hooks/useUsersIntegration";
+import { useDebounce } from "@/hooks/useDebounce";
 import type { User } from "@/types/api";
 import {
   Table,
@@ -9,13 +9,13 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@/components/ui/Table";
 import { Card } from "@/components/ui/Card";
-import Button from "@/components/ui/Button";
-import Input from "@/components/ui/Input";
-import Select from "@/components/ui/select";
-import Pagination from "@/components/ui/pagination";
-import UserCard from "@/components/UserCard";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { Select } from "@/components/ui/Select";
+import { Pagination } from "@/components/ui/Pagination";
+import { UserCard } from "@/components/UserCard";
 import { EditUserModal, DeleteUserModal } from "@/components/UserModals";
 import { formatDistanceToNow } from "date-fns";
 import {
@@ -191,7 +191,6 @@ function UsersTable({
             </label>
             <Select
               options={roleOptions}
-              value={filters.selectedRole}
               onValueChange={setSelectedRole}
               placeholder="All Roles"
             />
@@ -202,7 +201,6 @@ function UsersTable({
             </label>
             <Select
               options={statusOptions}
-              value={filters.selectedStatus}
               onValueChange={setSelectedStatus}
               placeholder="All Statuses"
             />
@@ -371,4 +369,4 @@ function UsersTable({
   );
 }
 
-export default UsersTable;
+export { UsersTable };

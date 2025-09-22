@@ -9,9 +9,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import Button from "@/components/ui/Button";
-import Input from "@/components/ui/Input";
+} from "@/components/ui/Dialog";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
 
 type EditUserModalProps = {
   user: User | null;

@@ -1,4 +1,4 @@
-import { useMetrics } from "@/hooks/use-api";
+import { useMetrics } from "@/hooks/useApi";
 import { Card } from "@/components/ui/Card";
 import { MetricCard } from "@/components/MetricCard";
 import { AnalyticsOverview } from "@/components/AnalyticsOverview";

@@ -8,7 +8,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { Card } from "@/components/ui/Card";
-import { useAnalytics } from "@/hooks/use-api";
+import { useAnalytics } from "@/hooks/useApi";
 
 export function AnalyticsOverview() {
   const { data: analyticsData, isLoading, error } = useAnalytics();

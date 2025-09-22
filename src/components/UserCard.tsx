@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import type { User } from "@/types/api";
 import { Card } from "@/components/ui/Card";
-import Button from "@/components/ui/Button";
+import { Button } from "@/components/ui/Button";
 import { EditUserModal, DeleteUserModal } from "@/components/UserModals";
 import { formatDistanceToNow } from "date-fns";
 import { Edit, Trash2, MoreVertical } from "lucide-react";
@@ -151,4 +151,4 @@ function UserCard({ user, onSave, onConfirmDelete }: UserCardProps) {
   );
 }
 
-export default UserCard;
+export { UserCard };

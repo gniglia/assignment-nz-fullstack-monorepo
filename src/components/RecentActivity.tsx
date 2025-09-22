@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/Card";
-import { useUsersQuery } from "@/hooks/use-api";
+import { useUsersQuery } from "@/hooks/useApi";
 import { formatDistanceToNow } from "date-fns";
 
 type ActivityItemProps = {
@@ -7,31 +7,37 @@ type ActivityItemProps = {
   name: string;
   email: string;
   avatar?: string;
-  lastLogin?: string;
   createdAt: string;
+  updatedAt: string;
 };
 
 function ActivityItem({
   name,
   avatar,
-  lastLogin,
   createdAt,
+  updatedAt,
 }: ActivityItemProps) {
-  const getActivityText = (lastLogin?: string) => {
-    if (lastLogin) {
-      return "Last logged in";
+  const getActivityText = (isRecentUpdate: boolean) => {
+    if (isRecentUpdate) {
+      return "Recently updated";
     }
     return "Account created";
   };
 
-  const getTimestamp = (lastLogin?: string, createdAt: string) => {
-    const date = lastLogin ? new Date(lastLogin) : new Date(createdAt);
+  const getTimestamp = (
+    isRecentUpdate: boolean,
+    createdAt: string,
+    updatedAt: string,
+  ) => {
+    const date = isRecentUpdate ? new Date(updatedAt) : new Date(createdAt);
     return formatDistanceToNow(date, { addSuffix: true });
   };
 
-  const getActivityIcon = (lastLogin?: string) => {
-    return lastLogin ? "🟢" : "👤";
+  const getActivityIcon = (isRecentUpdate: boolean) => {
+    return isRecentUpdate ? "🟢" : "👤";
   };
+
+  const isRecentUpdate = new Date(updatedAt) > new Date(createdAt);
 
   return (
     <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
@@ -53,11 +59,11 @@ function ActivityItem({
       <div className="flex-1 min-w-0">
         <div className="flex items-center space-x-2">
           <p className="text-sm font-medium text-gray-900 truncate">{name}</p>
-          <span className="text-sm">{getActivityIcon(lastLogin)}</span>
+          <span className="text-sm">{getActivityIcon(isRecentUpdate)}</span>
         </div>
         <p className="text-xs text-gray-500 truncate">
-          {getActivityText(lastLogin, createdAt)}{" "}
-          {getTimestamp(lastLogin, createdAt)}
+          {getActivityText(isRecentUpdate)}{" "}
+          {getTimestamp(isRecentUpdate, createdAt, updatedAt)}
         </p>
       </div>
     </div>
@@ -117,10 +123,16 @@ export function RecentActivity() {
     );
   }
 
-  // Sort users by most recent activity (lastLogin or createdAt)
+  // Sort users by most recent activity (updatedAt or createdAt)
   const sortedUsers = [...users].sort((a, b) => {
-    const aDate = a.lastLogin ? new Date(a.lastLogin) : new Date(a.createdAt);
-    const bDate = b.lastLogin ? new Date(b.lastLogin) : new Date(b.createdAt);
+    const aDate =
+      new Date(a.updatedAt) > new Date(a.createdAt)
+        ? new Date(a.updatedAt)
+        : new Date(a.createdAt);
+    const bDate =
+      new Date(b.updatedAt) > new Date(b.createdAt)
+        ? new Date(b.updatedAt)
+        : new Date(b.createdAt);
     return bDate.getTime() - aDate.getTime();
   });
 
@@ -140,8 +152,8 @@ export function RecentActivity() {
             name={user.name}
             email={user.email}
             avatar={user.avatar}
-            lastLogin={user.lastLogin}
             createdAt={user.createdAt}
+            updatedAt={user.updatedAt}
           />
         ))}
       </div>

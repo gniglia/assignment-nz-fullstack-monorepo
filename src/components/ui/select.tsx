@@ -93,4 +93,6 @@ function Select({
   );
 }
 
-export default Select;
+Select.displayName = "Select";
+
+export { Select };

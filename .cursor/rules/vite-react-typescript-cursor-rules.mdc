@@ -16,10 +16,27 @@ Code Style and Structure
 - Write concise, technical responses with accurate TypeScript examples.
 - Use functional, declarative programming. Avoid classes.
 - Prefer iteration and modularization over duplication.
-- Use descriptive variable names with auxiliary verbs (e.g., `isLoading`, `hasError`).
 - Use lowercase with dashes for directories (e.g., components/auth-wizard).
 - Favor named exports for components over default.
 - Use the Receive an Object, Return an Object (RORO) pattern.
+- Add a space before a function declaration's parentheses.
+- Always use === instead of ==.
+- Infix operators must be spaced.
+- Always handle the err function parameter.
+
+Naming Conventions
+
+- **Component Files**: Use PascalCase for component file names (e.g., `UserProfile.tsx`, `DataTable.tsx`).
+- **Component Names**: Use PascalCase for component function names (e.g., `function UserProfile()`, `function DataTable()`).
+- **Component Props**: Use PascalCase for prop type names (e.g., `UserProfileProps`, `DataTableProps`).
+- **Custom Hooks**: Use camelCase starting with "use" (e.g., `useUserData`, `useLocalStorage`). **Hook Files**: Use camelCase for hook file names (e.g., `useApi.ts`, `useDebounce.ts`, `useUsersIntegration.ts`).
+- **Utility Functions**: Use camelCase for utility functions (e.g., `formatDate`, `validateEmail`).
+- **Constants**: Use UPPER_SNAKE_CASE for constants (e.g., `API_BASE_URL`, `MAX_RETRY_ATTEMPTS`).
+- **Type Definitions**: Use PascalCase for type names (e.g., `User`, `ApiResponse`, `FormData`).
+- **Event Handlers**: Use camelCase with descriptive names (e.g., `handleSubmit`, `onUserSelect`).
+- **Boolean Variables**: Use descriptive names with auxiliary verbs (e.g., `isLoading`, `hasError`, `canEdit`).
+- **Array Variables**: Use plural nouns (e.g., `users`, `items`, `errors`).
+- **Object Variables**: Use singular nouns (e.g., `user`, `item`, `error`).
 
 JavaScript/TypeScript
 
@@ -59,16 +76,30 @@ React
 - Optimize images: WebP format, size data, lazy loading.
 - Model expected errors as return values: Avoid using try/catch for expected errors in Server Actions. Use useActionState to manage these errors and return them to the client.
 - Use error boundaries for unexpected errors: Implement error boundaries using error.tsx and global-error.tsx files to handle unexpected errors and provide a fallback UI.
+- Implement error boundaries to catch and handle errors gracefully.
 - Use useActionState with react-hook-form for form validation.
 - Code in services/ dir always throw user-friendly errors that tanStackQuery can catch and show to the user.
-- Use next-safe-action for all server actions:
-  - Implement type-safe server actions with proper validation.
-  - Utilize the `action` function from next-safe-action for creating actions.
-  - Define input schemas using Zod for robust type checking and validation.
-  - Handle errors gracefully and return appropriate responses.
-  - Use import type { ActionResponse } from '@/types/actions'
-  - Ensure all server actions return the ActionResponse type
-  - Implement consistent error handling and success responses using ActionResponse
+- Implement hooks correctly (useState, useEffect, useContext, useReducer, useMemo, useCallback).
+- Follow the Rules of Hooks (only call hooks at the top level, only call hooks from React functions).
+- Create custom hooks to extract reusable component logic.
+- Use React.memo() for component memoization when appropriate.
+- Implement useCallback for memoizing functions passed as props.
+- Use useMemo for expensive computations.
+- Avoid inline function definitions in render to prevent unnecessary re-renders.
+- Prefer composition over inheritance.
+- Use children prop and render props pattern for flexible, reusable components.
+- Implement React.lazy() and Suspense for code splitting.
+- Use refs sparingly and mainly for DOM access.
+- Prefer controlled components over uncontrolled components.
+- Use cleanup functions in useEffect to prevent memory leaks.
+- Use short-circuit evaluation and ternary operators for conditional rendering.
+
+Forms and Validation
+
+- Use controlled components for form inputs.
+- Implement form validation (client-side and server-side).
+- Consider using libraries like react-hook-form for complex forms.
+- Use Zod for schema validation.
 
 Package Management
 

@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { useUsersQuery, useDeleteUser, queryKeys } from "@/hooks/use-api";
+import { useUsersQuery, useDeleteUser, queryKeys } from "@/hooks/useApi";
 import { useQueryClient } from "@tanstack/react-query";
 import type { User } from "@/types/api";
-import Button from "@/components/ui/Button";
+import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 
 function UserList() {
@@ -149,4 +149,4 @@ function UserList() {
   );
 }
 
-export default UserList;
+export { UserList };
