@@ -1,27 +1,32 @@
-const API_BASE_URL = "http://localhost:3001";
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:3001";
 
-export class ApiError extends Error {
-  constructor(message: string, public status: number) {
-    super(message);
-    this.name = "ApiError";
-    this.status = status;
-  }
-}
+// Functional error creator
+const createApiError = (message: string, status: number): Error => {
+  const error = new Error(message);
+  error.name = "ApiError";
+  (error as any).status = status;
+  return error;
+};
 
 async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
   const url = `${API_BASE_URL}${endpoint}`;
 
   try {
-    const response = await fetch(url, {
-      headers: {
-        "Content-Type": "application/json",
-        ...options?.headers,
-      },
-      ...options,
-    });
+    // Add a 300ms delay to prevent flickering during quick operations
+    const [response] = await Promise.all([
+      fetch(url, {
+        headers: {
+          "Content-Type": "application/json",
+          ...options?.headers,
+        },
+        ...options,
+      }),
+      new Promise((resolve) => setTimeout(resolve, 3000)),
+    ]);
 
     if (!response.ok) {
-      throw new ApiError(
+      throw createApiError(
         `HTTP error! status: ${response.status}`,
         response.status,
       );
@@ -29,10 +34,10 @@ async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
 
     return await response.json();
   } catch (error) {
-    if (error instanceof ApiError) {
+    if (error instanceof Error && error.name === "ApiError") {
       throw error;
     }
-    throw new ApiError("Network error occurred", 0);
+    throw createApiError("Network error occurred", 0);
   }
 }
 

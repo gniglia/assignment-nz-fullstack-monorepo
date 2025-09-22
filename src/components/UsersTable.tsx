@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { useUsersIntegration } from "@/hooks/useUsersIntegration";
+import { useUsersServerSide } from "@/hooks/useUsersServerSide";
 import { useDebounce } from "@/hooks/useDebounce";
 import type { User } from "@/types/api";
 import {
@@ -16,8 +16,10 @@ import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { Pagination } from "@/components/ui/Pagination";
 import { Avatar } from "@/components/ui/Avatar";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { UserCard } from "@/components/UserCard";
 import { EditUserModal, DeleteUserModal } from "@/components/UserModals";
+import { Alert, AlertDescription } from "@/components/ui/Alert";
 import { formatDistanceToNow } from "date-fns";
 import {
   Edit,
@@ -28,11 +30,7 @@ import {
   ArrowDown,
 } from "lucide-react";
 
-type UsersTableProps = {
-  currentPage?: number;
-  onPageChange?: (page: number) => void; // eslint-disable-line no-unused-vars
-  totalPages?: number;
-};
+// No props needed - all state is managed internally
 
 // Filter options
 const roleOptions = [
@@ -49,16 +47,14 @@ const statusOptions = [
   { value: "pending", label: "Pending" },
 ];
 
-function UsersTable({
-  currentPage = 1,
-  onPageChange,
-  totalPages = 1,
-}: UsersTableProps) {
-  // Get all data and actions from the integration hook
+function UsersTable() {
+  // Get all data and actions from the server-side hook
   const {
     users,
     totalCount,
+    totalPages,
     isLoading,
+    isFetching,
     error,
     filters,
     setSearchQuery: setStoreSearchQuery,
@@ -68,7 +64,7 @@ function UsersTable({
     setCurrentPage,
     clearFilters,
     refetch,
-  } = useUsersIntegration();
+  } = useUsersServerSide();
 
   // Local search state for debouncing
   const [localSearchQuery, setLocalSearchQuery] = useState(filters.searchQuery);
@@ -82,10 +78,7 @@ function UsersTable({
     setStoreSearchQuery(debouncedSearchQuery);
   }, [debouncedSearchQuery, setStoreSearchQuery]);
 
-  // Sync current page to store
-  React.useEffect(() => {
-    setCurrentPage(currentPage);
-  }, [currentPage, setCurrentPage]);
+  // No need to sync current page - it's managed internally
 
   const handleSaveUser = (userData: Partial<User>) => {
     // Placeholder for save functionality
@@ -113,6 +106,14 @@ function UsersTable({
     setLocalSearchQuery("");
   }, [clearFilters]);
 
+  // Handle search input change
+  const handleSearchChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setLocalSearchQuery(e.target.value);
+    },
+    [],
+  );
+
   // Get sort icon for table headers
   const getSortIcon = (field: string) => {
     if (filters.sortField !== field) return <ArrowUpDown className="h-4 w-4" />;
@@ -127,10 +128,7 @@ function UsersTable({
   if (isLoading && !users) {
     return (
       <Card className="p-6">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-2 text-gray-600">Loading users...</p>
-        </div>
+        <LoadingSpinner size="lg" text="Loading users..." />
       </Card>
     );
   }
@@ -138,11 +136,13 @@ function UsersTable({
   if (error) {
     return (
       <Card className="p-6">
-        <div className="text-center text-red-600">
-          <p>Failed to load users: {(error as Error).message}</p>
-          <Button onClick={() => refetch()} className="mt-4">
-            Try Again
-          </Button>
+        <Alert variant="destructive" className="mb-4">
+          <AlertDescription>
+            Failed to load users: {(error as Error).message}
+          </AlertDescription>
+        </Alert>
+        <div className="text-center">
+          <Button onClick={() => refetch()}>Try Again</Button>
         </div>
       </Card>
     );
@@ -162,6 +162,7 @@ function UsersTable({
             variant="outline"
             size="sm"
             className="w-full sm:w-auto"
+            disabled={isLoading || isFetching}
           >
             Clear Filters
           </Button>
@@ -169,6 +170,7 @@ function UsersTable({
             onClick={() => refetch()}
             variant="outline"
             className="w-full sm:w-auto"
+            disabled={isLoading || isFetching}
           >
             Refresh
           </Button>
@@ -190,8 +192,9 @@ function UsersTable({
             type="text"
             placeholder="Search users by name or email..."
             value={localSearchQuery}
-            onChange={(e) => setLocalSearchQuery(e.target.value)}
+            onChange={handleSearchChange}
             className="pl-10"
+            disabled={isLoading || isFetching}
           />
         </div>
 
@@ -205,6 +208,7 @@ function UsersTable({
               options={roleOptions}
               onValueChange={setSelectedRole}
               placeholder="All Roles"
+              disabled={isLoading || isFetching}
             />
           </div>
           <div>
@@ -215,13 +219,19 @@ function UsersTable({
               options={statusOptions}
               onValueChange={setSelectedStatus}
               placeholder="All Statuses"
+              disabled={isLoading || isFetching}
             />
           </div>
         </div>
       </div>
 
       {/* Desktop Table View */}
-      {users && users.length > 0 ? (
+      {isFetching ? (
+        /* Loading spinner during filtering/sorting */
+        <div className="hidden md:block rounded-md border">
+          <LoadingSpinner size="md" text="Loading users..." className="py-12" />
+        </div>
+      ) : users && users.length > 0 ? (
         <div className="hidden md:block rounded-md border">
           <Table>
             <TableHeader>
@@ -335,7 +345,7 @@ function UsersTable({
           </Table>
         </div>
       ) : (
-        /* No Results Message - Only when no users found */
+        /* No Results Message - Only when no users found and not loading */
         <div className="text-center text-gray-500 py-12">
           <p className="text-lg">
             {filters.searchQuery ||
@@ -348,7 +358,15 @@ function UsersTable({
       )}
 
       {/* Mobile Card View */}
-      {users && users.length > 0 && (
+      {isFetching ? (
+        /* Loading spinner during filtering/sorting - Mobile */
+        <div className="md:hidden">
+          <div className="text-center py-12">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+            <p className="mt-2 text-gray-600">Loading users...</p>
+          </div>
+        </div>
+      ) : users && users.length > 0 ? (
         <div className="md:hidden space-y-4">
           {users.map((user: User) => (
             <UserCard
@@ -359,14 +377,14 @@ function UsersTable({
             />
           ))}
         </div>
-      )}
+      ) : null}
 
-      {onPageChange && totalPages > 1 && (
+      {totalPages > 1 && (
         <div className="mt-6">
           <Pagination
-            currentPage={currentPage}
+            currentPage={filters.currentPage}
             totalPages={totalPages}
-            onPageChange={onPageChange || (() => {})}
+            onPageChange={setCurrentPage}
           />
         </div>
       )}

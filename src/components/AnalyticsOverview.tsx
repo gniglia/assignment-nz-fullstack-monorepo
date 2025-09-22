@@ -9,6 +9,7 @@ import {
 } from "recharts";
 import { Card } from "@/components/ui/Card";
 import { useAnalytics } from "@/hooks/useApi";
+import { Alert, AlertDescription } from "@/components/ui/Alert";
 
 export function AnalyticsOverview() {
   const { data: analyticsData, isLoading, error } = useAnalytics();
@@ -32,9 +33,11 @@ export function AnalyticsOverview() {
         <h2 className="text-xl font-semibold text-gray-900 mb-4">
           Analytics Overview
         </h2>
-        <div className="flex items-center justify-center h-64 text-red-600">
-          <p>Failed to load analytics data: {(error as Error).message}</p>
-        </div>
+        <Alert variant="destructive">
+          <AlertDescription>
+            Failed to load analytics data: {(error as Error).message}
+          </AlertDescription>
+        </Alert>
       </Card>
     );
   }

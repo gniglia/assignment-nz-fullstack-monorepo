@@ -4,6 +4,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import type { User } from "@/types/api";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { Alert, AlertDescription } from "@/components/ui/Alert";
 
 function UserList() {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
@@ -50,11 +51,13 @@ function UserList() {
   if (error) {
     return (
       <Card className="p-6">
-        <div className="text-center text-red-600">
-          <p>Failed to load users: {(error as Error).message}</p>
-          <Button onClick={handleRefresh} className="mt-4">
-            Try Again
-          </Button>
+        <Alert variant="destructive" className="mb-4">
+          <AlertDescription>
+            Failed to load users: {(error as Error).message}
+          </AlertDescription>
+        </Alert>
+        <div className="text-center">
+          <Button onClick={handleRefresh}>Try Again</Button>
         </div>
       </Card>
     );

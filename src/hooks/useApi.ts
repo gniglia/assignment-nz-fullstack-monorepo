@@ -16,15 +16,17 @@ export const queryKeys = {
   dashboard: ["dashboard"] as const,
 } as const;
 
-// Types for user query parameters
+// Types for user query parameters using camelCase
 export type UserQueryParams = {
-  page?: number;
-  limit?: number;
-  q?: string; // search query
+  page?: number; // page number (1-based)
+  limit?: number; // items per page
+  sort?: string; // sort field (use - prefix for desc, e.g., "-name")
+  order?: "asc" | "desc"; // sort order (alternative to - prefix)
+  search?: string; // search query (will search name and email)
   role?: string; // filter by role
   status?: string; // filter by status
-  _sort?: string; // sort field
-  _order?: "asc" | "desc"; // sort order
+  nameLike?: string; // search in name field
+  emailLike?: string; // search in email field
 };
 
 // Custom hook for fetching all users (base data)
@@ -38,6 +40,54 @@ export function useUsersQuery() {
     refetchOnWindowFocus: false, // Prevent refetch on window focus
     // You can add refetchInterval here for future use:
     // refetchInterval: 30000, // Refetch every 30 seconds
+  });
+}
+
+// Functional helper to build query string from params
+const buildQueryString = (params: UserQueryParams): string => {
+  const searchParams = new URLSearchParams();
+
+  // Add pagination params (convert to json-server format)
+  if (params.page) searchParams.set("_page", params.page.toString());
+  if (params.limit) searchParams.set("_limit", params.limit.toString());
+
+  // Add sorting params (convert to json-server format)
+  if (params.sort) {
+    const sortField = params.sort.startsWith("-") ? params.sort : params.sort;
+    searchParams.set("_sort", sortField);
+  }
+  if (params.order) searchParams.set("_order", params.order);
+
+  // Add filtering params
+  if (params.role && params.role !== "all")
+    searchParams.set("role", params.role);
+  if (params.status && params.status !== "all")
+    searchParams.set("status", params.status);
+
+  // Add search params (json-server supports q for general search)
+  if (params.search) searchParams.set("q", params.search);
+  if (params.nameLike) searchParams.set("name_like", params.nameLike);
+  if (params.emailLike) searchParams.set("email_like", params.emailLike);
+
+  return searchParams.toString();
+};
+
+// Functional helper to build endpoint URL
+const buildEndpoint = (params: UserQueryParams): string => {
+  const queryString = buildQueryString(params);
+  return queryString ? `/users?${queryString}` : "/users";
+};
+
+// Custom hook for fetching users with server-side filtering, sorting, and pagination
+export function useUsersQueryWithParams(params: UserQueryParams = {}) {
+  return useQuery({
+    queryKey: [...queryKeys.users, "filtered", params],
+    queryFn: async (): Promise<User[]> => {
+      const endpoint = buildEndpoint(params);
+      return await api.get<User[]>(endpoint);
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    refetchOnWindowFocus: false,
   });
 }
 

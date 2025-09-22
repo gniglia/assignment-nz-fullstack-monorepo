@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/Card";
 import { Avatar } from "@/components/ui/Avatar";
 import { useUsersQuery } from "@/hooks/useApi";
+import { Alert, AlertDescription } from "@/components/ui/Alert";
 import { formatDistanceToNow } from "date-fns";
 
 type ActivityItemProps = {
@@ -92,9 +93,11 @@ export function RecentActivity() {
         <h2 className="text-xl font-semibold text-gray-900 mb-4">
           Recent Activity
         </h2>
-        <div className="text-center text-red-600">
-          <p>Failed to load recent activity: {(error as Error).message}</p>
-        </div>
+        <Alert variant="destructive">
+          <AlertDescription>
+            Failed to load recent activity: {(error as Error).message}
+          </AlertDescription>
+        </Alert>
       </Card>
     );
   }
