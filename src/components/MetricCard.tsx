@@ -22,7 +22,7 @@ export function MetricCard({
   const changePrefix = changeType === "increase" ? "+" : "";
 
   return (
-    <Card>
+    <Card variant="elevated" hover>
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm font-medium text-gray-600">{title}</p>

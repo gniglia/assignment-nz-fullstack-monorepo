@@ -10,34 +10,40 @@ type SelectOption = {
 /* eslint-disable no-unused-vars */
 type SelectProps = {
   options: SelectOption[];
+  value?: string;
   onValueChange?: (newValue: string) => void;
   placeholder?: string;
   className?: string;
   disabled?: boolean;
+  error?: boolean;
+  success?: boolean;
 };
 /* eslint-enable no-unused-vars */
 
 function Select({
   options,
+  value,
   onValueChange,
   placeholder = "Select an option...",
   className,
   disabled = false,
+  error = false,
+  success = false,
 }: SelectProps) {
   const [isOpen, setIsOpen] = React.useState(false);
-  const [internalValue, setInternalValue] = React.useState("");
 
-  const selectedOption = options.find(
-    (option) => option.value === internalValue,
-  );
+  const selectedOption = options.find((option) => option.value === value);
 
   const handleValueChange = (newValue: string) => {
-    setInternalValue(newValue);
     onValueChange?.(newValue);
     setIsOpen(false);
   };
 
-  // Remove useEffect since we're not using external value prop
+  // Handle external value changes (from react-hook-form)
+  React.useEffect(() => {
+    // This ensures the component updates when the value prop changes
+    // from external sources like react-hook-form
+  }, [value]);
 
   return (
     <div className={cn("relative", className)}>
@@ -49,6 +55,9 @@ function Select({
           "flex h-10 w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-colors",
           "hover:border-gray-400 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500",
           "disabled:cursor-not-allowed disabled:opacity-50",
+          error && "border-red-300 focus:border-red-500 focus:ring-red-500",
+          success &&
+            "border-green-300 focus:border-green-500 focus:ring-green-500",
           className,
         )}
       >
@@ -72,12 +81,11 @@ function Select({
               onClick={() => handleValueChange(option.value)}
               className={cn(
                 "flex w-full items-center px-3 py-2 text-sm text-gray-900 hover:bg-gray-100",
-                internalValue === option.value &&
-                  "bg-primary-50 text-primary-600",
+                value === option.value && "bg-primary-50 text-primary-600",
               )}
             >
               <span className="flex-1 text-left">{option.label}</span>
-              {internalValue === option.value && (
+              {value === option.value && (
                 <Check className="h-4 w-4 text-primary-600" />
               )}
             </button>

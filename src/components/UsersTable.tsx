@@ -20,7 +20,7 @@ import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { UserCard } from "@/components/UserCard";
 import { EditUserModal, DeleteUserModal } from "@/components/UserModals";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
-import { formatDistanceToNow } from "date-fns";
+import { safeFormatDistanceToNow } from "@/utils/format";
 import {
   Edit,
   Trash2,
@@ -80,18 +80,6 @@ function UsersTable() {
 
   // No need to sync current page - it's managed internally
 
-  const handleSaveUser = (userData: Partial<User>) => {
-    // Placeholder for save functionality
-    console.log("Saving user:", userData);
-    // In a real app, you would call an API here
-  };
-
-  const handleConfirmDelete = () => {
-    // Placeholder for delete functionality
-    console.log("Deleting user");
-    // In a real app, you would call an API here
-  };
-
   // Handle sorting
   const handleSort = useCallback(
     (field: string) => {
@@ -127,7 +115,7 @@ function UsersTable() {
   // Only show full loading screen for initial load, not for filter changes
   if (isLoading && !users) {
     return (
-      <Card className="p-6">
+      <Card variant="elevated" className="p-6">
         <LoadingSpinner size="lg" text="Loading users..." />
       </Card>
     );
@@ -135,7 +123,7 @@ function UsersTable() {
 
   if (error) {
     return (
-      <Card className="p-6">
+      <Card variant="elevated" className="p-6">
         <Alert variant="destructive" className="mb-4">
           <AlertDescription>
             Failed to load users: {(error as Error).message}
@@ -149,7 +137,7 @@ function UsersTable() {
   }
 
   return (
-    <Card className="p-4 sm:p-6">
+    <Card variant="elevated" className="p-4 sm:p-6">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 sm:mb-6 gap-4">
         <div className="flex items-center gap-2">
           <h2 className="text-xl sm:text-2xl font-bold">
@@ -314,21 +302,18 @@ function UsersTable() {
                     </span>
                   </TableCell>
                   <TableCell className="text-sm text-gray-600">
-                    {formatDistanceToNow(new Date(user.createdAt), {
+                    {safeFormatDistanceToNow(user.createdAt, {
                       addSuffix: true,
                     })}
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center space-x-2">
-                      <EditUserModal user={user} onSave={handleSaveUser}>
+                      <EditUserModal user={user}>
                         <Button variant="ghost" size="sm" className="p-2">
                           <Edit className="h-4 w-4" />
                         </Button>
                       </EditUserModal>
-                      <DeleteUserModal
-                        user={user}
-                        onConfirm={handleConfirmDelete}
-                      >
+                      <DeleteUserModal user={user}>
                         <Button
                           variant="ghost"
                           size="sm"
@@ -369,12 +354,7 @@ function UsersTable() {
       ) : users && users.length > 0 ? (
         <div className="md:hidden space-y-4">
           {users.map((user: User) => (
-            <UserCard
-              key={user.id}
-              user={user}
-              onSave={handleSaveUser}
-              onConfirmDelete={handleConfirmDelete}
-            />
+            <UserCard key={user.id} user={user} />
           ))}
         </div>
       ) : null}

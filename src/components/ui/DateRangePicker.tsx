@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useRef } from "react";
 import { Calendar, Download } from "lucide-react";
 import { Button } from "./Button";
+import { Card } from "./Card";
 
 type DateRange = {
   startDate: string;
@@ -80,7 +81,7 @@ export function DateRangePicker({
   );
 
   return (
-    <div className="bg-white rounded-lg shadow p-6 mb-6">
+    <Card variant="elevated" className="p-4 sm:p-6 mb-6">
       <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
           <div className="flex items-center gap-2">
@@ -171,6 +172,6 @@ export function DateRangePicker({
           </Button>
         </div>
       </div>
-    </div>
+    </Card>
   );
 }

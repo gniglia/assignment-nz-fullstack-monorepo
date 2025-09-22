@@ -1,8 +1,8 @@
 import { Card } from "@/components/ui/Card";
 import { Avatar } from "@/components/ui/Avatar";
-import { useUsersQuery } from "@/hooks/useApi";
+import { useUsersQueryWithParams } from "@/hooks/useApi";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
-import { formatDistanceToNow } from "date-fns";
+import { safeFormatDistanceToNow } from "@/utils/format";
 
 type ActivityItemProps = {
   id: string;
@@ -21,7 +21,7 @@ function ActivityItem({
 }: ActivityItemProps) {
   const getActivityText = (isRecentUpdate: boolean) => {
     if (isRecentUpdate) {
-      return "Recently updated";
+      return "Updated";
     }
     return "Account created";
   };
@@ -31,12 +31,8 @@ function ActivityItem({
     createdAt: string,
     updatedAt: string,
   ) => {
-    const date = isRecentUpdate ? new Date(updatedAt) : new Date(createdAt);
-    return formatDistanceToNow(date, { addSuffix: true });
-  };
-
-  const getActivityIcon = (isRecentUpdate: boolean) => {
-    return isRecentUpdate ? "🟢" : "👤";
+    const dateString = isRecentUpdate ? updatedAt : createdAt;
+    return safeFormatDistanceToNow(dateString, { addSuffix: true });
   };
 
   const isRecentUpdate = new Date(updatedAt) > new Date(createdAt);
@@ -47,10 +43,7 @@ function ActivityItem({
         <Avatar src={avatar} alt={`${name}'s avatar`} name={name} size="md" />
       </div>
       <div className="flex-1 min-w-0">
-        <div className="flex items-center space-x-2">
-          <p className="text-sm font-medium text-gray-900 truncate">{name}</p>
-          <span className="text-sm">{getActivityIcon(isRecentUpdate)}</span>
-        </div>
+        <p className="text-sm font-medium text-gray-900 truncate">{name}</p>
         <p className="text-xs text-gray-500 truncate">
           {getActivityText(isRecentUpdate)}{" "}
           {getTimestamp(isRecentUpdate, createdAt, updatedAt)}
@@ -61,11 +54,20 @@ function ActivityItem({
 }
 
 export function RecentActivity() {
-  const { data: users, isLoading, error } = useUsersQuery();
+  // Fetch users sorted by updatedAt descending to get most recent activity first
+  const {
+    data: users,
+    isLoading,
+    error,
+  } = useUsersQueryWithParams({
+    sort: "updatedAt",
+    order: "desc",
+    limit: 5, // Only fetch the 5 most recent activities
+  });
 
   if (isLoading) {
     return (
-      <Card className="p-6">
+      <Card variant="elevated" className="p-6">
         <h2 className="text-xl font-semibold text-gray-900 mb-4">
           Recent Activity
         </h2>
@@ -89,7 +91,7 @@ export function RecentActivity() {
 
   if (error) {
     return (
-      <Card className="p-6">
+      <Card variant="elevated" className="p-6">
         <h2 className="text-xl font-semibold text-gray-900 mb-4">
           Recent Activity
         </h2>
@@ -104,7 +106,7 @@ export function RecentActivity() {
 
   if (!users || users.length === 0) {
     return (
-      <Card className="p-6">
+      <Card variant="elevated" className="p-6">
         <h2 className="text-xl font-semibold text-gray-900 mb-4">
           Recent Activity
         </h2>
@@ -115,24 +117,11 @@ export function RecentActivity() {
     );
   }
 
-  // Sort users by most recent activity (updatedAt or createdAt)
-  const sortedUsers = [...users].sort((a, b) => {
-    const aDate =
-      new Date(a.updatedAt) > new Date(a.createdAt)
-        ? new Date(a.updatedAt)
-        : new Date(a.createdAt);
-    const bDate =
-      new Date(b.updatedAt) > new Date(b.createdAt)
-        ? new Date(b.updatedAt)
-        : new Date(b.createdAt);
-    return bDate.getTime() - aDate.getTime();
-  });
-
-  // Take the 5 most recent activities
-  const recentActivities = sortedUsers.slice(0, 5);
+  // Users are already sorted by updatedAt descending from the server
+  const recentActivities = users || [];
 
   return (
-    <Card className="p-6">
+    <Card variant="elevated" className="p-6">
       <h2 className="text-xl font-semibold text-gray-900 mb-4">
         Recent Activity
       </h2>

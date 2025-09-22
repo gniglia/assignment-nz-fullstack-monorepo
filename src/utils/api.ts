@@ -22,7 +22,7 @@ async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
         },
         ...options,
       }),
-      new Promise((resolve) => setTimeout(resolve, 3000)),
+      new Promise((resolve) => setTimeout(resolve, 500)),
     ]);
 
     if (!response.ok) {
@@ -57,4 +57,28 @@ export const api = {
     request<T>(endpoint, {
       method: "DELETE",
     }),
+};
+
+// User-specific API functions
+export const userApi = {
+  // Check if name is unique (excluding current user for edit operations)
+  checkNameUnique: async (
+    name: string,
+    excludeUserId?: string,
+  ): Promise<boolean> => {
+    try {
+      const endpoint = excludeUserId
+        ? `/users?name=${encodeURIComponent(name)}&id_ne=${excludeUserId}`
+        : `/users?name=${encodeURIComponent(name)}`;
+
+      const users = await api.get<Array<{ id: string; name: string }>>(
+        endpoint,
+      );
+      return users.length === 0;
+    } catch (error) {
+      // If API call fails, assume name is unique to avoid blocking user
+      console.warn("Failed to check name uniqueness:", error);
+      return true;
+    }
+  },
 };

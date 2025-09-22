@@ -5,7 +5,7 @@ export function MetricCardsSkeleton({ count = 4 }: { count?: number }) {
   return (
     <>
       {Array.from({ length: count }).map((_, index) => (
-        <Card key={index}>
+        <Card key={index} variant="elevated">
           <div className="flex items-center justify-between">
             <div>
               <Skeleton className="h-4 w-24 mb-2" />
@@ -26,7 +26,7 @@ export function ChartsSkeleton({ count = 4 }: { count?: number }) {
   return (
     <>
       {Array.from({ length: count }).map((_, index) => (
-        <Card key={index} className="p-6">
+        <Card key={index} variant="elevated" className="p-6">
           <div className="space-y-4">
             <Skeleton className="h-6 w-32" />
             <Skeleton className="h-64 w-full" />

@@ -6,6 +6,7 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
+import { Card } from "@/components/ui/Card";
 
 type PieChartData = {
   name: string;
@@ -31,17 +32,17 @@ const COLORS = [
 export function PieChart({ data, title, isLoading = false }: PieChartProps) {
   if (isLoading) {
     return (
-      <div className="bg-white rounded-lg shadow p-6">
+      <Card variant="elevated" className="p-4 sm:p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">{title}</h3>
         <div className="h-64 flex items-center justify-center">
           <div className="animate-pulse bg-gray-200 rounded-full w-48 h-48"></div>
         </div>
-      </div>
+      </Card>
     );
   }
 
   return (
-    <div className="bg-white rounded-lg shadow p-6">
+    <Card variant="elevated" className="p-4 sm:p-6">
       <h3 className="text-lg font-semibold text-gray-900 mb-4">{title}</h3>
       <div className="h-64">
         <ResponsiveContainer width="100%" height="100%">
@@ -73,6 +74,6 @@ export function PieChart({ data, title, isLoading = false }: PieChartProps) {
           </RechartsPieChart>
         </ResponsiveContainer>
       </div>
-    </div>
+    </Card>
   );
 }

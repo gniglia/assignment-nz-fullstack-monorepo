@@ -16,7 +16,7 @@ export function AnalyticsOverview() {
 
   if (isLoading) {
     return (
-      <Card className="p-6">
+      <Card variant="elevated" className="p-6">
         <h2 className="text-xl font-semibold text-gray-900 mb-4">
           Analytics Overview
         </h2>
@@ -29,7 +29,7 @@ export function AnalyticsOverview() {
 
   if (error) {
     return (
-      <Card className="p-6">
+      <Card variant="elevated" className="p-6">
         <h2 className="text-xl font-semibold text-gray-900 mb-4">
           Analytics Overview
         </h2>
@@ -48,7 +48,7 @@ export function AnalyticsOverview() {
     analyticsData.length === 0
   ) {
     return (
-      <Card className="p-6">
+      <Card variant="elevated" className="p-6">
         <h2 className="text-xl font-semibold text-gray-900 mb-4">
           Analytics Overview
         </h2>
@@ -60,7 +60,7 @@ export function AnalyticsOverview() {
   }
 
   return (
-    <Card className="p-6">
+    <Card variant="elevated" className="p-6">
       <h2 className="text-xl font-semibold text-gray-900 mb-4">
         Analytics Overview
       </h2>
