@@ -65,7 +65,7 @@ function UserList() {
 
   return (
     <Card className="p-6">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between items-center mb-8">
         <h2 className="text-2xl font-bold">Users ({users?.length || 0})</h2>
         <div className="space-x-2">
           <Button onClick={handleRefresh} variant="outline">

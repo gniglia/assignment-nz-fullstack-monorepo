@@ -27,6 +27,9 @@ import {
 } from "@/components/ui/Form";
 import { editUserFormSchema, type UserFormData } from "@/lib/validations/user";
 import { useUpdateUser, useDeleteUser } from "@/hooks/useApi";
+import { motion } from "framer-motion";
+import { staggerContainer, fadeInUp } from "@/lib/animations";
+import { Edit3, Trash2, AlertTriangle } from "lucide-react";
 
 type EditUserModalProps = {
   user: User;
@@ -117,98 +120,122 @@ function EditUserModal({ user, children }: EditUserModalProps) {
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px] shadow-xl">
         <DialogHeader>
-          <DialogTitle>Edit User</DialogTitle>
+          <motion.div
+            className="flex items-center gap-3 mb-2"
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.1 }}
+          >
+            <div className="p-2 bg-blue-100 rounded-lg">
+              <Edit3 className="w-5 h-5 text-blue-600" />
+            </div>
+            <DialogTitle>Edit User</DialogTitle>
+          </motion.div>
           <DialogDescription>
             Make changes to the user profile here. Click save when you&apos;re
             done.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Enter user name"
-                      {...field}
-                      disabled={isFormDisabled}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <motion.form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-4"
+            variants={staggerContainer}
+            initial="hidden"
+            animate="visible"
+          >
+            <motion.div variants={fadeInUp}>
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Enter user name"
+                        {...field}
+                        disabled={isFormDisabled}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </motion.div>
 
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="email"
-                      placeholder="Enter user email"
-                      {...field}
-                      disabled={isFormDisabled}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <motion.div variants={fadeInUp}>
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="email"
+                        placeholder="Enter user email"
+                        {...field}
+                        disabled={isFormDisabled}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </motion.div>
 
-            <FormField
-              control={form.control}
-              name="role"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Role</FormLabel>
-                  <FormControl>
-                    <Select
-                      value={field.value}
-                      options={[
-                        { value: "user", label: "User" },
-                        { value: "admin", label: "Admin" },
-                        { value: "moderator", label: "Moderator" },
-                      ]}
-                      onValueChange={field.onChange}
-                      placeholder="Select role"
-                      disabled={isFormDisabled}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <motion.div variants={fadeInUp}>
+              <FormField
+                control={form.control}
+                name="role"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Role</FormLabel>
+                    <FormControl>
+                      <Select
+                        value={field.value}
+                        options={[
+                          { value: "user", label: "User" },
+                          { value: "admin", label: "Admin" },
+                          { value: "moderator", label: "Moderator" },
+                        ]}
+                        onValueChange={field.onChange}
+                        placeholder="Select role"
+                        disabled={isFormDisabled}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </motion.div>
 
-            <FormField
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Status</FormLabel>
-                  <FormControl>
-                    <Select
-                      value={field.value}
-                      options={[
-                        { value: "active", label: "Active" },
-                        { value: "inactive", label: "Inactive" },
-                        { value: "pending", label: "Pending" },
-                      ]}
-                      onValueChange={field.onChange}
-                      placeholder="Select status"
-                      disabled={isFormDisabled}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <motion.div variants={fadeInUp}>
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Status</FormLabel>
+                    <FormControl>
+                      <Select
+                        value={field.value}
+                        options={[
+                          { value: "active", label: "Active" },
+                          { value: "inactive", label: "Inactive" },
+                          { value: "pending", label: "Pending" },
+                        ]}
+                        onValueChange={field.onChange}
+                        placeholder="Select status"
+                        disabled={isFormDisabled}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </motion.div>
 
             <DialogFooter>
               <DialogClose asChild>
@@ -228,7 +255,7 @@ function EditUserModal({ user, children }: EditUserModalProps) {
                   : "Save Changes"}
               </Button>
             </DialogFooter>
-          </form>
+          </motion.form>
         </Form>
       </DialogContent>
     </Dialog>
@@ -260,16 +287,41 @@ function DeleteUserModal({ user, children }: DeleteUserModalProps) {
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px] shadow-xl">
         <DialogHeader>
-          <DialogTitle>Delete User</DialogTitle>
+          <motion.div
+            className="flex items-center gap-3 mb-2"
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.1 }}
+          >
+            <div className="p-2 bg-red-100 rounded-lg">
+              <Trash2 className="w-5 h-5 text-red-600" />
+            </div>
+            <DialogTitle>Delete User</DialogTitle>
+          </motion.div>
           <DialogDescription>
             This action cannot be undone. This will permanently delete the user
             account and remove their data from our servers.
           </DialogDescription>
         </DialogHeader>
-        <div className="space-y-4">
-          <p className="text-sm text-muted-foreground">
-            Are you sure you want to delete <strong>{user.name}</strong>?
-          </p>
+        <motion.div
+          className="space-y-4"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-lg">
+            <AlertTriangle className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
+            <div>
+              <p className="text-sm font-medium text-red-900">
+                Warning: This action is permanent
+              </p>
+              <p className="text-sm text-red-700 mt-1">
+                Are you sure you want to delete <strong>{user.name}</strong>?
+                This will permanently remove their account and all associated
+                data.
+              </p>
+            </div>
+          </div>
 
           <DialogFooter>
             <DialogClose asChild>
@@ -288,7 +340,7 @@ function DeleteUserModal({ user, children }: DeleteUserModalProps) {
               </Button>
             </DialogClose>
           </DialogFooter>
-        </div>
+        </motion.div>
       </DialogContent>
     </Dialog>
   );

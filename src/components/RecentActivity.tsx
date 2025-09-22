@@ -3,6 +3,12 @@ import { Avatar } from "@/components/ui/Avatar";
 import { useUsersQueryWithParams } from "@/hooks/useApi";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
 import { safeFormatDistanceToNow } from "@/utils/format";
+import { motion } from "framer-motion";
+import {
+  fadeInRight,
+  listItemVariants,
+  staggerContainer,
+} from "@/lib/animations";
 
 type ActivityItemProps = {
   id: string;
@@ -38,10 +44,21 @@ function ActivityItem({
   const isRecentUpdate = new Date(updatedAt) > new Date(createdAt);
 
   return (
-    <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-      <div className="flex-shrink-0">
+    <motion.div
+      className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+      variants={listItemVariants}
+      whileHover={{
+        scale: 1.02,
+        transition: { duration: 0.2 },
+      }}
+    >
+      <motion.div
+        className="flex-shrink-0"
+        whileHover={{ scale: 1.1 }}
+        transition={{ duration: 0.2 }}
+      >
         <Avatar src={avatar} alt={`${name}'s avatar`} name={name} size="md" />
-      </div>
+      </motion.div>
       <div className="flex-1 min-w-0">
         <p className="text-sm font-medium text-gray-900 truncate">{name}</p>
         <p className="text-xs text-gray-500 truncate">
@@ -49,7 +66,7 @@ function ActivityItem({
           {getTimestamp(isRecentUpdate, createdAt, updatedAt)}
         </p>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -121,23 +138,35 @@ export function RecentActivity() {
   const recentActivities = users || [];
 
   return (
-    <Card variant="elevated" className="p-6">
-      <h2 className="text-xl font-semibold text-gray-900 mb-4">
-        Recent Activity
-      </h2>
-      <div className="space-y-3">
-        {recentActivities.map((user) => (
-          <ActivityItem
-            key={user.id}
-            id={user.id}
-            name={user.name}
-            email={user.email}
-            avatar={user.avatar}
-            createdAt={user.createdAt}
-            updatedAt={user.updatedAt}
-          />
-        ))}
-      </div>
-    </Card>
+    <motion.div variants={fadeInRight} initial="hidden" animate="visible">
+      <Card variant="elevated" className="p-6">
+        <motion.h2
+          className="text-xl font-semibold text-gray-900 mb-4"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          Recent Activity
+        </motion.h2>
+        <motion.div
+          className="space-y-3"
+          variants={staggerContainer}
+          initial="hidden"
+          animate="visible"
+        >
+          {recentActivities.map((user) => (
+            <ActivityItem
+              key={user.id}
+              id={user.id}
+              name={user.name}
+              email={user.email}
+              avatar={user.avatar}
+              createdAt={user.createdAt}
+              updatedAt={user.updatedAt}
+            />
+          ))}
+        </motion.div>
+      </Card>
+    </motion.div>
   );
 }

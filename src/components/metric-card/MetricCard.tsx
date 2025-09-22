@@ -1,0 +1,53 @@
+import { LucideIcon } from "lucide-react";
+import { Card } from "@/components/ui/Card";
+import { motion } from "framer-motion";
+import { AnimatedValue } from "./AnimatedValue";
+import { AnimatedIcon } from "./AnimatedIcon";
+import { ChangeIndicator } from "./ChangeIndicator";
+
+type MetricCardProps = {
+  title: string;
+  value: number;
+  change: number;
+  changeType: "increase" | "decrease";
+  icon: LucideIcon;
+};
+
+export function MetricCard({
+  title,
+  value,
+  change,
+  changeType,
+  icon,
+}: MetricCardProps) {
+  return (
+    <motion.div
+      whileHover={{
+        scale: 1.02,
+        y: -4,
+        transition: { duration: 0.2, ease: "easeOut" },
+      }}
+      whileTap={{ scale: 0.98 }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      className="group"
+    >
+      <Card variant="elevated" hover>
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-medium text-gray-600">{title}</p>
+            <p className="text-2xl font-bold text-gray-900">
+              <AnimatedValue value={value} />
+            </p>
+            <ChangeIndicator change={change} changeType={changeType} />
+          </div>
+          <AnimatedIcon
+            icon={icon}
+            className="flex items-center justify-center w-12 h-12 bg-primary-50 rounded-lg"
+          />
+        </div>
+      </Card>
+    </motion.div>
+  );
+}

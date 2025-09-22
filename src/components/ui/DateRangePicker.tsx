@@ -81,7 +81,7 @@ export function DateRangePicker({
   );
 
   return (
-    <Card variant="elevated" className="p-4 sm:p-6 mb-6">
+    <Card variant="elevated" className="p-4 sm:p-6 mb-8">
       <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
           <div className="flex items-center gap-2">

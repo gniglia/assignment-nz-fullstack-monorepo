@@ -70,7 +70,7 @@ export default function ErrorPage({ error, resetError }: ErrorPageProps) {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4">
       <Card className="w-full max-w-md p-8 text-center shadow-xl border-0 bg-white/80 backdrop-blur-sm">
         {/* Error Icon */}
-        <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-50 mb-6">
+        <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-50 mb-8">
           <AlertTriangle className="h-8 w-8 text-red-500" />
         </div>
 

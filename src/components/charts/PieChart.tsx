@@ -43,10 +43,14 @@ export function PieChart({ data, title, isLoading = false }: PieChartProps) {
 
   return (
     <Card variant="elevated" className="p-4 sm:p-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">{title}</h3>
+      {title && (
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">{title}</h3>
+      )}
       <div className="h-64">
         <ResponsiveContainer width="100%" height="100%">
-          <RechartsPieChart>
+          <RechartsPieChart
+            margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
+          >
             <Pie
               data={data}
               cx="50%"

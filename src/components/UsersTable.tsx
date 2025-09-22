@@ -138,7 +138,7 @@ function UsersTable() {
 
   return (
     <Card variant="elevated" className="p-4 sm:p-6">
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 sm:mb-6 gap-4">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 sm:mb-8 gap-4">
         <div className="flex items-center gap-2">
           <h2 className="text-xl sm:text-2xl font-bold">
             Users ({totalCount})
@@ -166,7 +166,7 @@ function UsersTable() {
       </div>
 
       {/* Search and Filter Controls */}
-      <div className="mb-4 sm:mb-6 space-y-4">
+      <div className="mb-4 sm:mb-8 space-y-4">
         {/* Search Input */}
         <div className="relative">
           {isSearching ? (
