@@ -14,9 +14,9 @@ export function useUserForm(user?: User) {
   const [isValidating, setIsValidating] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
-  const form = useForm<UserFormData>({
-    resolver: zodResolver(user ? editUserFormSchema : addUserFormSchema),
-    defaultValues: user
+  // Extract default values logic to avoid repetition
+  const getDefaultValues = (): UserFormData => {
+    return user
       ? {
           name: user.name,
           email: user.email,
@@ -28,7 +28,12 @@ export function useUserForm(user?: User) {
           email: "",
           role: "user",
           status: "active",
-        },
+        };
+  };
+
+  const form = useForm<UserFormData>({
+    resolver: zodResolver(user ? editUserFormSchema : addUserFormSchema),
+    defaultValues: getDefaultValues(),
   });
 
   const validateNameUniqueness = async (name: string) => {
@@ -47,9 +52,7 @@ export function useUserForm(user?: User) {
       }
       return true;
     } catch (validationError) {
-      toast.error("Unable to verify name availability. Please try again.", {
-        duration: 4000,
-      });
+      toast.error("Unable to verify name availability. Please try again.");
       console.warn("Name validation failed:", validationError);
       return false;
     } finally {
@@ -60,40 +63,12 @@ export function useUserForm(user?: User) {
   const handleOpenChange = (newOpen: boolean) => {
     setIsOpen(newOpen);
     if (!newOpen) {
-      form.reset(
-        user
-          ? {
-              name: user.name,
-              email: user.email,
-              role: user.role,
-              status: user.status,
-            }
-          : {
-              name: "",
-              email: "",
-              role: "user",
-              status: "active",
-            },
-      );
+      form.reset(getDefaultValues());
     }
   };
 
   const resetForm = () => {
-    form.reset(
-      user
-        ? {
-            name: user.name,
-            email: user.email,
-            role: user.role,
-            status: user.status,
-          }
-        : {
-            name: "",
-            email: "",
-            role: "user",
-            status: "active",
-          },
-    );
+    form.reset(getDefaultValues());
   };
 
   return {

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useUsersServerSide } from "@/hooks/useUsersServerSide";
+import { useUsersList } from "@/hooks/useUsersList";
 import { useDebounce } from "@uidotdev/usehooks";
 import type { User } from "@/types";
 import {
@@ -27,38 +27,14 @@ import { Alert, AlertDescription } from "@/components/ui/Alert";
 import { Search, ArrowUpDown, Edit, Trash2 } from "lucide-react";
 import { formatRelativeTime } from "@/utils/format";
 import { getStatusBadgeClasses, getRoleBadgeClasses } from "@/utils/badges";
-
-// No props needed - all state is managed internally
-
-// Filter options
-const roleOptions = [
-  { value: "all", label: "All Roles" },
-  { value: "admin", label: "Admin" },
-  { value: "user", label: "User" },
-  { value: "moderator", label: "Moderator" },
-];
-
-const statusOptions = [
-  { value: "all", label: "All Statuses" },
-  { value: "active", label: "Active" },
-  { value: "inactive", label: "Inactive" },
-  { value: "pending", label: "Pending" },
-];
-
-const sortOptions = [
-  { value: "", label: "Default" },
-  { value: "name", label: "Name ↑" },
-  { value: "-name", label: "Name ↓" },
-  { value: "email", label: "Email ↑" },
-  { value: "-email", label: "Email ↓" },
-  { value: "createdAt", label: "Created Date ↑" },
-  { value: "-createdAt", label: "Created Date ↓" },
-  { value: "lastLogin", label: "Last Login ↑" },
-  { value: "-lastLogin", label: "Last Login ↓" },
-];
+import {
+  ROLE_FILTER_OPTIONS,
+  STATUS_FILTER_OPTIONS,
+  SORT_OPTIONS,
+} from "@/constants/userOptions";
 
 function UsersTable() {
-  // Get all data and actions from the client-side hook
+  // Get all data and actions from the hook
   const {
     users,
     totalCount,
@@ -74,7 +50,7 @@ function UsersTable() {
     setCurrentPage,
     clearFilters,
     refetch,
-  } = useUsersServerSide();
+  } = useUsersList();
 
   // Local search state for debouncing
   const [localSearchQuery, setLocalSearchQuery] = useState(filters.searchQuery);
@@ -189,7 +165,7 @@ function UsersTable() {
               Filter by Role
             </label>
             <Select
-              options={roleOptions}
+              options={ROLE_FILTER_OPTIONS}
               onValueChange={setSelectedRole}
               disabled={isLoading || isFetching}
               value={filters.selectedRole}
@@ -200,7 +176,7 @@ function UsersTable() {
               Filter by Status
             </label>
             <Select
-              options={statusOptions}
+              options={STATUS_FILTER_OPTIONS}
               onValueChange={setSelectedStatus}
               disabled={isLoading || isFetching}
               value={filters.selectedStatus}
@@ -214,7 +190,7 @@ function UsersTable() {
               </div>
             </label>
             <Select
-              options={sortOptions}
+              options={SORT_OPTIONS}
               onValueChange={handleSortChange}
               disabled={isLoading || isFetching}
               value={

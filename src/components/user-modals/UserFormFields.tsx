@@ -12,23 +12,12 @@ import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import type { UseFormReturn } from "react-hook-form";
 import type { UserFormData } from "@/lib/validations/user";
+import { ROLE_OPTIONS, STATUS_OPTIONS } from "@/constants/userOptions";
 
 type UserFormFieldsProps = {
   form: UseFormReturn<UserFormData>; // React Hook Form instance
   isFormDisabled: boolean;
 };
-
-const roleOptions = [
-  { value: "user", label: "User" },
-  { value: "admin", label: "Admin" },
-  { value: "moderator", label: "Moderator" },
-];
-
-const statusOptions = [
-  { value: "active", label: "Active" },
-  { value: "inactive", label: "Inactive" },
-  { value: "pending", label: "Pending" },
-];
 
 export const UserFormFields = React.memo(function UserFormFields({
   form,
@@ -92,7 +81,7 @@ export const UserFormFields = React.memo(function UserFormFields({
               <FormControl>
                 <Select
                   value={field.value}
-                  options={roleOptions}
+                  options={ROLE_OPTIONS}
                   onValueChange={field.onChange}
                   disabled={isFormDisabled}
                 />
@@ -113,7 +102,7 @@ export const UserFormFields = React.memo(function UserFormFields({
               <FormControl>
                 <Select
                   value={field.value}
-                  options={statusOptions}
+                  options={STATUS_OPTIONS}
                   onValueChange={field.onChange}
                   disabled={isFormDisabled}
                 />

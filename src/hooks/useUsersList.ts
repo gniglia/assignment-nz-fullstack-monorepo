@@ -20,7 +20,7 @@ import type { SortOrder } from "@/hooks/queries/types";
  * - Simpler client-side code
  * - Leverages json-server's built-in query capabilities
  */
-export function useUsersServerSide() {
+export function useUsersList() {
   // Use Zustand store for persistent filters
   const {
     searchQuery: storeSearchQuery,

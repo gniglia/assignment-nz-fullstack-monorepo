@@ -53,23 +53,7 @@ export function AddUserModal({ children }: AddUserModalProps) {
       handleOpenChange(false);
       resetForm();
     } catch (error) {
-      // Check if it's a network error
-      const isNetworkError =
-        error instanceof Error && error.message.includes("Network");
-
-      if (isNetworkError) {
-        toast.error(
-          "Connection issue. Please check your internet and try again.",
-          {
-            duration: 5000,
-          },
-        );
-      } else {
-        toast.error("Failed to create user. Please try again.", {
-          duration: 4000,
-        });
-      }
-
+      toast.error("Failed to create user. Please try again.");
       console.error("Create user error:", error);
     }
   };

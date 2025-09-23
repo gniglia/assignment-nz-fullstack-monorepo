@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import { staggerContainer, fadeInUp, fadeInBottom } from "@/lib/animations";
 import { Filter, Search, Settings } from "lucide-react";
 
-// Users header component with animations
 function UsersHeader() {
   return (
     <motion.div

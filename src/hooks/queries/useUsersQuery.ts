@@ -10,7 +10,8 @@ export function useUsersQueryWithParams(params: UserQueryParams = {}) {
     queryKey: [...queryKeys.users, "filtered", params],
     queryFn: async (): Promise<User[]> => {
       const endpoint = buildEndpoint(params);
-      return await api.get<User[]>(endpoint);
+      const response = await api.get<User[]>(endpoint);
+      return response.data;
     },
   });
 }
@@ -22,9 +23,7 @@ export function useUsersQueryWithParamsAndTotal(params: UserQueryParams = {}) {
     queryFn: async (): Promise<{ users: User[]; totalCount: number }> => {
       const endpoint = buildEndpoint(params);
 
-      const { data: users, headers } = await api.getWithHeaders<User[]>(
-        endpoint,
-      );
+      const { data: users, headers } = await api.get<User[]>(endpoint);
 
       // Extract total count from json-server headers
       const totalCount = parseInt(headers.get("X-Total-Count") || "0", 10);
@@ -41,7 +40,7 @@ export function useUpdateUserMutation() {
   return useMutation({
     mutationFn: async ({ id, ...userData }: UpdateUserData): Promise<User> => {
       const response = await api.put<User>(`/users/${id}`, userData);
-      return response;
+      return response.data;
     },
     onSuccess: () => {
       // Invalidate users list to ensure consistency
@@ -57,7 +56,7 @@ export function useCreateUserMutation() {
   return useMutation({
     mutationFn: async (userData: CreateUserData): Promise<User> => {
       const response = await api.post<User>("/users", userData);
-      return response;
+      return response.data;
     },
     onSuccess: () => {
       // Invalidate users list to ensure consistency

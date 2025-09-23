@@ -4,18 +4,11 @@ import { Alert, AlertDescription } from "@/components/ui/Alert";
 import { MetricCard } from "@/components/metric-card";
 import { AnalyticsOverview } from "@/components/AnalyticsOverview";
 import { RecentActivity } from "@/components/RecentActivity";
-import { Users, DollarSign, Activity, TrendingUp } from "lucide-react";
+import { Users } from "lucide-react";
 import { MetricCardsSkeleton } from "@/components/ui/SkeletonLoader";
 import { motion } from "framer-motion";
 import { staggerContainer, fadeInUp, fadeInBottom } from "@/lib/animations";
-
-// Icon mapping for metrics
-const iconMap = {
-  users: Users,
-  "dollar-sign": DollarSign,
-  activity: Activity,
-  "trending-up": TrendingUp,
-};
+import { METRIC_ICONS } from "@/constants/metricIcons";
 
 function DashboardHeader() {
   return (
@@ -80,7 +73,7 @@ export default function Dashboard() {
         ) : metricsData && Array.isArray(metricsData) ? (
           metricsData.map((metric) => {
             const IconComponent =
-              iconMap[metric.icon as keyof typeof iconMap] || Users;
+              METRIC_ICONS[metric.icon as keyof typeof METRIC_ICONS] || Users;
             return (
               <MetricCard
                 key={metric.id}

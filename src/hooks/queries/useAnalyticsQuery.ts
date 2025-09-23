@@ -8,7 +8,8 @@ export function useAnalyticsQuery() {
   return useQuery({
     queryKey: queryKeys.analytics,
     queryFn: async (): Promise<Analytics> => {
-      return await api.get<Analytics>("/analytics");
+      const response = await api.get<Analytics>("/analytics");
+      return response.data;
     },
   });
 }

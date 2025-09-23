@@ -1,6 +1,11 @@
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:3001";
 
+// Utility function for adding delays
+function wait(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 // Functional error creator
 interface ApiError extends Error {
   status: number;
@@ -13,40 +18,7 @@ const createApiError = (message: string, status: number): Error => {
   return error;
 };
 
-async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
-  const url = `${API_BASE_URL}${endpoint}`;
-
-  try {
-    // Add a 5 second delay to test loading states
-    const [response] = await Promise.all([
-      fetch(url, {
-        headers: {
-          "Content-Type": "application/json",
-          ...options?.headers,
-        },
-        ...options,
-      }),
-      new Promise((resolve) => setTimeout(resolve, 500)),
-    ]);
-
-    if (!response.ok) {
-      throw createApiError(
-        `HTTP error! status: ${response.status}`,
-        response.status,
-      );
-    }
-
-    return await response.json();
-  } catch (error) {
-    if (error instanceof Error && error.name === "ApiError") {
-      throw error;
-    }
-    throw createApiError("Network error occurred", 0);
-  }
-}
-
-// Enhanced request function that returns both data and headers
-async function requestWithHeaders<T>(
+async function request<T>(
   endpoint: string,
   options?: RequestInit,
 ): Promise<{ data: T; headers: Headers }> {
@@ -54,16 +26,14 @@ async function requestWithHeaders<T>(
 
   try {
     // Add a 5 second delay to test loading states
-    const [response] = await Promise.all([
-      fetch(url, {
-        headers: {
-          "Content-Type": "application/json",
-          ...options?.headers,
-        },
-        ...options,
-      }),
-      new Promise((resolve) => setTimeout(resolve, 500)),
-    ]);
+    await wait(500);
+    const response = await fetch(url, {
+      headers: {
+        "Content-Type": "application/json",
+        ...options?.headers,
+      },
+      ...options,
+    });
 
     if (!response.ok) {
       throw createApiError(
@@ -84,7 +54,6 @@ async function requestWithHeaders<T>(
 
 export const api = {
   get: <T>(endpoint: string) => request<T>(endpoint),
-  getWithHeaders: <T>(endpoint: string) => requestWithHeaders<T>(endpoint),
   post: <T>(endpoint: string, data: unknown) =>
     request<T>(endpoint, {
       method: "POST",
@@ -116,7 +85,7 @@ export const userApi = {
       const users = await api.get<Array<{ id: string; name: string }>>(
         endpoint,
       );
-      return users.length === 0;
+      return users.data.length === 0;
     } catch (error) {
       // If API call fails, assume name is unique to avoid blocking user
       console.warn("Failed to check name uniqueness:", error);

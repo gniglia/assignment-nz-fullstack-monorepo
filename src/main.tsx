@@ -35,7 +35,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
               },
             },
             error: {
-              duration: 5000,
+              duration: 4000,
               iconTheme: {
                 primary: "hsl(var(--error))",
                 secondary: "hsl(var(--card-foreground))",

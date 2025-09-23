@@ -24,7 +24,6 @@ type DateRange = {
   endDate: string;
 };
 
-// Analytics header component with animations
 function AnalyticsHeader() {
   return (
     <motion.div

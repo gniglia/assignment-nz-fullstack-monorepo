@@ -55,23 +55,7 @@ export function EditUserModal({ user, children }: EditUserModalProps) {
       toast.success("User updated successfully!");
       handleOpenChange(false);
     } catch (error) {
-      // Check if it's a network error
-      const isNetworkError =
-        error instanceof Error && error.message.includes("Network");
-
-      if (isNetworkError) {
-        toast.error(
-          "Connection issue. Please check your internet and try again.",
-          {
-            duration: 5000,
-          },
-        );
-      } else {
-        toast.error("Failed to save user changes. Please try again.", {
-          duration: 4000,
-        });
-      }
-
+      toast.error("Failed to save user changes. Please try again.");
       console.error("Update user error:", error);
     }
   };

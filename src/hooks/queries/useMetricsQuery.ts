@@ -8,7 +8,8 @@ export function useMetricsQuery() {
   return useQuery({
     queryKey: queryKeys.metrics,
     queryFn: async (): Promise<Metric[]> => {
-      return await api.get<Metric[]>("/metrics");
+      const response = await api.get<Metric[]>("/metrics");
+      return response.data;
     },
   });
 }
