@@ -2,7 +2,7 @@ import { useState, useMemo, useCallback } from "react";
 import {
   useUsersQueryWithParamsAndTotal,
   type UserQueryParams,
-} from "./useApi";
+} from "./queries";
 import { useUserPreferencesStore } from "@/stores/userPreferencesStore";
 import type { SortOrder } from "@/types";
 

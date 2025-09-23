@@ -4,7 +4,7 @@ import { DateRangePicker } from "@/components/ui/DateRangePicker";
 import { EmptyDataState } from "@/components/ui/EmptyState";
 import { ChartsSkeleton } from "@/components/ui/SkeletonLoader";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
-import { useAnalytics } from "@/hooks/useApi";
+import { useAnalytics } from "@/hooks/queries";
 import {
   filterDataByDateRange,
   exportToCSV,

@@ -1,7 +1,7 @@
 import React from "react";
 import toast from "react-hot-toast";
 import type { User } from "@/types/api";
-import { useUpdateUser } from "@/hooks/useApi";
+import { useUpdateUser } from "@/hooks/queries";
 import {
   Dialog,
   DialogClose,

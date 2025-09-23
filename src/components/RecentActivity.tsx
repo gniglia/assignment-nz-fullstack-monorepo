@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/Card";
 import { Avatar } from "@/components/ui/Avatar";
-import { useUsersQueryWithParams } from "@/hooks/useApi";
+import { useUsersQueryWithParams } from "@/hooks/queries";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
 import { safeFormatDistanceToNow } from "@/utils/format";
 import { motion } from "framer-motion";

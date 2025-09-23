@@ -1,7 +1,7 @@
 import React from "react";
 import toast from "react-hot-toast";
 import type { User } from "@/types/api";
-import { useDeleteUser } from "@/hooks/useApi";
+import { useDeleteUser } from "@/hooks/queries";
 import {
   Dialog,
   DialogClose,

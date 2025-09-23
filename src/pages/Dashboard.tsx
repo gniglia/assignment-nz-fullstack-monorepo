@@ -1,4 +1,4 @@
-import { useMetrics } from "@/hooks/useApi";
+import { useMetrics } from "@/hooks/queries";
 import { EmptyDataState } from "@/components/ui/EmptyState";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
 import { MetricCard } from "@/components/metric-card";
@@ -17,7 +17,6 @@ const iconMap = {
   "trending-up": TrendingUp,
 };
 
-// Dashboard header component to avoid repetition
 function DashboardHeader() {
   return (
     <motion.div variants={fadeInUp} initial="hidden" animate="visible">

@@ -1,6 +1,6 @@
 import React from "react";
 import toast from "react-hot-toast";
-import { useCreateUser } from "@/hooks/useApi";
+import { useCreateUser } from "@/hooks/queries";
 import {
   Dialog,
   DialogClose,
