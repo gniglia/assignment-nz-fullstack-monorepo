@@ -1,23 +1,24 @@
-import { useState, useCallback } from "react";
+import React, { useState } from "react";
 import { useClickAway } from "@uidotdev/usehooks";
 import type { User } from "@/types/api";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Avatar } from "@/components/ui/Avatar";
-import { EditUserModal, DeleteUserModal } from "@/components/UserModals";
+import { EditUserModal, DeleteUserModal } from "@/components/user-modals";
 import { safeFormatDistanceToNow } from "@/utils/format";
+import { getStatusBadgeClasses, getRoleBadgeClasses } from "@/utils/badges";
 import { Pencil, Trash2, MoreVertical } from "lucide-react";
 
 type UserCardProps = {
   user: User;
 };
 
-function UserCard({ user }: UserCardProps) {
+const UserCard = React.memo(function UserCard({ user }: UserCardProps) {
   const [showActions, setShowActions] = useState(false);
 
-  const handleToggleActions = useCallback(() => {
+  const handleToggleActions = () => {
     setShowActions((prev) => !prev);
-  }, []);
+  };
 
   const dropdownRef = useClickAway<HTMLDivElement>((event) => {
     const target = event.target as Element;
@@ -34,32 +35,6 @@ function UserCard({ user }: UserCardProps) {
 
     setShowActions(false);
   });
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "active":
-        return "bg-green-100 text-green-800";
-      case "inactive":
-        return "bg-red-100 text-red-800";
-      case "pending":
-        return "bg-yellow-100 text-yellow-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  };
-
-  const getRoleColor = (role: string) => {
-    switch (role) {
-      case "admin":
-        return "bg-purple-100 text-purple-800";
-      case "moderator":
-        return "bg-blue-100 text-blue-800";
-      case "user":
-        return "bg-gray-100 text-gray-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  };
 
   return (
     <Card variant="elevated" className="relative">
@@ -110,18 +85,8 @@ function UserCard({ user }: UserCardProps) {
 
       {/* Status and Role badges */}
       <div className="flex flex-wrap gap-2 mt-4">
-        <span
-          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getRoleColor(
-            user.role,
-          )}`}
-        >
-          {user.role}
-        </span>
-        <span
-          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
-            user.status,
-          )}`}
-        >
+        <span className={getRoleBadgeClasses(user.role)}>{user.role}</span>
+        <span className={getStatusBadgeClasses(user.status)}>
           {user.status}
         </span>
       </div>
@@ -132,6 +97,6 @@ function UserCard({ user }: UserCardProps) {
       </div>
     </Card>
   );
-}
+});
 
 export { UserCard };

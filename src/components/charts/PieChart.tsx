@@ -1,3 +1,4 @@
+import React from "react";
 import {
   PieChart as RechartsPieChart,
   Pie,
@@ -7,6 +8,7 @@ import {
   Legend,
 } from "recharts";
 import { ChartWrapper } from "./ChartWrapper";
+import { chartTooltipStyle, chartMargin } from "./chartStyles";
 
 type PieChartData = {
   name: string;
@@ -30,7 +32,7 @@ const COLORS = [
   "#06b6d4",
 ];
 
-export function PieChart({
+export const PieChart = React.memo(function PieChart({
   data,
   title,
   isLoading = false,
@@ -47,7 +49,7 @@ export function PieChart({
       emptyMessage="No pie chart data available"
     >
       <ResponsiveContainer width="100%" height="100%">
-        <RechartsPieChart margin={{ top: 10, right: 10, left: 10, bottom: 10 }}>
+        <RechartsPieChart margin={chartMargin}>
           <Pie
             data={data}
             cx="50%"
@@ -63,18 +65,10 @@ export function PieChart({
               />
             ))}
           </Pie>
-          <Tooltip
-            contentStyle={{
-              backgroundColor: "hsl(var(--card))",
-              border: "1px solid hsl(var(--border))",
-              borderRadius: "8px",
-              boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-              color: "hsl(var(--card-foreground))",
-            }}
-          />
+          <Tooltip contentStyle={chartTooltipStyle} />
           <Legend />
         </RechartsPieChart>
       </ResponsiveContainer>
     </ChartWrapper>
   );
-}
+});

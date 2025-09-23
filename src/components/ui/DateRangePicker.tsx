@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState } from "react";
 import { Download } from "lucide-react";
 import { Button } from "./Button";
 import { Card } from "./Card";
@@ -26,54 +26,45 @@ export function DateRangePicker({
     endDate: "2024-12-31",
   });
 
-  const handleDateChange = useCallback(
-    (field: keyof DateRange, value: string) => {
-      const newDateRange = { ...dateRange, [field]: value };
+  const handleDateChange = (field: keyof DateRange, value: string) => {
+    const newDateRange = { ...dateRange, [field]: value };
 
-      // Validate date range
-      if (newDateRange.startDate && newDateRange.endDate) {
-        const startDate = new Date(newDateRange.startDate);
-        const endDate = new Date(newDateRange.endDate);
+    // Validate date range
+    if (newDateRange.startDate && newDateRange.endDate) {
+      const startDate = new Date(newDateRange.startDate);
+      const endDate = new Date(newDateRange.endDate);
 
-        // If start date is after end date, adjust the other date
-        if (startDate > endDate) {
-          if (field === "startDate") {
-            // If start date is after end date, set end date to start date
-            newDateRange.endDate = newDateRange.startDate;
-          } else {
-            // If end date is before start date, set start date to end date
-            newDateRange.startDate = newDateRange.endDate;
-          }
+      // If start date is after end date, adjust the other date
+      if (startDate > endDate) {
+        if (field === "startDate") {
+          // If start date is after end date, set end date to start date
+          newDateRange.endDate = newDateRange.startDate;
+        } else {
+          // If end date is before start date, set start date to end date
+          newDateRange.startDate = newDateRange.endDate;
         }
       }
+    }
 
-      setDateRange(newDateRange);
-      onDateRangeChange(newDateRange);
-    },
-    [dateRange, onDateRangeChange],
-  );
+    setDateRange(newDateRange);
+    onDateRangeChange(newDateRange);
+  };
 
-  const handleStartDateChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      handleDateChange("startDate", e.target.value);
-    },
-    [handleDateChange],
-  );
+  const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    handleDateChange("startDate", e.target.value);
+  };
 
-  const handleEndDateChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      handleDateChange("endDate", e.target.value);
-    },
-    [handleDateChange],
-  );
+  const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    handleDateChange("endDate", e.target.value);
+  };
 
-  const handleExportCSV = useCallback(() => {
+  const handleExportCSV = () => {
     onExport("csv");
-  }, [onExport]);
+  };
 
-  const handleExportJSON = useCallback(() => {
+  const handleExportJSON = () => {
     onExport("json");
-  }, [onExport]);
+  };
 
   return (
     <Card variant="elevated" className="p-4 sm:p-6 mb-8">

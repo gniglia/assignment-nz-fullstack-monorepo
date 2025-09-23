@@ -16,7 +16,7 @@ export function ModeToggle() {
   return (
     <Button
       variant="outline"
-      size="icon"
+      size="sm"
       onClick={handleThemeChange}
       className="h-9 w-9 relative overflow-hidden transition-all duration-300 hover:scale-105"
       aria-label={getLabel()}

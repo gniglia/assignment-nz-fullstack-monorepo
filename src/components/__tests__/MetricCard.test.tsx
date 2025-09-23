@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
-import { MetricCard } from "@/components/MetricCard";
+import { MetricCard } from "@/components/metric-card/MetricCard";
 import { Users, TrendingUp } from "lucide-react";
 
 describe("MetricCard", () => {

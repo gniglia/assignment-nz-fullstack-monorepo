@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState } from "react";
 import { useUsersServerSide } from "@/hooks/useUsersServerSide";
 import { useDebounce } from "@/hooks/useDebounce";
 import type { User } from "@/types/api";
@@ -22,10 +22,11 @@ import {
   EditUserModal,
   DeleteUserModal,
   AddUserModal,
-} from "@/components/UserModals";
+} from "@/components/user-modals";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
 import { Search, ArrowUpDown, Edit, Trash2 } from "lucide-react";
 import { formatRelativeTime } from "@/utils/format";
+import { getStatusBadgeClasses, getRoleBadgeClasses } from "@/utils/badges";
 
 // No props needed - all state is managed internally
 
@@ -85,35 +86,29 @@ function UsersTable() {
   // No need to sync current page - it's managed internally
 
   // Handle clear filters
-  const handleClearFilters = useCallback(() => {
+  const handleClearFilters = () => {
     clearFilters();
     setLocalSearchQuery("");
-  }, [clearFilters]);
+  };
 
   // Handle search input change
-  const handleSearchChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setLocalSearchQuery(e.target.value);
-    },
-    [],
-  );
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLocalSearchQuery(e.target.value);
+  };
 
   // Handle sort change from dropdown
-  const handleSortChange = useCallback(
-    (sortValue: string) => {
-      if (sortValue === "") {
-        // Reset to default (no sorting)
-        setSort("", "asc");
-      } else {
-        // Parse the sort value to extract field and order
-        const isDescending = sortValue.startsWith("-");
-        const field = isDescending ? sortValue.substring(1) : sortValue;
-        const order = isDescending ? "desc" : "asc";
-        setSort(field, order);
-      }
-    },
-    [setSort],
-  );
+  const handleSortChange = (sortValue: string) => {
+    if (sortValue === "") {
+      // Reset to default (no sorting)
+      setSort("", "asc");
+    } else {
+      // Parse the sort value to extract field and order
+      const isDescending = sortValue.startsWith("-");
+      const field = isDescending ? sortValue.substring(1) : sortValue;
+      const order = isDescending ? "desc" : "asc";
+      setSort(field, order);
+    }
+  };
 
   // Only show full loading screen for initial load, not for filter changes
   if (isLoading && !users) {
@@ -237,14 +232,14 @@ function UsersTable() {
       {/* Desktop Table View */}
       {isFetching ? (
         /* Loading spinner during filtering/sorting */
-        <div className="hidden md:block rounded-md border">
+        <div className="hidden md:block">
           <LoadingSpinner size="md" text="Loading users..." className="py-12" />
         </div>
       ) : users && users.length > 0 ? (
-        <div className="hidden md:block rounded-md border">
+        <div className="hidden md:block rounded-md border border-border/80 dark:border-border/60 shadow-sm dark:shadow-2xl dark:shadow-black/30">
           <Table>
             <TableHeader>
-              <TableRow>
+              <TableRow className="border-b-2 border-border dark:border-border/60">
                 <TableHead>Name</TableHead>
                 <TableHead>Email</TableHead>
                 <TableHead>Role</TableHead>
@@ -255,7 +250,10 @@ function UsersTable() {
             </TableHeader>
             <TableBody>
               {users.map((user: User) => (
-                <TableRow key={user.id}>
+                <TableRow
+                  key={user.id}
+                  className="border-b border-border/30 dark:border-border/40 hover:bg-muted/30 dark:hover:bg-muted/20 dark:hover:shadow-lg dark:hover:shadow-black/20 transition-all duration-200"
+                >
                   <TableCell>
                     <div className="flex items-center gap-3">
                       <Avatar
@@ -273,20 +271,14 @@ function UsersTable() {
                     {user.email}
                   </TableCell>
                   <TableCell>
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 capitalize">
+                    <span
+                      className={`${getRoleBadgeClasses(user.role)} capitalize`}
+                    >
                       {user.role}
                     </span>
                   </TableCell>
                   <TableCell>
-                    <span
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        user.status === "active"
-                          ? "bg-green-100 text-green-800"
-                          : user.status === "inactive"
-                          ? "bg-red-100 text-red-800"
-                          : "bg-yellow-100 text-yellow-800"
-                      }`}
-                    >
+                    <span className={getStatusBadgeClasses(user.status)}>
                       {user.status}
                     </span>
                   </TableCell>
@@ -299,7 +291,7 @@ function UsersTable() {
                     <div className="flex items-center space-x-3">
                       <EditUserModal user={user}>
                         <button
-                          className="p-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:text-blue-400 dark:hover:text-blue-300 dark:hover:bg-blue-900/20 rounded-md transition-all duration-200"
+                          className="p-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:text-blue-400 dark:hover:text-blue-300 dark:hover:bg-blue-900/20 rounded-md transition-all duration-200 hover:scale-105 dark:hover:shadow-md dark:hover:shadow-blue-500/20"
                           title="Edit user"
                         >
                           <Edit className="h-4 w-4" />
@@ -307,7 +299,7 @@ function UsersTable() {
                       </EditUserModal>
                       <DeleteUserModal user={user}>
                         <button
-                          className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-red-900/20 rounded-md transition-all duration-200"
+                          className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-red-900/20 rounded-md transition-all duration-200 hover:scale-105 dark:hover:shadow-md dark:hover:shadow-red-500/20"
                           title="Delete user"
                         >
                           <Trash2 className="h-4 w-4" />

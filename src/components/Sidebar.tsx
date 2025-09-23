@@ -1,6 +1,5 @@
 import { NavLink } from "react-router-dom";
 import { BarChart3, Home, Users as UsersIcon, X } from "lucide-react";
-import { useCallback } from "react";
 import { motion } from "framer-motion";
 
 const navigation = [
@@ -14,9 +13,9 @@ type SidebarProps = {
 };
 
 export function Sidebar({ onClose }: SidebarProps) {
-  const handleNavClick = useCallback(() => {
+  const handleNavClick = () => {
     onClose?.();
-  }, [onClose]);
+  };
 
   return (
     <motion.div

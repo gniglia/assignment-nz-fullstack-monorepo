@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import { useConditionalBodyLock } from "@/hooks/useConditionalBodyLock";
 import { Sidebar } from "@/components/Sidebar";
@@ -10,13 +10,13 @@ export function Layout() {
   // Lock body scroll when sidebar is open on mobile
   useConditionalBodyLock(isSidebarOpen);
 
-  const handleCloseSidebar = useCallback(() => {
+  const handleCloseSidebar = () => {
     setIsSidebarOpen(false);
-  }, []);
+  };
 
-  const handleOpenSidebar = useCallback(() => {
+  const handleOpenSidebar = () => {
     setIsSidebarOpen(true);
-  }, []);
+  };
 
   return (
     <div className="min-h-screen bg-background">

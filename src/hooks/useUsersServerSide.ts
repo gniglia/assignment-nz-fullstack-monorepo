@@ -86,7 +86,7 @@ export function useUsersServerSide() {
   const totalCount = result?.totalCount || 0;
   const totalPages = Math.ceil(totalCount / filters.pageSize);
 
-  // Action functions - memoized to prevent infinite re-renders
+  // Action functions - useCallback needed for useEffect dependencies
   const setSearchQuery = useCallback((searchQuery: string) => {
     setFilters((prev) => ({ ...prev, searchQuery, currentPage: 1 }));
   }, []);

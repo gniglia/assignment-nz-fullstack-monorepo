@@ -12,9 +12,11 @@ Objective
 
 Code Style and Structure
 
+- Never try to start the app itself (I have it running in a separate terminal).
+- Use `npx shadcn add` to add new shadcn components.
 - Use double quote over single quote for imports and strings.
 - Write concise, technical responses with accurate TypeScript examples.
-- Use functional, declarative programming. Avoid classes.
+- Use functional, declarative programming. Avoid classes/OOP.
 - Prefer iteration and modularization over duplication.
 - Use lowercase with dashes for directories (e.g., components/auth-wizard).
 - Favor named exports for components over default.

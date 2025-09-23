@@ -14,11 +14,36 @@ import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { motion, AnimatePresence } from "framer-motion";
 import { chartContainerVariants } from "@/lib/animations";
 import { TrendingUp } from "lucide-react";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 
 export function AnalyticsOverview() {
   const { data: analyticsData, isLoading, error } = useAnalytics();
   const [hoveredMetric, setHoveredMetric] = useState<string | null>(null);
+
+  // Memoize expensive calculations at the top level
+  const { totalValue, avgValue, maxValue, trend } = useMemo(() => {
+    if (!analyticsData || analyticsData.length === 0) {
+      return { totalValue: 0, avgValue: 0, maxValue: 0, trend: 0 };
+    }
+
+    const total = analyticsData.reduce((sum, item) => sum + item.value, 0);
+    const avg = total / analyticsData.length;
+    const max = Math.max(...analyticsData.map((item) => item.value));
+    const trendValue =
+      analyticsData.length > 1
+        ? ((analyticsData[analyticsData.length - 1].value -
+            analyticsData[0].value) /
+            analyticsData[0].value) *
+          100
+        : 0;
+
+    return {
+      totalValue: total,
+      avgValue: avg,
+      maxValue: max,
+      trend: trendValue,
+    };
+  }, [analyticsData]);
 
   return (
     <motion.div
@@ -79,24 +104,8 @@ export function AnalyticsOverview() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.3 }}
               >
-                {/* Calculate metrics for micro-interactions */}
+                {/* Use pre-calculated metrics for micro-interactions */}
                 {(() => {
-                  const totalValue = analyticsData.reduce(
-                    (sum, item) => sum + item.value,
-                    0,
-                  );
-                  const avgValue = totalValue / analyticsData.length;
-                  const maxValue = Math.max(
-                    ...analyticsData.map((item) => item.value),
-                  );
-                  const trend =
-                    analyticsData.length > 1
-                      ? ((analyticsData[analyticsData.length - 1].value -
-                          analyticsData[0].value) /
-                          analyticsData[0].value) *
-                        100
-                      : 0;
-
                   return (
                     <>
                       <motion.div
