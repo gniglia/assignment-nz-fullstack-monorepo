@@ -40,7 +40,12 @@ export default function Dashboard() {
 
   if (error) {
     return (
-      <div className="p-4 sm:p-6">
+      <motion.div
+        className="p-4 sm:p-6"
+        variants={staggerContainer}
+        initial="hidden"
+        animate="visible"
+      >
         <DashboardHeader />
         <div className="mt-8">
           <Alert variant="destructive">
@@ -49,7 +54,7 @@ export default function Dashboard() {
             </AlertDescription>
           </Alert>
         </div>
-      </div>
+      </motion.div>
     );
   }
 

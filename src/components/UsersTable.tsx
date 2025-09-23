@@ -49,7 +49,6 @@ function UsersTable() {
     setSort,
     setCurrentPage,
     clearFilters,
-    refetch,
   } = useUsersList();
 
   // Local search state for debouncing
@@ -99,16 +98,11 @@ function UsersTable() {
 
   if (error) {
     return (
-      <Card variant="elevated" className="p-6">
-        <Alert variant="destructive" className="mb-4">
-          <AlertDescription>
-            Failed to load users: {(error as Error).message}
-          </AlertDescription>
-        </Alert>
-        <div className="text-center">
-          <Button onClick={() => refetch()}>Try Again</Button>
-        </div>
-      </Card>
+      <Alert variant="destructive">
+        <AlertDescription>
+          Failed to load users: {(error as Error).message}
+        </AlertDescription>
+      </Alert>
     );
   }
 

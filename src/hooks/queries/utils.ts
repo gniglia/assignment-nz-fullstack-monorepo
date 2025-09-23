@@ -1,7 +1,7 @@
 import type { UserQueryParams } from "./types";
 
 // Functional helper to build query string from params
-export const buildQueryString = (params: UserQueryParams): string => {
+const buildQueryString = (params: UserQueryParams): string => {
   const searchParams = new URLSearchParams();
 
   // Add pagination params (convert to json-server format)
