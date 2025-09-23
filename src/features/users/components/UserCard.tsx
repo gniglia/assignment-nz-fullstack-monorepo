@@ -4,9 +4,15 @@ import type { User } from "@/types";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Avatar } from "@/components/ui/Avatar";
-import { EditUserModal, DeleteUserModal } from "@/components/user-modals";
-import { safeFormatDistanceToNow } from "@/utils/format";
-import { getStatusBadgeClasses, getRoleBadgeClasses } from "@/utils/badges";
+import {
+  EditUserModal,
+  DeleteUserModal,
+} from "@/features/users/components/user-modals";
+import { safeFormatDistanceToNow } from "@/utils/date";
+import {
+  getStatusBadgeClasses,
+  getRoleBadgeClasses,
+} from "@/features/users/utils/badges";
 import { Pencil, Trash2, MoreVertical } from "lucide-react";
 
 type UserCardProps = {

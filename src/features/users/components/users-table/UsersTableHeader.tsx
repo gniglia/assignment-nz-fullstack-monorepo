@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/Button";
-import { AddUserModal } from "@/components/user-modals";
+import { AddUserModal } from "@/features/users/components/user-modals";
 
 type UsersTableHeaderProps = {
   totalCount: number;

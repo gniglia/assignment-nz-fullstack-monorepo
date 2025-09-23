@@ -1,14 +1,14 @@
 import { useMetricsQuery } from "@/hooks/queries";
 import { EmptyDataState } from "@/components/ui/EmptyState";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
-import { MetricCard } from "@/components/metric-card";
-import { AnalyticsOverview } from "@/components/AnalyticsOverview";
-import { RecentActivity } from "@/components/RecentActivity";
+import { MetricCard } from "@/features/dashboard/components/metric-card";
+import { AnalyticsOverview } from "@/features/dashboard/components/AnalyticsOverview";
+import { RecentActivity } from "@/features/dashboard/components/RecentActivity";
 import { Users } from "lucide-react";
 import { MetricCardsSkeleton } from "@/components/ui/SkeletonLoader";
 import { motion } from "framer-motion";
-import { staggerContainer, fadeInUp, fadeInBottom } from "@/lib/animations";
-import { METRIC_ICONS } from "@/constants/metricIcons";
+import { staggerContainer, fadeInUp, fadeInBottom } from "@/utils/animations";
+import { METRIC_ICONS } from "@/features/dashboard/constants";
 
 function DashboardHeader() {
   return (

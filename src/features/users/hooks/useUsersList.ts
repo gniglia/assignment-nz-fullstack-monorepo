@@ -1,5 +1,5 @@
 import { useUsersListFilters } from "./useUsersListFilters";
-import { usePagination } from "./usePagination";
+import { usePagination } from "@/hooks/usePagination";
 import { useUsersListControls } from "./useUsersListControls";
 import { useUsersListQuery } from "./useUsersListQuery";
 

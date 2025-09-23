@@ -18,8 +18,8 @@ import { UserFormFields } from "./UserFormFields";
 import { useUserForm } from "./useUserForm";
 import { motion } from "framer-motion";
 import { Edit3 } from "lucide-react";
-import { sanitizeName } from "@/utils/nameSanitizer";
-import type { UserFormData } from "@/lib/validations/user";
+import { sanitizeName } from "@/features/users/utils/sanitizeName";
+import type { UserFormData } from "@/features/users/formSchema";
 
 type EditUserModalProps = {
   user: User;

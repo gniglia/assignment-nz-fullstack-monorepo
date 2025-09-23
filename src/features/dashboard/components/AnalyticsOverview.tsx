@@ -12,7 +12,7 @@ import { useAnalyticsQuery } from "@/hooks/queries";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { motion, AnimatePresence } from "framer-motion";
-import { chartContainerVariants } from "@/lib/animations";
+import { chartContainerVariants } from "@/utils/animations";
 import { TrendingUp } from "lucide-react";
 import { useState, useMemo } from "react";
 

@@ -1,4 +1,4 @@
-import { useUsersList } from "@/hooks/useUsersList";
+import { useUsersList } from "@/features/users/hooks/useUsersList";
 import { Card } from "@/components/ui/Card";
 import { Pagination } from "@/components/ui/Pagination";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";

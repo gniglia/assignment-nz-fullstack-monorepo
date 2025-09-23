@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { fadeInUp, staggerContainer } from "@/lib/animations";
+import { fadeInUp, staggerContainer } from "@/utils/animations";
 import {
   FormControl,
   FormField,
@@ -11,8 +11,8 @@ import {
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import type { UseFormReturn } from "react-hook-form";
-import type { UserFormData } from "@/lib/validations/user";
-import { ROLE_OPTIONS, STATUS_OPTIONS } from "@/constants/userOptions";
+import type { UserFormData } from "@/features/users/formSchema";
+import { ROLE_OPTIONS, STATUS_OPTIONS } from "@/features/users/contants";
 
 type UserFormFieldsProps = {
   form: UseFormReturn<UserFormData>; // React Hook Form instance

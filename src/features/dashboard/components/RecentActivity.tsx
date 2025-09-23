@@ -2,13 +2,13 @@ import { Card } from "@/components/ui/Card";
 import { Avatar } from "@/components/ui/Avatar";
 import { useUsersQueryWithParams } from "@/hooks/queries";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
-import { safeFormatDistanceToNow } from "@/utils/format";
+import { safeFormatDistanceToNow } from "@/utils/date";
 import { motion } from "framer-motion";
 import {
   fadeInRight,
   listItemVariants,
   staggerContainer,
-} from "@/lib/animations";
+} from "@/utils/animations";
 
 type ActivityItemProps = {
   id: string;

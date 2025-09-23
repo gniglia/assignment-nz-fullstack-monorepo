@@ -17,8 +17,8 @@ import { UserFormFields } from "./UserFormFields";
 import { useUserForm } from "./useUserForm";
 import { motion } from "framer-motion";
 import { Plus } from "lucide-react";
-import { sanitizeName } from "@/utils/nameSanitizer";
-import type { UserFormData } from "@/lib/validations/user";
+import { sanitizeName } from "@/features/users/utils/sanitizeName";
+import type { UserFormData } from "@/features/users/formSchema";
 
 type AddUserModalProps = {
   children: React.ReactNode;
@@ -39,7 +39,7 @@ export function AddUserModal({ children }: AddUserModalProps) {
     try {
       // Sanitize the name before validation and creation
       const sanitizedName = sanitizeName(data.name);
-      
+
       // Validate email uniqueness
       const isUnique = await validateEmailUniqueness(data.email);
       if (!isUnique) return;

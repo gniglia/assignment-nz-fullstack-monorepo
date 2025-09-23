@@ -1,9 +1,15 @@
 import type { User } from "@/types";
 import { TableCell, TableRow } from "@/components/ui/Table";
 import { Avatar } from "@/components/ui/Avatar";
-import { EditUserModal, DeleteUserModal } from "@/components/user-modals";
-import { formatRelativeTime } from "@/utils/format";
-import { getStatusBadgeClasses, getRoleBadgeClasses } from "@/utils/badges";
+import {
+  EditUserModal,
+  DeleteUserModal,
+} from "@/features/users/components/user-modals";
+import { formatRelativeTime } from "@/utils/date";
+import {
+  getStatusBadgeClasses,
+  getRoleBadgeClasses,
+} from "@/features/users/utils/badges";
 import { Edit, Trash2 } from "lucide-react";
 
 type UsersTableRowProps = {

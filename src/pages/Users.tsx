@@ -1,6 +1,6 @@
-import { UsersTable } from "@/components/users-table/UsersTable";
+import { UsersTable } from "@/features/users/components/users-table/UsersTable";
 import { motion } from "framer-motion";
-import { staggerContainer, fadeInUp, fadeInBottom } from "@/lib/animations";
+import { staggerContainer, fadeInUp, fadeInBottom } from "@/utils/animations";
 import { Filter, Search, Settings } from "lucide-react";
 
 function UsersHeader() {

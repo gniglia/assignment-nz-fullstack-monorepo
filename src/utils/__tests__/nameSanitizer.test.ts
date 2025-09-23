@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { sanitizeName } from "../nameSanitizer";
+import { sanitizeName } from "../../features/users/utils/sanitizeName";
 
 describe("sanitizeName", () => {
   it("should capitalize first letter of each word", () => {

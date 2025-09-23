@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import type { SortOrder } from "./queries/types";
+import type { SortOrder } from "@/types/queries";
 
 type UserListFilters = {
   searchQuery: string;

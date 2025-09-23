@@ -7,20 +7,21 @@ import {
   ROLE_FILTER_OPTIONS,
   STATUS_FILTER_OPTIONS,
   SORT_OPTIONS,
-} from "@/constants/userOptions";
+} from "@/features/users/contants";
+import { SortOrder } from "@/types/queries";
 
 type UsersTableFiltersProps = {
   searchQuery: string;
   selectedRole: string;
   selectedStatus: string;
   sortField: string;
-  sortOrder: "asc" | "desc";
+  sortOrder: SortOrder;
   isLoading: boolean;
   isFetching: boolean;
   onSearchChange: (query: string) => void;
   onRoleChange: (role: string) => void;
   onStatusChange: (status: string) => void;
-  onSortChange: (field: string, order: "asc" | "desc") => void;
+  onSortChange: (field: string, order: SortOrder) => void;
 };
 
 export function UsersTableFilters({

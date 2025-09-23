@@ -1,5 +1,10 @@
 import { useState } from "react";
-import { LineChart, BarChart, PieChart, AreaChart } from "@/components/charts";
+import {
+  LineChart,
+  BarChart,
+  PieChart,
+  AreaChart,
+} from "@/features/analytics/components/charts";
 import { DateRangePicker } from "@/components/ui/DateRangePicker";
 import { EmptyDataState } from "@/components/ui/EmptyState";
 import { ChartsSkeleton } from "@/components/ui/SkeletonLoader";
@@ -10,13 +15,13 @@ import {
   exportToCSV,
   exportToJSON,
   getDefaultDateRange,
-} from "@/utils/analytics";
+} from "@/features/analytics/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   staggerContainer,
   fadeInUp,
   chartContainerVariants,
-} from "@/lib/animations";
+} from "@/utils/animations";
 import { BarChart3, TrendingUp, Activity } from "lucide-react";
 
 type DateRange = {

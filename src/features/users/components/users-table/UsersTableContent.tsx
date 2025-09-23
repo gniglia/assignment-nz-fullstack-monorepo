@@ -7,7 +7,7 @@ import {
   TableRow,
 } from "@/components/ui/Table";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
-import { UserCard } from "@/components/UserCard";
+import { UserCard } from "@/features/users/components/UserCard";
 import { UsersTableRow } from "./UsersTableRow";
 
 type UsersTableContentProps = {

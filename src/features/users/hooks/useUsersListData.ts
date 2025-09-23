@@ -1,6 +1,6 @@
 import { useMemo } from "react";
-import { useUsersQueryWithParamsAndTotal } from "./queries";
-import { buildQueryParams } from "./queries/queryParamsBuilder";
+import { useUsersQueryWithParamsAndTotal } from "../../../hooks/queries";
+import { buildQueryParams } from "../../../hooks/queries/queryParamsBuilder";
 
 type UserListFilters = {
   searchQuery: string;

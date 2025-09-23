@@ -7,7 +7,7 @@ import {
   editUserFormSchema,
   addUserFormSchema,
   type UserFormData,
-} from "@/lib/validations/user";
+} from "@/features/users/formSchema";
 import type { User } from "@/types";
 
 export function useUserForm(user?: User) {

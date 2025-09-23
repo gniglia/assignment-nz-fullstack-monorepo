@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/Card";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
 import { motion, AnimatePresence } from "framer-motion";
-import { chartContainerVariants } from "@/lib/animations";
+import { chartContainerVariants } from "@/utils/animations";
 
 type ChartWrapperProps = {
   title?: string;
