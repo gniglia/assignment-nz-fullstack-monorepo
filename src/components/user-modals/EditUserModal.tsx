@@ -18,6 +18,7 @@ import { UserFormFields } from "./UserFormFields";
 import { useUserForm } from "./useUserForm";
 import { motion } from "framer-motion";
 import { Edit3 } from "lucide-react";
+import type { UserFormData } from "@/lib/validations/user";
 
 type EditUserModalProps = {
   user: User;
@@ -34,7 +35,7 @@ export function EditUserModal({ user, children }: EditUserModalProps) {
     handleOpenChange,
   } = useUserForm(user);
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: UserFormData) => {
     try {
       // Validate name uniqueness if it has changed
       if (data.name !== user.name) {

@@ -2,10 +2,14 @@ const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:3001";
 
 // Functional error creator
+interface ApiError extends Error {
+  status: number;
+}
+
 const createApiError = (message: string, status: number): Error => {
   const error = new Error(message);
   error.name = "ApiError";
-  (error as any).status = status;
+  (error as ApiError).status = status;
   return error;
 };
 

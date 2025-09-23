@@ -7,6 +7,10 @@ type SelectOption = {
   label: string;
 };
 
+type SelectField = {
+  onChange?: (value: string) => void;
+};
+
 type SelectProps = {
   options: SelectOption[];
   value?: string;
@@ -28,11 +32,11 @@ function Select({
 }: SelectProps) {
   // Try to get form field context, but don't fail if not in a form
   let formError = null;
-  let field = {};
+  let field: SelectField = {};
   try {
     const formField = useFormField();
     formError = formField.error;
-    field = formField;
+    field = formField as SelectField;
   } catch {
     // Not in a form context, use empty field
   }

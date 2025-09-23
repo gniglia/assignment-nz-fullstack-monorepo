@@ -9,9 +9,7 @@ type DateRange = {
 };
 
 type DateRangePickerProps = {
-  // eslint-disable-next-line no-unused-vars
   onDateRangeChange: (dateRange: DateRange) => void;
-  // eslint-disable-next-line no-unused-vars
   onExport: (format: "csv" | "json") => void;
   isLoading?: boolean;
 };

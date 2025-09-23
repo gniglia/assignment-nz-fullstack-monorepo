@@ -23,6 +23,7 @@ const DialogOverlay = React.forwardRef<
       className,
     )}
     style={{ backdropFilter: "blur(4px)" }}
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     {...(props as any)}
   />
 ));
@@ -40,6 +41,7 @@ const DialogContent = React.forwardRef<
         "fixed left-1/2 top-1/2 z-50 grid w-full max-w-lg gap-4 border border-gray-800 dark:border-gray-700 bg-background p-6 shadow-lg sm:rounded-lg",
         className,
       )}
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       {...(props as any)}
       asChild
     >
@@ -90,6 +92,7 @@ const DialogHeader = ({
     initial={{ opacity: 0, y: -10 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ delay: 0.1, duration: 0.3 }}
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     {...(props as any)}
   />
 );
@@ -107,6 +110,7 @@ const DialogFooter = ({
     initial={{ opacity: 0, y: 10 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ delay: 0.2, duration: 0.3 }}
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     {...(props as any)}
   />
 );
@@ -122,6 +126,7 @@ const DialogTitle = React.forwardRef<
       "text-lg font-semibold leading-none tracking-tight",
       className,
     )}
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     {...(props as any)}
   />
 ));
@@ -134,6 +139,7 @@ const DialogDescription = React.forwardRef<
   <DialogPrimitive.Description
     ref={ref}
     className={cn("text-sm text-muted-foreground", className)}
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     {...(props as any)}
   />
 ));

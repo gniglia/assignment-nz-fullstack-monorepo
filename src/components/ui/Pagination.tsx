@@ -5,7 +5,7 @@ import { cn } from "./utils";
 type PaginationProps = {
   currentPage: number;
   totalPages: number;
-  onPageChange: (pageNumber: number) => void; // eslint-disable-line no-unused-vars
+  onPageChange: (pageNumber: number) => void;
   showFirstLast?: boolean;
   showPrevNext?: boolean;
   maxVisiblePages?: number;

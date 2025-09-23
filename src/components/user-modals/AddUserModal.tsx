@@ -17,6 +17,7 @@ import { UserFormFields } from "./UserFormFields";
 import { useUserForm } from "./useUserForm";
 import { motion } from "framer-motion";
 import { Plus } from "lucide-react";
+import type { UserFormData } from "@/lib/validations/user";
 
 type AddUserModalProps = {
   children: React.ReactNode;
@@ -33,7 +34,7 @@ export function AddUserModal({ children }: AddUserModalProps) {
     resetForm,
   } = useUserForm();
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: UserFormData) => {
     try {
       // Validate name uniqueness
       const isUnique = await validateNameUniqueness(data.name);

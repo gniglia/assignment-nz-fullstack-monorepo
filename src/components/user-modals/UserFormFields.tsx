@@ -10,9 +10,11 @@ import {
 } from "@/components/ui/Form";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
+import type { UseFormReturn } from "react-hook-form";
+import type { UserFormData } from "@/lib/validations/user";
 
 type UserFormFieldsProps = {
-  form: any; // React Hook Form instance
+  form: UseFormReturn<UserFormData>; // React Hook Form instance
   isFormDisabled: boolean;
 };
 

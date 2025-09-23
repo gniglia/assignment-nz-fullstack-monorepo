@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import * as React from "react";
 import type { FieldPath, FieldValues, ControllerProps } from "react-hook-form";
 import { Controller, FormProvider, useFormContext } from "react-hook-form";
@@ -99,7 +100,8 @@ const FormControl = React.forwardRef<
   React.ElementRef<"div">,
   React.ComponentPropsWithoutRef<"div">
 >(({ ...props }, ref) => {
-  const { error, formItemId, formDescriptionId, formMessageId } = useFormField();
+  const { error, formItemId, formDescriptionId, formMessageId } =
+    useFormField();
 
   return (
     <div
