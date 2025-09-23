@@ -30,7 +30,7 @@ function UsersTable() {
     clearFilters();
   };
 
-  // Only show full loading screen for initial load, not for filter changes
+  // Only show loading for initial load, not for background refetches
   if (isLoading && !users) {
     return (
       <Card variant="elevated" className="p-6">

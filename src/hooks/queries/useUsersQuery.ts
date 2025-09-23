@@ -1,13 +1,18 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/utils/api";
 import type { User, UpdateUserData, CreateUserData } from "@/types";
-import { queryKeys, type UserQueryParams } from "./types";
-import { buildEndpoint } from "./utils";
+import type { UserQueryParams } from "./types";
+import {
+  buildEndpoint,
+  userQueryKeys,
+  optimisticUserUpdates,
+  userQueryManager,
+} from "./utils";
 
 // Custom hook for fetching users with client-side filtering, sorting, and pagination
 export function useUsersQueryWithParams(params: UserQueryParams = {}) {
   return useQuery({
-    queryKey: [...queryKeys.users, "filtered", params],
+    queryKey: userQueryKeys.filtered(params),
     queryFn: async (): Promise<User[]> => {
       const endpoint = buildEndpoint(params);
       const response = await api.get<User[]>(endpoint);
@@ -19,7 +24,7 @@ export function useUsersQueryWithParams(params: UserQueryParams = {}) {
 // Enhanced hook that returns both users and total count from json-server headers
 export function useUsersQueryWithParamsAndTotal(params: UserQueryParams = {}) {
   return useQuery({
-    queryKey: [...queryKeys.users, "filtered-with-total", params],
+    queryKey: userQueryKeys.filteredWithTotal(params),
     queryFn: async (): Promise<{ users: User[]; totalCount: number }> => {
       const endpoint = buildEndpoint(params);
 
@@ -33,7 +38,42 @@ export function useUsersQueryWithParamsAndTotal(params: UserQueryParams = {}) {
   });
 }
 
-// Custom hook for updating a user
+// Shared types for optimistic updates
+type OptimisticContext = {
+  previousUsers?: User[];
+  previousUsersWithTotal?: { users: User[]; totalCount: number };
+};
+
+// Helper function to get previous data for rollback
+function getPreviousData(
+  queryClient: ReturnType<typeof useQueryClient>,
+): OptimisticContext {
+  return {
+    previousUsers: queryClient.getQueryData<User[]>(userQueryKeys.all),
+    previousUsersWithTotal: queryClient.getQueryData<{
+      users: User[];
+      totalCount: number;
+    }>(userQueryKeys.filteredWithTotal({})),
+  };
+}
+
+// Helper function to rollback optimistic updates
+function rollbackOptimisticUpdates(
+  queryClient: ReturnType<typeof useQueryClient>,
+  context: OptimisticContext,
+) {
+  if (context.previousUsers) {
+    queryClient.setQueryData(userQueryKeys.all, context.previousUsers);
+  }
+  if (context.previousUsersWithTotal) {
+    queryClient.setQueryData(
+      userQueryKeys.filteredWithTotal({}),
+      context.previousUsersWithTotal,
+    );
+  }
+}
+
+// Optimistic Update User Mutation
 export function useUpdateUserMutation() {
   const queryClient = useQueryClient();
 
@@ -42,14 +82,56 @@ export function useUpdateUserMutation() {
       const response = await api.put<User>(`/users/${id}`, userData);
       return response.data;
     },
-    onSuccess: () => {
-      // Invalidate users list to ensure consistency
-      queryClient.invalidateQueries({ queryKey: queryKeys.users });
+    onMutate: async (updatedUserData): Promise<OptimisticContext> => {
+      await userQueryManager.cancelAllQueries(queryClient);
+      const context = getPreviousData(queryClient);
+
+      // Update all user queries optimistically
+      const updateUserInList = (users: User[]) =>
+        users.map((user) =>
+          user.id === updatedUserData.id
+            ? {
+                ...user,
+                ...updatedUserData,
+                updatedAt: new Date().toISOString(),
+              }
+            : user,
+        );
+
+      queryClient.setQueryData<User[]>(userQueryKeys.all, (old) =>
+        old ? updateUserInList(old) : old,
+      );
+
+      queryClient.setQueriesData<User[]>(
+        { queryKey: userQueryKeys.filtered({}) },
+        (old) => (old ? updateUserInList(old) : old),
+      );
+
+      queryClient.setQueriesData<{ users: User[]; totalCount: number }>(
+        { queryKey: userQueryKeys.filteredWithTotal({}) },
+        (old) =>
+          old
+            ? {
+                ...old,
+                users: updateUserInList(old.users),
+              }
+            : old,
+      );
+
+      return context;
+    },
+    onError: (err, _updatedUserData, context) => {
+      if (context) rollbackOptimisticUpdates(queryClient, context);
+      console.error("Update user error:", err);
+    },
+    onSettled: () => {
+      // Update mutation settled - invalidating queries for background refresh
+      userQueryManager.invalidateAllQueries(queryClient);
     },
   });
 }
 
-// Custom hook for creating a user
+// Optimistic Create User Mutation
 export function useCreateUserMutation() {
   const queryClient = useQueryClient();
 
@@ -58,14 +140,58 @@ export function useCreateUserMutation() {
       const response = await api.post<User>("/users", userData);
       return response.data;
     },
-    onSuccess: () => {
-      // Invalidate users list to ensure consistency
-      queryClient.invalidateQueries({ queryKey: queryKeys.users });
+    onMutate: async (newUserData): Promise<OptimisticContext> => {
+      await userQueryManager.cancelAllQueries(queryClient);
+      const context = getPreviousData(queryClient);
+
+      // Create optimistic user with temporary ID
+      const optimisticUser: User = {
+        ...newUserData,
+        id: `temp-${Date.now()}`,
+        createdAt: newUserData.createdAt || new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+
+      // Update all user queries optimistically using utility function
+      queryClient.setQueryData<User[]>(userQueryKeys.all, (old) =>
+        old
+          ? optimisticUserUpdates.addUser(old, optimisticUser)
+          : [optimisticUser],
+      );
+
+      queryClient.setQueriesData<User[]>(
+        { queryKey: userQueryKeys.filtered({}) },
+        (old) =>
+          old
+            ? optimisticUserUpdates.addUser(old, optimisticUser)
+            : [optimisticUser],
+      );
+
+      queryClient.setQueriesData<{ users: User[]; totalCount: number }>(
+        { queryKey: userQueryKeys.filteredWithTotal({}) },
+        (old) =>
+          old
+            ? {
+                users: optimisticUserUpdates.addUser(old.users, optimisticUser),
+                totalCount: old.totalCount + 1,
+              }
+            : { users: [optimisticUser], totalCount: 1 },
+      );
+
+      return context;
+    },
+    onError: (err, _newUserData, context) => {
+      if (context) rollbackOptimisticUpdates(queryClient, context);
+      console.error("Create user error:", err);
+    },
+    onSettled: () => {
+      // Create mutation settled - invalidating queries for background refresh
+      userQueryManager.invalidateAllQueries(queryClient);
     },
   });
 }
 
-// Custom hook for deleting a user
+// Optimistic Delete User Mutation
 export function useDeleteUserMutation() {
   const queryClient = useQueryClient();
 
@@ -74,9 +200,40 @@ export function useDeleteUserMutation() {
       await api.delete(`/users/${id}`);
       return id;
     },
-    onSuccess: () => {
-      // Invalidate users list
-      queryClient.invalidateQueries({ queryKey: queryKeys.users });
+    onMutate: async (userId): Promise<OptimisticContext> => {
+      await userQueryManager.cancelAllQueries(queryClient);
+      const context = getPreviousData(queryClient);
+
+      // Update all user queries optimistically using utility function
+      queryClient.setQueryData<User[]>(userQueryKeys.all, (old) =>
+        old ? optimisticUserUpdates.removeUser(old, userId) : old,
+      );
+
+      queryClient.setQueriesData<User[]>(
+        { queryKey: userQueryKeys.filtered({}) },
+        (old) => (old ? optimisticUserUpdates.removeUser(old, userId) : old),
+      );
+
+      queryClient.setQueriesData<{ users: User[]; totalCount: number }>(
+        { queryKey: userQueryKeys.filteredWithTotal({}) },
+        (old) =>
+          old
+            ? {
+                users: optimisticUserUpdates.removeUser(old.users, userId),
+                totalCount: Math.max(0, old.totalCount - 1),
+              }
+            : old,
+      );
+
+      return context;
+    },
+    onError: (err, _userId, context) => {
+      if (context) rollbackOptimisticUpdates(queryClient, context);
+      console.error("Delete user error:", err);
+    },
+    onSettled: () => {
+      // Delete mutation settled - invalidating queries for background refresh
+      userQueryManager.invalidateAllQueries(queryClient);
     },
   });
 }

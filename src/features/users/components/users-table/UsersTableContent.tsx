@@ -34,17 +34,15 @@ export function UsersTableContent({
 
   // Desktop Table View
   const renderDesktopView = () => {
-    if (isFetching) {
-      return (
-        <div className="hidden md:block">
-          <LoadingSpinner size="md" text="Loading users..." className="py-12" />
-        </div>
-      );
-    }
-
     if (users && users.length > 0) {
       return (
-        <div className="hidden md:block rounded-md border border-border/80 dark:border-border/60 shadow-sm dark:shadow-2xl dark:shadow-black/30">
+        <div className="hidden md:block rounded-md border border-border/80 dark:border-border/60 shadow-sm dark:shadow-2xl dark:shadow-black/30 relative">
+          {/* Subtle loading indicator for background refetches */}
+          {isFetching && (
+            <div className="absolute top-2 right-2 z-10">
+              <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse shadow-lg"></div>
+            </div>
+          )}
           <Table>
             <TableHeader>
               <TableRow className="border-b-2 border-border dark:border-border/60">
@@ -66,6 +64,15 @@ export function UsersTableContent({
       );
     }
 
+    // Only show loading spinner if there are no users at all (initial load)
+    if (isFetching && (!users || users.length === 0)) {
+      return (
+        <div className="hidden md:block">
+          <LoadingSpinner size="md" text="Loading users..." className="py-12" />
+        </div>
+      );
+    }
+
     return (
       <div className="text-center text-muted-foreground py-12">
         <p className="text-lg">{noResultsMessage}</p>
@@ -75,22 +82,29 @@ export function UsersTableContent({
 
   // Mobile Card View
   const renderMobileView = () => {
-    if (isFetching) {
+    if (users && users.length > 0) {
+      return (
+        <div className="md:hidden space-y-4 relative">
+          {/* Subtle loading indicator for background refetches */}
+          {isFetching && (
+            <div className="absolute top-2 right-2 z-10">
+              <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse shadow-lg"></div>
+            </div>
+          )}
+          {users.map((user: User) => (
+            <UserCard key={user.id} user={user} />
+          ))}
+        </div>
+      );
+    }
+
+    // Only show loading spinner if there are no users at all (initial load)
+    if (isFetching && (!users || users.length === 0)) {
       return (
         <div className="md:hidden">
           <div className="text-center py-12">
             <LoadingSpinner size="md" text="Loading users..." />
           </div>
-        </div>
-      );
-    }
-
-    if (users && users.length > 0) {
-      return (
-        <div className="md:hidden space-y-4">
-          {users.map((user: User) => (
-            <UserCard key={user.id} user={user} />
-          ))}
         </div>
       );
     }

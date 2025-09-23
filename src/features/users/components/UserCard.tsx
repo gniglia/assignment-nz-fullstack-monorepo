@@ -26,6 +26,10 @@ const UserCard = React.memo(function UserCard({ user }: UserCardProps) {
     setShowActions((prev) => !prev);
   };
 
+  const handleCloseActions = () => {
+    setShowActions(false);
+  };
+
   const dropdownRef = useClickAway<HTMLDivElement>((event) => {
     const target = event.target as Element;
 
@@ -72,13 +76,13 @@ const UserCard = React.memo(function UserCard({ user }: UserCardProps) {
 
           {showActions && (
             <div className="absolute right-0 top-8 bg-card border border-border rounded-lg shadow-lg z-20 min-w-[140px] overflow-hidden">
-              <EditUserModal user={user}>
+              <EditUserModal user={user} onClose={handleCloseActions}>
                 <button className="flex items-center w-full px-4 py-3 text-sm text-foreground hover:bg-accent transition-all duration-200 group">
                   <Pencil className="h-4 w-4 mr-3 transition-transform duration-200 group-hover:scale-110" />
                   Edit
                 </button>
               </EditUserModal>
-              <DeleteUserModal user={user}>
+              <DeleteUserModal user={user} onClose={handleCloseActions}>
                 <button className="flex items-center w-full px-4 py-3 text-sm text-destructive hover:bg-destructive/10 transition-all duration-200 group">
                   <Trash2 className="h-4 w-4 mr-3 transition-transform duration-200 group-hover:scale-110" />
                   Delete

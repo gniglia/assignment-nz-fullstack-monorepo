@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
@@ -15,7 +15,7 @@ export function useUserForm(user?: User) {
   const [isOpen, setIsOpen] = useState(false);
 
   // Extract default values logic to avoid repetition
-  const getDefaultValues = (): UserFormData => {
+  const getDefaultValues = useCallback((): UserFormData => {
     return user
       ? {
           name: user.name,
@@ -29,12 +29,19 @@ export function useUserForm(user?: User) {
           role: "user",
           status: "active",
         };
-  };
+  }, [user]);
 
   const form = useForm<UserFormData>({
     resolver: zodResolver(user ? editUserFormSchema : addUserFormSchema),
     defaultValues: getDefaultValues(),
   });
+
+  // Reset form when user data changes (for optimistic updates)
+  useEffect(() => {
+    if (user) {
+      form.reset(getDefaultValues());
+    }
+  }, [user, form, getDefaultValues]);
 
   const validateEmailUniqueness = async (email: string) => {
     if (!email.trim()) return true;

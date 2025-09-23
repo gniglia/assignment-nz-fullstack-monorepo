@@ -24,9 +24,10 @@ import type { UserFormData } from "@/features/users/formSchema";
 type EditUserModalProps = {
   user: User;
   children: React.ReactNode;
+  onClose?: () => void;
 };
 
-export function EditUserModal({ user, children }: EditUserModalProps) {
+export function EditUserModal({ user, children, onClose }: EditUserModalProps) {
   const updateUserMutation = useUpdateUserMutation();
   const {
     form,
@@ -37,39 +38,51 @@ export function EditUserModal({ user, children }: EditUserModalProps) {
   } = useUserForm(user);
 
   const onSubmit = async (data: UserFormData) => {
-    try {
-      // Sanitize the name before validation and update
-      const sanitizedName = sanitizeName(data.name);
+    // Sanitize the name before validation and update
+    const sanitizedName = sanitizeName(data.name);
 
-      // Validate email uniqueness if it has changed
-      if (data.email !== user.email) {
-        const isUnique = await validateEmailUniqueness(data.email);
-        if (!isUnique) return;
-      }
-
-      // Preserve existing fields that aren't in the form
-      const updateData = {
-        ...user, // Start with existing user data
-        ...data, // Override with form data
-        name: sanitizedName, // Use sanitized name
-        id: user.id, // Ensure ID is preserved
-        updatedAt: new Date().toISOString(), // Update updatedAt timestamp
-      };
-
-      await updateUserMutation.mutateAsync(updateData);
-      toast.success("User updated successfully!");
-      handleOpenChange(false);
-    } catch (error) {
-      toast.error("Failed to save user changes. Please try again.");
-      console.error("Update user error:", error);
+    // Validate email uniqueness if it has changed
+    if (data.email !== user.email) {
+      const isUnique = await validateEmailUniqueness(data.email);
+      if (!isUnique) return;
     }
+
+    // Preserve existing fields that aren't in the form
+    const updateData = {
+      ...user, // Start with existing user data
+      ...data, // Override with form data
+      name: sanitizedName, // Use sanitized name
+      id: user.id, // Ensure ID is preserved
+      updatedAt: new Date().toISOString(), // Update updatedAt timestamp
+    };
+
+    // Close modal immediately after optimistic update
+    handleOpenChange(false);
+    onClose?.();
+
+    // Perform the mutation (optimistic update happens in onMutate)
+    updateUserMutation.mutate(updateData, {
+      onSuccess: () => {
+        toast.success("User updated successfully!");
+      },
+      onError: () => {
+        toast.error("Failed to save user changes. Please try again.");
+      },
+    });
   };
 
   const isSubmitting = updateUserMutation.isPending;
   const isFormDisabled = isSubmitting || isValidating;
 
+  const handleDialogOpenChange = (open: boolean) => {
+    handleOpenChange(open);
+    if (!open) {
+      onClose?.();
+    }
+  };
+
   return (
-    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+    <Dialog open={isOpen} onOpenChange={handleDialogOpenChange}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px] shadow-xl">
         <DialogHeader>
