@@ -4,7 +4,7 @@ import { z } from "zod";
 const ROLES = ["admin", "user", "moderator"] as const;
 const STATUSES = ["active", "inactive", "pending"] as const;
 
-// Base schema without name uniqueness validation
+// Base schema without email uniqueness validation
 const baseUserFormSchema = z.object({
   name: z
     .string()
@@ -32,7 +32,7 @@ const baseUserFormSchema = z.object({
 // Schema for editing existing users (basic validation, uniqueness handled separately)
 export const editUserFormSchema = baseUserFormSchema;
 
-// Schema for adding new users (includes name uniqueness validation)
+// Schema for adding new users (includes email uniqueness validation)
 export const addUserFormSchema = baseUserFormSchema.refine(
   (data) => data.name.trim().length > 0,
   {

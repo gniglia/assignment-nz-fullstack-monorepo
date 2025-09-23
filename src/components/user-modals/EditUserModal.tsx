@@ -18,6 +18,7 @@ import { UserFormFields } from "./UserFormFields";
 import { useUserForm } from "./useUserForm";
 import { motion } from "framer-motion";
 import { Edit3 } from "lucide-react";
+import { sanitizeName } from "@/utils/nameSanitizer";
 import type { UserFormData } from "@/lib/validations/user";
 
 type EditUserModalProps = {
@@ -31,15 +32,18 @@ export function EditUserModal({ user, children }: EditUserModalProps) {
     form,
     isValidating,
     isOpen,
-    validateNameUniqueness,
+    validateEmailUniqueness,
     handleOpenChange,
   } = useUserForm(user);
 
   const onSubmit = async (data: UserFormData) => {
     try {
-      // Validate name uniqueness if it has changed
-      if (data.name !== user.name) {
-        const isUnique = await validateNameUniqueness(data.name);
+      // Sanitize the name before validation and update
+      const sanitizedName = sanitizeName(data.name);
+
+      // Validate email uniqueness if it has changed
+      if (data.email !== user.email) {
+        const isUnique = await validateEmailUniqueness(data.email);
         if (!isUnique) return;
       }
 
@@ -47,6 +51,7 @@ export function EditUserModal({ user, children }: EditUserModalProps) {
       const updateData = {
         ...user, // Start with existing user data
         ...data, // Override with form data
+        name: sanitizedName, // Use sanitized name
         id: user.id, // Ensure ID is preserved
         updatedAt: new Date().toISOString(), // Update updatedAt timestamp
       };

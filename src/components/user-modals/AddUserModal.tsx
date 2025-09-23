@@ -17,6 +17,7 @@ import { UserFormFields } from "./UserFormFields";
 import { useUserForm } from "./useUserForm";
 import { motion } from "framer-motion";
 import { Plus } from "lucide-react";
+import { sanitizeName } from "@/utils/nameSanitizer";
 import type { UserFormData } from "@/lib/validations/user";
 
 type AddUserModalProps = {
@@ -29,21 +30,25 @@ export function AddUserModal({ children }: AddUserModalProps) {
     form,
     isValidating,
     isOpen,
-    validateNameUniqueness,
+    validateEmailUniqueness,
     handleOpenChange,
     resetForm,
   } = useUserForm();
 
   const onSubmit = async (data: UserFormData) => {
     try {
-      // Validate name uniqueness
-      const isUnique = await validateNameUniqueness(data.name);
+      // Sanitize the name before validation and creation
+      const sanitizedName = sanitizeName(data.name);
+      
+      // Validate email uniqueness
+      const isUnique = await validateEmailUniqueness(data.email);
       if (!isUnique) return;
 
-      // Create user data with required fields
+      // Create user data with required fields and sanitized name
       const userData = {
         ...data,
-        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${data.name}&size=150`,
+        name: sanitizedName, // Use sanitized name
+        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${sanitizedName}&size=150`,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };

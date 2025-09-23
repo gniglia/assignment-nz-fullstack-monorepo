@@ -36,24 +36,24 @@ export function useUserForm(user?: User) {
     defaultValues: getDefaultValues(),
   });
 
-  const validateNameUniqueness = async (name: string) => {
-    if (!name.trim()) return true;
+  const validateEmailUniqueness = async (email: string) => {
+    if (!email.trim()) return true;
 
     setIsValidating(true);
     try {
-      const isUnique = await userApi.checkNameUnique(name, user?.id);
+      const isUnique = await userApi.checkEmailUnique(email, user?.id);
       if (!isUnique) {
-        form.setError("name", {
+        form.setError("email", {
           type: "manual",
           message:
-            "This name is already in use by another user. Please choose a different name.",
+            "This email is already in use by another user. Please choose a different email.",
         });
         return false;
       }
       return true;
     } catch (validationError) {
-      toast.error("Unable to verify name availability. Please try again.");
-      console.warn("Name validation failed:", validationError);
+      toast.error("Unable to verify email availability. Please try again.");
+      console.warn("Email validation failed:", validationError);
       return false;
     } finally {
       setIsValidating(false);
@@ -76,7 +76,7 @@ export function useUserForm(user?: User) {
     isValidating,
     isOpen,
     setIsOpen,
-    validateNameUniqueness,
+    validateEmailUniqueness,
     handleOpenChange,
     resetForm,
   };

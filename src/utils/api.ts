@@ -72,23 +72,23 @@ export const api = {
 
 // User-specific API functions
 export const userApi = {
-  // Check if name is unique (excluding current user for edit operations)
-  checkNameUnique: async (
-    name: string,
+  // Check if email is unique (excluding current user for edit operations)
+  checkEmailUnique: async (
+    email: string,
     excludeUserId?: string,
   ): Promise<boolean> => {
     try {
       const endpoint = excludeUserId
-        ? `/users?name=${encodeURIComponent(name)}&id_ne=${excludeUserId}`
-        : `/users?name=${encodeURIComponent(name)}`;
+        ? `/users?email=${encodeURIComponent(email)}&id_ne=${excludeUserId}`
+        : `/users?email=${encodeURIComponent(email)}`;
 
-      const users = await api.get<Array<{ id: string; name: string }>>(
+      const users = await api.get<Array<{ id: string; email: string }>>(
         endpoint,
       );
       return users.data.length === 0;
     } catch (error) {
-      // If API call fails, assume name is unique to avoid blocking user
-      console.warn("Failed to check name uniqueness:", error);
+      // If API call fails, assume email is unique to avoid blocking user
+      console.warn("Failed to check email uniqueness:", error);
       return true;
     }
   },
