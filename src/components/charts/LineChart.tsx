@@ -15,10 +15,10 @@ import {
   chartGridStyle,
   chartMargin,
 } from "./chartStyles";
-import type { AnalyticsChartData } from "@/types/api";
+import type { Analytics } from "@/types";
 
 type LineChartProps = {
-  data: AnalyticsChartData;
+  data: Analytics;
   title?: string;
   dataKey?: string;
   color?: string;

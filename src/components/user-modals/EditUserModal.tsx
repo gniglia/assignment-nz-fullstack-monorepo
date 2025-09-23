@@ -1,7 +1,7 @@
 import React from "react";
 import toast from "react-hot-toast";
-import type { User } from "@/types/api";
-import { useUpdateUser } from "@/hooks/queries";
+import type { User } from "@/types";
+import { useUpdateUserMutation } from "@/hooks/queries";
 import {
   Dialog,
   DialogClose,
@@ -26,7 +26,7 @@ type EditUserModalProps = {
 };
 
 export function EditUserModal({ user, children }: EditUserModalProps) {
-  const updateUserMutation = useUpdateUser();
+  const updateUserMutation = useUpdateUserMutation();
   const {
     form,
     isValidating,

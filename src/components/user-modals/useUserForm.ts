@@ -8,7 +8,7 @@ import {
   addUserFormSchema,
   type UserFormData,
 } from "@/lib/validations/user";
-import type { User } from "@/types/api";
+import type { User } from "@/types";
 
 export function useUserForm(user?: User) {
   const [isValidating, setIsValidating] = useState(false);

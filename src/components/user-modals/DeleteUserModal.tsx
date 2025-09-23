@@ -1,7 +1,7 @@
 import React from "react";
 import toast from "react-hot-toast";
-import type { User } from "@/types/api";
-import { useDeleteUser } from "@/hooks/queries";
+import type { User } from "@/types";
+import { useDeleteUserMutation } from "@/hooks/queries";
 import {
   Dialog,
   DialogClose,
@@ -22,7 +22,7 @@ type DeleteUserModalProps = {
 };
 
 export function DeleteUserModal({ user, children }: DeleteUserModalProps) {
-  const deleteUserMutation = useDeleteUser();
+  const deleteUserMutation = useDeleteUserMutation();
 
   const handleConfirm = async () => {
     try {

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useClickAway } from "@uidotdev/usehooks";
-import type { User } from "@/types/api";
+import type { User } from "@/types";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Avatar } from "@/components/ui/Avatar";

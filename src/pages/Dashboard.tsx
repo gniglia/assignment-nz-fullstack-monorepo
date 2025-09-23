@@ -1,4 +1,4 @@
-import { useMetrics } from "@/hooks/queries";
+import { useMetricsQuery } from "@/hooks/queries";
 import { EmptyDataState } from "@/components/ui/EmptyState";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
 import { MetricCard } from "@/components/metric-card";
@@ -43,7 +43,7 @@ function DashboardHeader() {
 }
 
 export default function Dashboard() {
-  const { data: metricsData, isLoading, error } = useMetrics();
+  const { data: metricsData, isLoading, error } = useMetricsQuery();
 
   if (error) {
     return (

@@ -8,7 +8,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { Card } from "@/components/ui/Card";
-import { useAnalytics } from "@/hooks/queries";
+import { useAnalyticsQuery } from "@/hooks/queries";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { motion, AnimatePresence } from "framer-motion";
@@ -17,7 +17,7 @@ import { TrendingUp } from "lucide-react";
 import { useState, useMemo } from "react";
 
 export function AnalyticsOverview() {
-  const { data: analyticsData, isLoading, error } = useAnalytics();
+  const { data: analyticsData, isLoading, error } = useAnalyticsQuery();
   const [hoveredMetric, setHoveredMetric] = useState<string | null>(null);
 
   // Memoize expensive calculations at the top level

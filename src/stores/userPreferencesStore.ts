@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { SortOrder } from "@/types";
+import type { SortOrder } from "@/hooks/queries/types";
 
 type UserPreferencesState = {
   searchQuery: string;

@@ -4,7 +4,7 @@ import {
   type UserQueryParams,
 } from "./queries";
 import { useUserPreferencesStore } from "@/stores/userPreferencesStore";
-import type { SortOrder } from "@/types";
+import type { SortOrder } from "@/hooks/queries/types";
 
 /**
  * Hook for client-side filtering, sorting, and pagination using json-server

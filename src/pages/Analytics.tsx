@@ -4,7 +4,7 @@ import { DateRangePicker } from "@/components/ui/DateRangePicker";
 import { EmptyDataState } from "@/components/ui/EmptyState";
 import { ChartsSkeleton } from "@/components/ui/SkeletonLoader";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
-import { useAnalytics } from "@/hooks/queries";
+import { useAnalyticsQuery } from "@/hooks/queries";
 import {
   filterDataByDateRange,
   exportToCSV,
@@ -89,7 +89,7 @@ function AnalyticsHeader() {
 }
 
 export default function Analytics() {
-  const { data: analyticsData, isLoading, error } = useAnalytics();
+  const { data: analyticsData, isLoading, error } = useAnalyticsQuery();
   const [dateRange, setDateRange] = useState<DateRange>(getDefaultDateRange());
 
   if (error) {

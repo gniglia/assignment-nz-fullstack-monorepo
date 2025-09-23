@@ -1,6 +1,6 @@
 import React from "react";
 import toast from "react-hot-toast";
-import { useCreateUser } from "@/hooks/queries";
+import { useCreateUserMutation } from "@/hooks/queries";
 import {
   Dialog,
   DialogClose,
@@ -24,7 +24,7 @@ type AddUserModalProps = {
 };
 
 export function AddUserModal({ children }: AddUserModalProps) {
-  const createUserMutation = useCreateUser();
+  const createUserMutation = useCreateUserMutation();
   const {
     form,
     isValidating,

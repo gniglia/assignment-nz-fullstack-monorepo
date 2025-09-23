@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useUsersServerSide } from "@/hooks/useUsersServerSide";
 import { useDebounce } from "@uidotdev/usehooks";
-import type { User } from "@/types/api";
+import type { User } from "@/types";
 import {
   Table,
   TableBody,

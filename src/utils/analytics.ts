@@ -1,4 +1,4 @@
-import type { AnalyticsChartData } from "@/types/api";
+import type { Analytics } from "@/types";
 
 type DateRange = {
   startDate: string;
@@ -7,9 +7,9 @@ type DateRange = {
 
 // Filter analytics data by date range
 export function filterDataByDateRange(
-  data: AnalyticsChartData,
+  data: Analytics,
   dateRange: DateRange,
-): AnalyticsChartData {
+): Analytics {
   const startDate = new Date(dateRange.startDate);
   const endDate = new Date(dateRange.endDate);
 
@@ -21,7 +21,7 @@ export function filterDataByDateRange(
 
 // Export data as CSV
 export function exportToCSV(
-  data: AnalyticsChartData,
+  data: Analytics,
   filename: string = "analytics-data",
 ) {
   if (data.length === 0) return;
@@ -47,7 +47,7 @@ export function exportToCSV(
 
 // Export data as JSON
 export function exportToJSON(
-  data: AnalyticsChartData,
+  data: Analytics,
   filename: string = "analytics-data",
 ) {
   if (data.length === 0) return;

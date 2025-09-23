@@ -1,17 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/utils/api";
-import type { AnalyticsChartData } from "@/types/api";
+import type { Analytics } from "@/types";
 import { queryKeys } from "./types";
 
 // Custom hook for fetching analytics data
-export function useAnalytics() {
+export function useAnalyticsQuery() {
   return useQuery({
     queryKey: queryKeys.analytics,
-    queryFn: async (): Promise<AnalyticsChartData> => {
-      const response = await api.get<AnalyticsChartData>("/analytics");
-      return response;
+    queryFn: async (): Promise<Analytics> => {
+      return await api.get<Analytics>("/analytics");
     },
-    // Refetch every 30 seconds for real-time data
-    refetchInterval: 30000,
   });
 }

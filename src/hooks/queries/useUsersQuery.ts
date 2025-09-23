@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/utils/api";
-import type { User, UpdateUserData } from "@/types/api";
+import type { User, UpdateUserData, CreateUserData } from "@/types";
 import { queryKeys, type UserQueryParams } from "./types";
 import { buildEndpoint } from "./utils";
 
@@ -12,8 +12,6 @@ export function useUsersQueryWithParams(params: UserQueryParams = {}) {
       const endpoint = buildEndpoint(params);
       return await api.get<User[]>(endpoint);
     },
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    refetchOnWindowFocus: false,
   });
 }
 
@@ -33,20 +31,15 @@ export function useUsersQueryWithParamsAndTotal(params: UserQueryParams = {}) {
 
       return { users, totalCount };
     },
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    refetchOnWindowFocus: false,
   });
 }
 
 // Custom hook for updating a user
-export function useUpdateUser() {
+export function useUpdateUserMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({
-      id,
-      ...userData
-    }: { id: string } & UpdateUserData): Promise<User> => {
+    mutationFn: async ({ id, ...userData }: UpdateUserData): Promise<User> => {
       const response = await api.put<User>(`/users/${id}`, userData);
       return response;
     },
@@ -58,13 +51,11 @@ export function useUpdateUser() {
 }
 
 // Custom hook for creating a user
-export function useCreateUser() {
+export function useCreateUserMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (
-      userData: Omit<User, "id" | "createdAt" | "updatedAt" | "lastLogin">,
-    ): Promise<User> => {
+    mutationFn: async (userData: CreateUserData): Promise<User> => {
       const response = await api.post<User>("/users", userData);
       return response;
     },
@@ -76,7 +67,7 @@ export function useCreateUser() {
 }
 
 // Custom hook for deleting a user
-export function useDeleteUser() {
+export function useDeleteUserMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
