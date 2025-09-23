@@ -32,12 +32,14 @@ import { getStatusBadgeClasses, getRoleBadgeClasses } from "@/utils/badges";
 
 // Filter options
 const roleOptions = [
+  { value: "all", label: "All Roles" },
   { value: "admin", label: "Admin" },
   { value: "user", label: "User" },
   { value: "moderator", label: "Moderator" },
 ];
 
 const statusOptions = [
+  { value: "all", label: "All Statuses" },
   { value: "active", label: "Active" },
   { value: "inactive", label: "Inactive" },
   { value: "pending", label: "Pending" },
@@ -190,7 +192,7 @@ function UsersTable() {
               options={roleOptions}
               onValueChange={setSelectedRole}
               disabled={isLoading || isFetching}
-              value={filters.selectedRole === "all" ? "" : filters.selectedRole}
+              value={filters.selectedRole}
             />
           </div>
           <div>
@@ -201,9 +203,7 @@ function UsersTable() {
               options={statusOptions}
               onValueChange={setSelectedStatus}
               disabled={isLoading || isFetching}
-              value={
-                filters.selectedStatus === "all" ? "" : filters.selectedStatus
-              }
+              value={filters.selectedStatus}
             />
           </div>
           <div>
