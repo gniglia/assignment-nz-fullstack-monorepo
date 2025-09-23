@@ -1,4 +1,8 @@
+# Dependencies
 node_modules/
+
+# Build output
+dist/
 
 # Logs
 logs
@@ -7,14 +11,20 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 dev-debug.log
-# Dependency directories
 
 # Environment variables
 .env
-# local env files
 .env*.local
 
+# Playwright test data and traces
+.playwright-mcp/
+
+# npm lockfile (using pnpm instead)
+package-lock.json
+
+# Cursor MCP
 .cursor/mcp.json
+
 # Editor directories and files
 .idea
 .vscode
