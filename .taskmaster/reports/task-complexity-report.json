@@ -1,0 +1,101 @@
+{
+	"meta": {
+		"generatedAt": "2025-09-25T10:34:13.330Z",
+		"tasksAnalyzed": 11,
+		"totalTasks": 11,
+		"analysisCount": 11,
+		"thresholdScore": 5,
+		"projectName": "Taskmaster",
+		"usedResearch": false
+	},
+	"complexityAnalysis": [
+		{
+			"taskId": 1,
+			"taskTitle": "Set Up JSON Server API using existing db.json",
+			"complexityScore": 2,
+			"recommendedSubtasks": 3,
+			"expansionPrompt": "Based on the task description and codebase analysis, expand this into three subtasks: 1. Install `json-server` and add the `api` script to `package.json`. 2. Create `src/lib/config.ts` to export the `API_BASE_URL` from environment variables with a fallback, and create a corresponding `.env.example` file. 3. Add a Vitest/MSW smoke test to verify the API request shape for the `/users` endpoint, including all query parameters mentioned in the task details.",
+			"reasoning": "Codebase analysis shows this is entirely greenfield work. The complexity is low as it only involves installing a dev dependency, adding a single npm script, and creating one new, simple configuration file. No existing code needs to be refactored. The steps are standard and well-documented."
+		},
+		{
+			"taskId": 2,
+			"taskTitle": "Implement API Hooks and TypeScript Types",
+			"complexityScore": 6,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "The current 5 subtasks are an excellent breakdown. Please formalize them based on the codebase analysis: 1. Create a new `src/types/index.ts` file and define the `User`, `Metric`, and `AnalyticsPoint` interfaces based on `db.json`. 2. Install `@tanstack/react-query` and configure the `QueryClientProvider` in `src/main.tsx`. 3. Create a new `src/api/hooks.ts` file and implement the `useUsers` hook with full support for pagination, sorting, and filtering parameters. 4. In the same file, implement the `useMetrics` hook. 5. In the same file, implement the `useAnalytics` hook.",
+			"reasoning": "Codebase analysis confirms this is all new development. Complexity is medium-high because it establishes the entire data fetching layer. It requires installing and configuring a major library (React Query), defining all data contracts (types), and creating three custom hooks from scratch, one of which (`useUsers`) has complex, dynamic query key management based on its parameters."
+		},
+		{
+			"taskId": 3,
+			"taskTitle": "Build Main App Layout with Top Navbar and Sidebar",
+			"complexityScore": 4,
+			"recommendedSubtasks": 4,
+			"expansionPrompt": "The 4 subtasks are well-defined. Please formalize them: 1. Create a `src/components/layout` directory and a `MainLayout.tsx` component containing a placeholder for a navbar and an `Outlet` for child routes. 2. Build the `Navbar.tsx` component with `NavLink`s for the three main pages. 3. Install `react-router-dom`, refactor `App.tsx` to define the application's routes, and use `MainLayout` as the parent route element. 4. Add responsive styles to the `Navbar.tsx` component using Tailwind CSS to handle mobile and desktop views.",
+			"reasoning": "Codebase analysis shows no routing or layout structure exists. Complexity is medium as it involves installing and configuring `react-router-dom`, creating several new components from scratch, and fundamentally restructuring the main `App.tsx` to support a multi-page architecture with a persistent layout."
+		},
+		{
+			"taskId": 4,
+			"taskTitle": "Develop and Integrate Metric Cards on Dashboard",
+			"complexityScore": 5,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "The 5 subtasks are a solid plan. Please formalize them: 1. Create `src/components/MetricCard.tsx` using Shadcn's `Card` component, with props matching the `Metric` type. 2. In `MetricCard.tsx`, add conditional styling for the change percentage and include an up/down arrow icon. 3. Create a `MetricCardSkeleton.tsx` component using Shadcn's `Skeleton`. 4. Create the `src/pages/Dashboard.tsx` page component and call the `useMetrics` hook to fetch data. 5. In `Dashboard.tsx`, implement the logic to render a grid of skeletons, an error message, or the `MetricCard` components based on the hook's state.",
+			"reasoning": "This is all new development. The complexity is medium because it involves creating a new page, a reusable presentational component (`MetricCard`), a corresponding skeleton component, and integrating them with the `useMetrics` hook. The task requires handling multiple data-fetching states (loading, error, success) and implementing a responsive grid layout."
+		},
+		{
+			"taskId": 5,
+			"taskTitle": "Implement Dashboard's Analytics Chart and Activity List",
+			"complexityScore": 6,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "The 5 subtasks are well-structured. Please formalize them: 1. Install `recharts`. Create a new `src/components/dashboard/AnalyticsChart.tsx` component using Recharts, designed to accept data and loading/error states. 2. Create `src/components/dashboard/RecentActivity.tsx` to list users with their avatars and last login time. 3. Integrate the `useAnalytics` hook and the `AnalyticsChart` into the `Dashboard.tsx` page. 4. Integrate the `useUsers` hook (with params for sorting and limiting) and the `RecentActivity` list into the `Dashboard.tsx` page. 5. Arrange the new chart and list components in a responsive grid on the dashboard.",
+			"reasoning": "Codebase analysis shows `recharts` is not installed and no dashboard components exist. Complexity is medium-high as it requires integrating a new, complex charting library, creating two distinct data-driven components, and composing data from two separate API hooks (`useAnalytics`, `useUsers`) on a single page. This adds significant feature density to the dashboard."
+		},
+		{
+			"taskId": 6,
+			"taskTitle": "Build the User Data Table Structure",
+			"complexityScore": 7,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "The 5 subtasks provide an excellent roadmap. Please formalize them: 1. Install `@tanstack/react-table`. Create `src/components/users/columns.tsx` to define the `ColumnDef<User>` array. 2. Build a generic, reusable `DataTable.tsx` component in `src/components/users/data-table.tsx` using the `useReactTable` hook and Shadcn's Table UI components. 3. Create a `DataTableSkeleton.tsx` component for the loading state. 4. Create the `src/pages/Users.tsx` page, fetch data with `useUsers`, and conditionally render the skeleton, an error message, or the `DataTable`. 5. Implement custom cell renderers within `columns.tsx` for the user avatar, status badge, and formatted dates.",
+			"reasoning": "Codebase analysis confirms this is a major feature built from scratch. Complexity is high because it requires installing and correctly implementing the powerful but non-trivial `@tanstack/react-table` library. Building a reusable, typed `DataTable` component, defining columns with custom renderers, and handling all related states (loading, error, empty) is a substantial amount of greenfield work."
+		},
+		{
+			"taskId": 7,
+			"taskTitle": "Add Search, Filter, and Sort to Users Table",
+			"complexityScore": 7,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "The 5 subtasks accurately capture the work. Please formalize them: 1. In the `Users.tsx` page, introduce state management for search query, role filter, status filter, and sorting. 2. Implement a debounced search `Input` that updates the `q` parameter for the `useUsers` hook. 3. Add `Select` dropdowns for 'Role' and 'Status' that update the corresponding parameters for the hook. 4. Make the table headers clickable to control the sorting state (`_sort`, `_order`) passed to the hook. 5. Create a `UsersTableToolbar.tsx` component to encapsulate the search and filter controls, keeping the main page component cleaner.",
+			"reasoning": "This task builds on a complex component and adds significant new logic. The complexity is high due to the intricate state management required. It involves coordinating multiple state variables (search, filters, sorting), implementing input debouncing to prevent excessive API calls, and ensuring all parameters are correctly composed and passed to the `useUsers` hook to trigger data refetching."
+		},
+		{
+			"taskId": 8,
+			"taskTitle": "Implement Pagination and Responsive Card View for Users",
+			"complexityScore": 6,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "The 5 subtasks are a comprehensive plan. Please formalize them: 1. Modify the `useUsers` hook to correctly handle `_page` and `_limit` parameters and to parse the `X-Total-Count` header, returning the total count. 2. On the `Users.tsx` page, add and configure the Shadcn `Pagination` component, wiring it to the page state and the total count from the hook. 3. Create a new `src/components/users/UserCard.tsx` component for the mobile view. 4. Use Tailwind's responsive prefixes (`md:hidden`, `hidden md:block`) on the `Users.tsx` page to switch between rendering the data table on larger screens and a grid of `UserCard`s on smaller screens. 5. Refine the desktop table columns for better readability and alignment.",
+			"reasoning": "Codebase analysis shows none of this functionality exists. The complexity is medium-high. It requires modifications to the core data hook (`useUsers`) to handle pagination headers, new state management on the `Users` page, the creation of a brand new `UserCard` component, and implementing responsive layout switching, which can be tricky to test and get right."
+		},
+		{
+			"taskId": 9,
+			"taskTitle": "Create Analytics Page with 2x2 Chart Grid",
+			"complexityScore": 7,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "The 5 subtasks are a solid approach. Please formalize them: 1. Create a reusable `src/components/charts/LineChart.tsx` component using Recharts. 2. Create a reusable `src/components/charts/BarChart.tsx` component. 3. Create reusable `DonutChart.tsx` and `AreaChart.tsx` components in the same directory. 4. Build the `src/pages/Analytics.tsx` page with a responsive 2x2 grid layout and fetch data using the `useAnalytics` hook. 5. Integrate the four chart components into the page using `React.lazy` and `React.Suspense` with appropriate skeleton fallbacks for each chart.",
+			"reasoning": "This is a completely new page built from scratch. The complexity is high because it involves creating four distinct, reusable chart components with a third-party library (`recharts`). Furthermore, it requires implementing a performance optimization pattern (`React.lazy` and `Suspense`) which adds an architectural layer on top of simple component rendering."
+		},
+		{
+			"taskId": 10,
+			"taskTitle": "Add Date Range Filters and Data Export to Analytics",
+			"complexityScore": 6,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "The 5 subtasks are well-defined. Please formalize them: 1. Add the UI for date range `Tabs`, a `Popover`-based date range picker using Shadcn's `Calendar`, and an `Export` dropdown menu to the `Analytics` page. 2. Implement state management for the selected date range and create a memoized, filtered dataset based on the full dataset from `useAnalytics`. 3. Wire up the UI controls to update the date range state. 4. Create a new `src/lib/exportUtils.ts` file with functions to convert an array of objects to a CSV or JSON string and trigger a browser download. 5. Connect the export dropdown menu items to call the appropriate utility functions with the currently filtered data.",
+			"reasoning": "This is all new functionality. The complexity is medium-high. It involves building a non-trivial UI control (the date range picker), managing derived state (the filtered data set), and implementing client-side utility functions for file generation and download, which is outside the typical scope of pure UI development and requires handling browser APIs."
+		},
+		{
+			"taskId": 11,
+			"taskTitle": "Ensure App-wide Accessibility and Final Polish",
+			"complexityScore": 5,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "The 5 subtasks are a good checklist. Please formalize them: 1. Audit all interactive elements, especially icon-only buttons in the navbar and user table actions, and add accessible names using `aria-label` or `sr-only` text. 2. Implement a placeholder 'Edit User' modal using Shadcn's `Dialog`, triggered from the user row actions menu. 3. Implement a placeholder 'Delete User' confirmation using Shadcn's `AlertDialog`. 4. Verify and test modal accessibility, ensuring focus is trapped, the `Escape` key closes them, and focus returns to the trigger element. 5. Perform a final review of all pages to ensure consistent and accessible loading, error, and empty states are implemented.",
+			"reasoning": "This task is a cross-cutting concern that touches the entire application. The complexity is medium. While implementing modals with Shadcn is straightforward, the main effort lies in the detailed auditing of all components, applying ARIA attributes correctly, and performing thorough manual testing for keyboard navigation and focus management, which requires specific expertise and is time-consuming."
+		}
+	]
+}

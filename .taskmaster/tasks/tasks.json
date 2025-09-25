@@ -3,138 +3,599 @@
     "tasks": [
       {
         "id": 1,
-        "title": "Implement Shared Layout and Navigation",
-        "description": "Create the main application layout, including a responsive sidebar for navigation and a header. The layout should wrap the main content area where pages will be rendered.",
-        "details": "Build a `Sidebar` component with `NavLink` components from `react-router-dom` for 'Dashboard', 'Analytics', and 'Users'. The links should use icons from `lucide-react`. Create a `Header` component, which can be a simple placeholder for now. The main layout component should use Flexbox or Grid to position the sidebar and the main content area. Ensure the layout is responsive, with the sidebar collapsing or transforming for mobile views.",
-        "testStrategy": "Use Vitest and React Testing Library to render the layout. Verify that the sidebar and header are present. Test that clicking the navigation links updates the route. Use snapshot testing to capture the initial responsive layout.",
-        "priority": "high",
+        "title": "Set Up JSON Server API using existing db.json",
+        "description": "Run a local API powered by json-server that serves data directly from the existing `db.json` file.",
+        "details": "Install `json-server` (dev dependency). Add npm scripts: `\"api\": \"json-server --watch db.json --port 5174 --cors\"`. Confirm the following endpoints exist and mirror the `db.json` structure: `/users`, `/metrics`, `/analytics`. Document the base URL (e.g., `http://localhost:5174`) in `src/lib/config.ts` as `API_BASE_URL` and ensure all client hooks consume this value. Use JSON Server query params: pagination (`_page`, `_limit`), sorting (`_sort`, `_order`), full-text search (`q`), and exact-match filters (e.g., `role`, `status`).",
+        "testStrategy": "Start the API and verify endpoints respond with the expected collections. Confirm pagination headers (`X-Total-Count`) are present on list endpoints. Add a quick Vitest/MSW smoke test that hits `/users?_page=1&_limit=10&q=john&role=admin&_sort=createdAt&_order=desc` and validates the request shape.",
+        "priority": "critical",
         "dependencies": [],
         "status": "done",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Install and Wire Up json-server",
+            "description": "Install `json-server`, add scripts, and run the API.",
+            "dependencies": [],
+            "details": "Run `pnpm add -D json-server`. Add `api` script. Ensure CORS enabled by default. Optionally add `--delay 300` for network realism.",
+            "status": "done",
+            "testStrategy": "Hit `/metrics` and `/analytics` in the browser or via curl; validate JSON structure."
+          },
+          {
+            "id": 2,
+            "title": "Create API Base URL Configuration",
+            "description": "Centralize API base URL for client hooks.",
+            "dependencies": [],
+            "details": "Create `src/lib/config.ts` exporting `API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:5174'`. Add `.env.example` with `VITE_API_BASE_URL`.",
+            "status": "done",
+            "testStrategy": "Temporarily change `VITE_API_BASE_URL` and confirm hooks pick it up after restart."
+          }
+        ]
       },
       {
         "id": 2,
-        "title": "Build Dashboard Metric Cards and Layout",
-        "description": "Develop the main Dashboard page layout, including the four metric cards that display key performance indicators. Initially, these cards can be built with static data.",
-        "details": "Create a `MetricCard` component using Shadcn's `Card` primitive. The component should accept props for title, value, change, and an icon. Arrange four instances of this component in a responsive grid at the top of the Dashboard page. Use the design tokens for spacing, colors, and typography. Fetch data from the `/metrics` endpoint using React Query's `useQuery` hook to populate the cards.",
-        "testStrategy": "Unit test the `MetricCard` component to ensure it renders props correctly. Write an integration test for the Dashboard page that mocks the `/metrics` API call and verifies that four cards are rendered with the correct data.",
+        "title": "Implement API Hooks and TypeScript Types",
+        "description": "Define TypeScript interfaces for User, Metric, and AnalyticsPoint. Create custom React Query hooks (useUsers, useMetrics, useAnalytics) for data fetching, caching, and state management against the JSON Server API.",
+        "details": "Create a `src/types/index.ts` file for all shared interfaces as defined in the PRD. Create a `src/api/hooks.ts` file for React Query hooks. The `useUsers` hook should accept parameters for pagination (`_page`, `_limit`), sorting (`_sort`, `_order`), and filtering/searching (`q`, `role`, `status`) to pass to the JSON Server API at `API_BASE_URL`.",
+        "testStrategy": "Unit test the API hook logic with mock fetch responses using Vitest and MSW. Verify that the hooks correctly parse data, read `X-Total-Count`, and manage loading/success/error states returned by React Query.",
         "priority": "high",
-        "dependencies": [
-          1
-        ],
+        "dependencies": [1],
         "status": "done",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Define Core TypeScript Interfaces",
+            "description": "Create the `src/types/index.ts` file and define the `User`, `Metric`, and `AnalyticsPoint` interfaces based on the data structure in `db.json`.",
+            "dependencies": [],
+            "details": "Based on the `db.json` schema, create and export the following interfaces in `src/types/index.ts`: `User` (with fields like id, name, email, role, status, createdAt, lastLogin, avatar), `Metric` (with id, label, value, change, changeType), and `AnalyticsPoint` (with date, visits, pageviews, revenue, expenses as applicable).",
+            "status": "done",
+            "testStrategy": "No specific tests are needed for type definitions. Correctness will be enforced by the TypeScript compiler during the implementation of other subtasks."
+          },
+          {
+            "id": 2,
+            "title": "Configure React Query Client and Provider",
+            "description": "Ensure `@tanstack/react-query` is installed, create a `QueryClient` instance, and wrap the root application component with `QueryClientProvider` in `src/main.tsx`.",
+            "dependencies": [],
+            "details": "In `src/main.tsx`, import `QueryClient` and `QueryClientProvider` from `@tanstack/react-query`. Instantiate a new `QueryClient` and wrap the `<App />` component to make React Query available throughout the application.",
+            "status": "done",
+            "testStrategy": "Manually verify the app renders after wrapping with the provider; confirm DevTools integration if used."
+          },
+          {
+            "id": 3,
+            "title": "Create `useUsers` Custom Hook with Parameters",
+            "description": "In `src/api/hooks.ts`, create the `useUsers` custom hook to fetch user data, supporting pagination, sorting, and filtering/search.",
+            "dependencies": [],
+            "details": "Implement a `useUsers` hook that accepts `{ _page, _limit, _sort, _order, q, role, status }`. Use these parameters to construct the fetch URL for the `/users` endpoint. Include `X-Total-Count` in the return value. Use a query key that includes params.",
+            "status": "done",
+            "testStrategy": "Unit test with Vitest/MSW. Mock `/users` and assert URL construction and state transitions."
+          },
+          {
+            "id": 4,
+            "title": "Create `useMetrics` Custom Hook",
+            "description": "Create the `useMetrics` custom hook to fetch dashboard metrics data from the `/metrics` endpoint.",
+            "dependencies": [],
+            "details": "Implement `useMetrics` with a static query key (e.g., `['metrics']`) hitting `/metrics`. Strongly type with `Metric[]`.",
+            "status": "done",
+            "testStrategy": "Unit test `useMetrics` with mocked response."
+          },
+          {
+            "id": 5,
+            "title": "Create `useAnalytics` Custom Hook",
+            "description": "Create the `useAnalytics` custom hook to fetch time-series analytics data from the `/analytics` endpoint.",
+            "dependencies": [],
+            "details": "Implement `useAnalytics` with a static query key (e.g., `['analytics']`) hitting `/analytics`. Type with `AnalyticsPoint[]`.",
+            "status": "done",
+            "testStrategy": "Unit test `useAnalytics` with mocked response."
+          }
+        ]
       },
       {
         "id": 3,
-        "title": "Implement Dashboard Analytics Chart and Recent Activity",
-        "description": "Add the 'Analytics Overview' line chart and the 'Recent Activity' list to the Dashboard page, fetching data from the mock API.",
-        "details": "Using `recharts`, implement a `LineChart` component to visualize time-series data fetched from the `/analytics` endpoint. For the 'Recent Activity' list, fetch a subset of users from the `/users` endpoint. Create a list item component that displays the user's avatar, name, action (e.g., 'updated profile'), and a formatted timestamp.",
-        "testStrategy": "Mock the `/analytics` and `/users` API endpoints. Test that the chart component renders when given data. Verify that the recent activity list displays the correct number of items with the expected content (avatar, name, etc.). Check for loading and error states during data fetching.",
+        "title": "Build Main App Layout with Top Navbar and Sidebar",
+        "description": "Create the main application layout with a responsive top navbar containing links to Dashboard, Analytics, and Users and a sidebar.",
+        "details": "Use `react-router-dom`'s `NavLink` for active link styling in the navbar. Keep the layout minimal and responsive according to the PRD breakpoints.",
+        "testStrategy": "Use React Testing Library to render the layout and verify that navigation links for '/', '/analytics', and '/users' are present and navigate correctly. Manually verify responsive behavior.",
         "priority": "high",
-        "dependencies": [
-          2
-        ],
+        "dependencies": [],
         "status": "done",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create Main Layout Component Structure",
+            "description": "Create `src/components/layout/MainLayout.tsx` using a top navbar and a main content area that renders child routes via `Outlet`.",
+            "dependencies": [],
+            "details": "Root element can be `<div className=\"min-h-screen flex flex-col\">`. Add `<Navbar />` at the top and `<main className=\"flex-1 p-6\">` containing `<Outlet />`.",
+            "status": "done",
+            "testStrategy": "Render a dummy child route and confirm it appears under the navbar."
+          },
+          {
+            "id": 2,
+            "title": "Build the Navbar Component with 3 Links",
+            "description": "Create `src/components/layout/Navbar.tsx` containing only three links: Dashboard, Analytics, Users.",
+            "dependencies": ["3.1"],
+            "details": "Use `NavLink` to '/', '/analytics', '/users'. Apply active styling via `className={({ isActive }) => isActive ? 'text-primary-700 font-semibold' : 'text-gray-600'}`. Keep markup minimal (brand/title optional).",
+            "status": "done",
+            "testStrategy": "Render in isolation and verify all three links and their `href`s."
+          },
+          {
+            "id": 3,
+            "title": "Integrate Layout and Navbar into App Routes",
+            "description": "Refactor `App.tsx` to use `MainLayout` as the parent route element wrapping the page routes.",
+            "dependencies": ["3.1", "3.2"],
+            "details": "Example: `<Route element={<MainLayout />}><Route path='/' element={<Dashboard />} /><Route path='/analytics' element={<Analytics />} /><Route path='/users' element={<Users />} /></Route>`.",
+            "status": "done",
+            "testStrategy": "Run the app and navigate between pages; ensure navbar persists."
+          },
+          {
+            "id": 4,
+            "title": "Implement Responsive Navbar Behavior",
+            "description": "Ensure the navbar collapses neatly on small screens.",
+            "dependencies": ["3.2"],
+            "details": "Use Tailwind to stack links (`flex-col gap-2`) on mobile and horizontal layout (`md:flex-row md:gap-6`) on larger screens. Optional simple hamburger for toggling visibility.",
+            "status": "done",
+            "testStrategy": "Manually test at mobile/tablet/desktop widths."
+          }
+        ]
       },
       {
         "id": 4,
-        "title": "Develop Users Page Data Table",
-        "description": "Create the Users page with a data table to display user information, including support for server-side pagination.",
-        "details": "Use Shadcn's `Table` components to build a `UsersTable`. Define columns for avatar, name, email, role, status, and `createdAt`. Use React Query to fetch data from the `/users` endpoint, passing `_page` and `_limit=10` parameters. Implement a pagination component to navigate between pages, which will refetch the data with the updated page number.",
-        "testStrategy": "Test the `UsersTable` component with mock user data. Write an integration test for the Users page that mocks the API and verifies the table is populated. Test the pagination controls to ensure they trigger a new API call with the correct page parameter.",
+        "title": "Develop and Integrate Metric Cards on Dashboard",
+        "description": "Build a reusable `MetricCard` component that displays a title, value, change percentage, and an icon. Fetch data from the `/metrics` endpoint using the `useMetrics` hook and display four instances of this card on the Dashboard page.",
+        "details": "The `MetricCard` component should conditionally style the change percentage based on `changeType` ('increase' or 'decrease'). Use Shadcn's Card component as a base. Implement loading skeletons for the cards and a clear error message if the API call fails.",
+        "testStrategy": "Unit test the `MetricCard` component with various props to check rendering logic. Write an integration test for the Dashboard page to ensure the four cards are rendered correctly with data from the mock API.",
         "priority": "high",
-        "dependencies": [
-          1
-        ],
+        "dependencies": [2, 3],
         "status": "done",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create the Basic Reusable MetricCard Component",
+            "description": "Create `src/components/MetricCard.tsx` with props for title, value, change percentage, and an icon name.",
+            "dependencies": [],
+            "details": "Define `MetricCardProps` aligning with `Metric`. Render static structure with Shadcn Card components.",
+            "status": "done",
+            "testStrategy": "Unit test props rendering."
+          },
+          {
+            "id": 2,
+            "title": "Implement Conditional Styling for Change Percentage",
+            "description": "Add logic to style change percentage based on `changeType` and show up/down arrow.",
+            "dependencies": ["4.1"],
+            "details": "Use `ArrowUp`/`ArrowDown` from Lucide and conditional classes.",
+            "status": "done",
+            "testStrategy": "Update unit tests to verify classNames and icons."
+          },
+          {
+            "id": 3,
+            "title": "Create a MetricCardSkeleton Component",
+            "description": "Create `src/components/MetricCardSkeleton.tsx` as a loading placeholder.",
+            "dependencies": [],
+            "details": "Mirror `MetricCard` layout with Skeletons.",
+            "status": "done",
+            "testStrategy": "Render test to verify structure."
+          },
+          {
+            "id": 4,
+            "title": "Fetch Metrics Data on the Dashboard Page",
+            "description": "Use `useMetrics` hook in `src/pages/Dashboard.tsx` to fetch data.",
+            "dependencies": [],
+            "details": "Prepare state for next subtask.",
+            "status": "done",
+            "testStrategy": "Covered by next subtask integration test."
+          },
+          {
+            "id": 5,
+            "title": "Integrate and Render MetricCards on the Dashboard",
+            "description": "Render skeletons, error, or 4 MetricCards based on `useMetrics` state.",
+            "dependencies": ["4.1", "4.2", "4.3", "4.4"],
+            "details": "Use responsive grid `grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4`.",
+            "status": "done",
+            "testStrategy": "Integration test with mocked hook states."
+          }
+        ]
       },
       {
         "id": 5,
-        "title": "Add Search, Filter, and Sort to Users Table",
-        "description": "Enhance the Users table with interactive features: debounced search, filtering by role/status, and sorting by columns.",
-        "details": "Add an input field for search. Implement a `useDebounce` hook to delay the API call as the user types. Add `Select` components for filtering by 'role' and 'status'. Add sorting functionality to the table headers. All these interactions should update the parameters (`q`, `role`, `status`, `_sort`, `_order`) for the `useQuery` hook, causing it to refetch the filtered/sorted data from the API.",
-        "testStrategy": "Test the debounced search to ensure the API is not called on every keystroke. Write tests to verify that changing filter dropdowns or clicking sortable headers triggers an API refetch with the correct query parameters and updates the table content accordingly.",
+        "title": "Implement Dashboard's Analytics Chart and Activity List",
+        "description": "Add the 'Analytics Overview' line chart and the 'Recent Activity' list to the Dashboard page, completing its core features.",
+        "details": "Use Recharts for the line chart, fetching via `useAnalytics`. Create a list for recent activities using data from `useUsers`. Each handles its own loading/error.",
+        "testStrategy": "Test chart rendering and activity list mapping; verify loading/error in dashboard integration test.",
         "priority": "medium",
-        "dependencies": [
-          4
-        ],
+        "dependencies": [2, 4],
         "status": "done",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create the 'Analytics Overview' Chart Component",
+            "description": "Build `src/components/dashboard/AnalyticsChart.tsx` with Recharts.",
+            "dependencies": [],
+            "details": "Accept `data: AnalyticsPoint[]`, `isLoading`, `isError`. Use `ResponsiveContainer`, `LineChart`, `Line`, `XAxis`, `YAxis`, `Tooltip`, `CartesianGrid`.",
+            "status": "done",
+            "testStrategy": "Story/test page for states; verify skeleton/error UI."
+          },
+          {
+            "id": 2,
+            "title": "Create the 'Recent Activity' List Component",
+            "description": "Build `src/components/dashboard/RecentActivity.tsx` to show recent users.",
+            "dependencies": [],
+            "details": "Props: `data: User[]`, `isLoading`, `isError`. Use Shadcn `Avatar` and `date-fns/formatDistanceToNow` on `lastLogin`.",
+            "status": "done",
+            "testStrategy": "Unit test with mock users and states."
+          },
+          {
+            "id": 3,
+            "title": "Integrate the Analytics Chart into the Dashboard Page",
+            "description": "Connect `useAnalytics` and render `AnalyticsChart` inside a Card.",
+            "dependencies": ["5.1"],
+            "details": "Card header: 'Analytics Overview'.",
+            "status": "done",
+            "testStrategy": "Integration test mocking `useAnalytics`."
+          },
+          {
+            "id": 4,
+            "title": "Integrate the Recent Activity List into the Dashboard Page",
+            "description": "Fetch 5 most recent users and render `RecentActivity` in a Card.",
+            "dependencies": ["5.2"],
+            "details": "Call `useUsers({ _limit: 5, _sort: 'lastLogin', _order: 'desc' })`.",
+            "status": "done",
+            "testStrategy": "Integration test mocking `useUsers`."
+          },
+          {
+            "id": 5,
+            "title": "Implement Responsive Layout for Dashboard Components",
+            "description": "Arrange chart and activity list in a responsive grid.",
+            "dependencies": ["5.3", "5.4"],
+            "details": "`grid grid-cols-1 lg:grid-cols-3 gap-4`; chart `lg:col-span-2`, activity `lg:col-span-1`.",
+            "status": "done",
+            "testStrategy": "Manual/visual regression across breakpoints."
+          }
+        ]
       },
       {
         "id": 6,
-        "title": "Implement Placeholder Modals for User Actions",
-        "description": "Add 'Edit' and 'Delete' buttons to each row in the Users table and connect them to placeholder modal dialogs.",
-        "details": "Use Shadcn's `Dialog` component to create reusable modals for 'Edit User' and 'Delete User'. The 'Edit' modal can contain a simple form, and the 'Delete' modal should have a confirmation message. Add an actions column to the `UsersTable` with buttons that open the respective modals for that user.",
-        "testStrategy": "Verify that clicking the 'Edit' and 'Delete' buttons opens the correct modal. Test that the modals can be closed. Ensure the correct user's data is passed to the modal component, even if it's just to display their name in the confirmation text.",
-        "priority": "medium",
-        "dependencies": [
-          4
-        ],
+        "title": "Build the User Data Table Structure",
+        "description": "Implement the user data table on the `/users` page using Shadcn UI's Table component.",
+        "details": "Fetch first page of users via `useUsers`. Include avatar, name, email, role, status, createdAt, lastLogin. Provide loading and error states.",
+        "testStrategy": "Render Users page; mock `useUsers` for data/empty/error.",
+        "priority": "high",
+        "dependencies": [2, 3],
         "status": "done",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Define User Data Table Columns",
+            "description": "Create `src/components/users/columns.tsx` using `ColumnDef<User>`.",
+            "dependencies": [],
+            "details": "Export `columns: ColumnDef<User>[]` with headers as `<Button variant=\"ghost\">`.",
+            "status": "done",
+            "testStrategy": "Unit test column definitions."
+          },
+          {
+            "id": 2,
+            "title": "Create a Reusable Data Table Component",
+            "description": "Build `src/components/users/data-table.tsx` rendering headers/rows and an empty state.",
+            "dependencies": ["6.1"],
+            "details": "Use `useReactTable` and Shadcn Table components.",
+            "status": "done",
+            "testStrategy": "Render with mock columns/data and empty array."
+          },
+          {
+            "id": 3,
+            "title": "Implement the Table Skeleton Loading State",
+            "description": "Create `src/components/users/data-table-skeleton.tsx`.",
+            "dependencies": [],
+            "details": "Render header and ~10 skeleton rows.",
+            "status": "done",
+            "testStrategy": "Snapshot/DOM assertions for skeleton structure."
+          },
+          {
+            "id": 4,
+            "title": "Integrate Data Table and State Handling on Users Page",
+            "description": "Wire `useUsers` into `src/pages/users/index.tsx` and conditionally render.",
+            "dependencies": ["6.1", "6.2", "6.3"],
+            "details": "Render skeleton, error message, or `DataTable` with `columns`.",
+            "status": "done",
+            "testStrategy": "Mock `useUsers` states and assert UI."
+          },
+          {
+            "id": 5,
+            "title": "Implement Custom Cell Rendering for Avatar, Status, and Dates",
+            "description": "Enhance avatar/status/date cells.",
+            "dependencies": ["6.1"],
+            "details": "Use Shadcn `Avatar` and `Badge`; format dates with `date-fns`.",
+            "status": "done",
+            "testStrategy": "Render custom cell `cell` functions and assert output."
+          }
+        ]
       },
       {
         "id": 7,
-        "title": "Build Analytics Page with Chart Grid",
-        "description": "Construct the Analytics page, featuring a 2x2 grid of different chart types (line, bar, donut, area) using data from the API.",
-        "details": "Create a responsive 2x2 grid layout on the Analytics page. Implement four distinct chart components using `recharts`: `LineChart`, `BarChart`, `PieChart` (for the donut), and `AreaChart`. Each chart should be interactive with tooltips on hover. Fetch data from the `/analytics` endpoint to populate all charts.",
-        "testStrategy": "For each chart type, write a component test to ensure it renders correctly with mock data. On the Analytics page test, verify that all four charts are present and display their loading states initially, then render with data once the mock API call resolves.",
-        "priority": "medium",
-        "dependencies": [
-          1
-        ],
+        "title": "Add Search, Filter, and Sort to Users Table",
+        "description": "Add debounced search, role/status filters, and sortable headers.",
+        "details": "Manage state in `UsersPage`; pass to `useUsers` as `_sort`, `_order`, `q`, `role`, `status`. Use Shadcn Input/Select; debounce ~300ms.",
+        "testStrategy": "Integration tests with React Testing Library and `user-event`; assert hook params.",
+        "priority": "high",
+        "dependencies": [6],
         "status": "done",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Centralize State Management for Search, Filter, and Sort",
+            "description": "Introduce state in `src/pages/Users.tsx` and compose params for `useUsers`.",
+            "dependencies": [],
+            "details": "Use `useDebounce` for `q`.",
+            "status": "done",
+            "testStrategy": "Assert updated params on state changes."
+          },
+          {
+            "id": 2,
+            "title": "Implement Debounced Search Input",
+            "description": "Add search input above the table.",
+            "dependencies": ["7.1"],
+            "details": "Placeholder: \"Search users...\". Debounced `q` passed to hook.",
+            "status": "done",
+            "testStrategy": "Type, wait debounce, assert `q` param used."
+          },
+          {
+            "id": 3,
+            "title": "Add 'Role' and 'Status' Filter Dropdowns",
+            "description": "Filter by role and status.",
+            "dependencies": ["7.1"],
+            "details": "Use Shadcn Select; values map to JSON Server exact match filters.",
+            "status": "done",
+            "testStrategy": "Assert `role`/`status` params update."
+          },
+          {
+            "id": 4,
+            "title": "Implement Clickable Sorting Headers in the Users Table",
+            "description": "Make headers update `_sort`/`_order`.",
+            "dependencies": ["7.1"],
+            "details": "Use Button with `ArrowUpDown` icon; lift sort state to page.",
+            "status": "done",
+            "testStrategy": "Click headers and assert sort state & hook params."
+          },
+          {
+            "id": 5,
+            "title": "Create a `UsersTableToolbar` to Organize Controls",
+            "description": "Extract search and filters into a toolbar component.",
+            "dependencies": ["7.2", "7.3"],
+            "details": "Flex layout; controlled via props.",
+            "status": "done",
+            "testStrategy": "Assert controls propagate state to parent."
+          }
+        ]
       },
       {
         "id": 8,
-        "title": "Add Controls to Analytics Page",
-        "description": "Implement the date range picker and data export functionality (CSV/JSON) on the Analytics page.",
-        "details": "Integrate Shadcn's `DatePicker` with a range option to allow users to select a start and end date. This will eventually filter the chart data. Add 'Export to CSV' and 'Export to JSON' buttons. Implement utility functions to convert the chart data array into CSV and JSON formats and trigger a file download.",
-        "testStrategy": "Test that the date range picker component opens and allows date selection. For export functionality, write unit tests for the data conversion utilities (e.g., `jsonToCsv`). Simulate a button click and verify that the download logic is triggered.",
-        "priority": "low",
-        "dependencies": [
-          7
-        ],
+        "title": "Implement Pagination and Responsive Card View for Users",
+        "description": "Add pagination (10 per page) and mobile card layout.",
+        "details": "Use Shadcn Pagination; switch table (desktop) vs cards (mobile) using Tailwind responsive utilities.",
+        "testStrategy": "Test pagination param changes and responsive layout visibility.",
+        "priority": "medium",
+        "dependencies": [7],
         "status": "done",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Update `useUsers` Hook for Pagination and Add Page State",
+            "description": "Support `_page`/`_limit` and return `totalCount` from `X-Total-Count`.",
+            "dependencies": [],
+            "details": "Introduce page state in Users page; pass to hook.",
+            "status": "done",
+            "testStrategy": "Verify params and `totalCount` in return value."
+          },
+          {
+            "id": 2,
+            "title": "Integrate and Configure Shadcn Pagination Component",
+            "description": "Render Pagination and wire to page state.",
+            "dependencies": ["8.1"],
+            "details": "Compute `totalPages = Math.ceil(totalCount / 10)`.",
+            "status": "done",
+            "testStrategy": "Click through pages and assert refetches."
+          },
+          {
+            "id": 3,
+            "title": "Create a Reusable `UserCard` Component for Mobile View",
+            "description": "Build `src/components/users/UserCard.tsx`.",
+            "dependencies": [],
+            "details": "Show key fields; base on Shadcn Card.",
+            "status": "done",
+            "testStrategy": "Unit test renders expected content."
+          },
+          {
+            "id": 4,
+            "title": "Implement Responsive Layout Switching in the Users Page",
+            "description": "Show table on `md+`, cards on mobile.",
+            "dependencies": ["8.3"],
+            "details": "`hidden md:block` for table; `md:hidden` grid for cards.",
+            "status": "done",
+            "testStrategy": "Assert correct container visible per breakpoint."
+          },
+          {
+            "id": 5,
+            "title": "Refine UsersTable Columns for Desktop View",
+            "description": "Polish desktop table columns and alignment.",
+            "dependencies": [],
+            "details": "Tighten `<th>`/`<td>` styles; optionally hide less critical columns.",
+            "status": "done",
+            "testStrategy": "Visual inspection and header count test."
+          }
+        ]
       },
       {
         "id": 9,
-        "title": "Implement Full Responsiveness",
-        "description": "Ensure all pages and components are fully responsive across mobile, tablet, and desktop breakpoints as defined in the PRD.",
-        "details": "Review every page (Dashboard, Analytics, Users) and component. Adjust layouts, font sizes, and spacing using Tailwind's responsive prefixes (e.g., `md:`, `lg:`). Specifically, transform the Users table into a card-based layout on mobile screens, where each card represents a user.",
-        "testStrategy": "Use browser developer tools to manually test the UI at different screen widths. Write snapshot tests for components at various viewport sizes using Vitest's responsive testing capabilities. Verify the Users page switches from a table to a card layout below the tablet breakpoint.",
+        "title": "Create Analytics Page with 2x2 Chart Grid",
+        "description": "Build the Analytics page with a 2x2 grid containing line, bar, donut, and area charts.",
+        "details": "Use Recharts and lazy-load each chart via `React.lazy`. Fetch `/analytics` via `useAnalytics`.",
+        "testStrategy": "Unit test each chart; integration test grid and Suspense fallback.",
         "priority": "medium",
-        "dependencies": [
-          3,
-          5,
-          7
-        ],
+        "dependencies": [2, 3],
         "status": "done",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create Reusable Line Chart Component",
+            "description": "Build `src/components/charts/LineChart.tsx` using Recharts.",
+            "dependencies": [],
+            "details": "Display `revenue` over `name` (or `date`), with tooltip/legend.",
+            "status": "done",
+            "testStrategy": "Render with mock data and assert elements."
+          },
+          {
+            "id": 2,
+            "title": "Create Reusable Bar Chart Component",
+            "description": "Build `src/components/charts/BarChart.tsx`.",
+            "dependencies": [],
+            "details": "Display `expenses` over `name` (or `date`).",
+            "status": "done",
+            "testStrategy": "Render and assert `Bar` elements."
+          },
+          {
+            "id": 3,
+            "title": "Create Reusable Donut and Area Chart Components",
+            "description": "Build `DonutChart.tsx` and `AreaChart.tsx`.",
+            "dependencies": [],
+            "details": "Donut sums revenue vs expenses; Area plots both over time.",
+            "status": "done",
+            "testStrategy": "Unit tests for transformation and series count."
+          },
+          {
+            "id": 4,
+            "title": "Build Analytics Page Layout and Fetch Data",
+            "description": "Create grid and handle loading/error states.",
+            "dependencies": [],
+            "details": "Wrap each chart cell in a Shadcn Card with titles.",
+            "status": "done",
+            "testStrategy": "Integration test mocking `useAnalytics` states."
+          },
+          {
+            "id": 5,
+            "title": "Integrate Charts into Analytics Page with Lazy Loading",
+            "description": "Lazy-load all chart components with Suspense fallback.",
+            "dependencies": ["9.1", "9.2", "9.3", "9.4"],
+            "details": "Use `React.lazy` and `React.Suspense` with skeletons.",
+            "status": "done",
+            "testStrategy": "Assert fallback then charts render."
+          }
+        ]
       },
       {
         "id": 10,
-        "title": "Implement Loading, Error States, and Accessibility",
-        "description": "Implement global loading, error, and empty states for all data-fetching operations and ensure the application meets WCAG AA accessibility standards.",
-        "details": "Use the `isLoading`, `isError`, and `data` properties from React Query's `useQuery` hook to conditionally render UI states. Create reusable `Spinner`, `ErrorMessage`, and `EmptyState` components. Audit the application for accessibility: add ARIA labels to icon buttons, ensure keyboard navigability for all interactive elements, manage focus, and check color contrast.",
-        "testStrategy": "Write integration tests that mock API responses to be in a loading or error state and verify that the corresponding UI is displayed. Use an automated accessibility testing tool (like `axe` with Testing Library) to catch violations. Manually test keyboard navigation and focus rings.",
-        "priority": "medium",
-        "dependencies": [
-          9
-        ],
+        "title": "Add Date Range Filters and Data Export to Analytics",
+        "description": "Add date range tabs/picker and export as CSV/JSON.",
+        "details": "Use Shadcn Tabs/Popover/Calendar; filter client-side or via refetch. Implement CSV/JSON export utilities.",
+        "testStrategy": "Test filtering behavior and export utilities.",
+        "priority": "low",
+        "dependencies": [9],
         "status": "done",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Add Filter and Export UI Components to Analytics Page",
+            "description": "Add Tabs, Date Picker (Popover+Calendar), and Export Dropdown.",
+            "dependencies": [],
+            "details": "UI only; no logic yet.",
+            "status": "done",
+            "testStrategy": "Visual inspection for correctness."
+          },
+          {
+            "id": 2,
+            "title": "Implement State Management for Date Range Filtering",
+            "description": "Manage `DateRange` state and memoized filtered datasets.",
+            "dependencies": ["10.1"],
+            "details": "Default to last 30 days; pass filtered data to charts.",
+            "status": "done",
+            "testStrategy": "Unit test filter logic with mock data."
+          },
+          {
+            "id": 3,
+            "title": "Connect Tabs and Date Picker to Control Date Range State",
+            "description": "Wire controls to update date range state.",
+            "dependencies": ["10.2"],
+            "details": "Use `date-fns` to compute ranges for 7/30/90 days.",
+            "status": "done",
+            "testStrategy": "RTL tests simulating tab/date changes."
+          },
+          {
+            "id": 4,
+            "title": "Create Utility Functions for Data Export to CSV and JSON",
+            "description": "Implement `exportToCsv` and `exportToJson` in `src/lib/exportUtils.ts`.",
+            "dependencies": [],
+            "details": "Generate Blob and trigger download via object URL.",
+            "status": "done",
+            "testStrategy": "Unit tests for CSV formatting and download trigger."
+          },
+          {
+            "id": 5,
+            "title": "Implement Export Button Functionality on Analytics Page",
+            "description": "Wire export menu items to utilities using filtered data.",
+            "dependencies": ["10.3", "10.4"],
+            "details": "Filename pattern `analytics-export-YYYY-MM-DD`.",
+            "status": "done",
+            "testStrategy": "Spy on utilities; assert calls with filtered data."
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "title": "Ensure App-wide Accessibility and Final Polish",
+        "description": "Ensure WCAG AA compliance and consistent loading/error/empty states. Add placeholder modals for user actions.",
+        "details": "Add ARIA labels to icon buttons, manage focus for modals, ensure keyboard navigability, and check color contrast. Implement placeholder modals for Edit/Delete actions on the Users page using Shadcn Dialog/AlertDialog. Audit `Navbar.tsx` links for accessible names and focus states.",
+        "testStrategy": "Use `axe-core` with Vitest/RTL for automated checks. Manually test keyboard navigation. Write tests to confirm modals open and focus is trapped.",
+        "priority": "medium",
+        "dependencies": [5, 8, 10],
+        "status": "done",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Audit and Add Accessible Names to Interactive Elements",
+            "description": "Identify icon-only buttons and controls lacking accessible names; add `aria-label` or `sr-only` text.",
+            "dependencies": [],
+            "details": "Review `Navbar.tsx` and action menus in users table columns.",
+            "status": "done",
+            "testStrategy": "Manual inspection and screen reader pass."
+          },
+          {
+            "id": 2,
+            "title": "Implement Placeholder 'Edit User' Modal",
+            "description": "Add a placeholder edit modal triggered from user row actions.",
+            "dependencies": [],
+            "details": "Use Shadcn `Dialog` with basic content; manage open state.",
+            "status": "done",
+            "testStrategy": "RTL test ensures modal opens on click."
+          },
+          {
+            "id": 3,
+            "title": "Implement Placeholder 'Delete User' Confirmation Modal",
+            "description": "Add an `AlertDialog` for delete confirmation.",
+            "dependencies": [],
+            "details": "Include 'Cancel' and 'Continue' actions; no operation on continue.",
+            "status": "done",
+            "testStrategy": "RTL test ensures dialog opens and closes."
+          },
+          {
+            "id": 4,
+            "title": "Ensure Modal Accessibility and Keyboard Navigation",
+            "description": "Verify focus trapping, ESC to close, and focus return to trigger.",
+            "dependencies": ["11.2", "11.3"],
+            "details": "Use Shadcn built-ins; validate with manual testing and RTL focus assertions.",
+            "status": "done",
+            "testStrategy": "Keyboard-only walkthrough and focus assertions."
+          },
+          {
+            "id": 5,
+            "title": "Review and Implement App-wide Loading, Error, and Empty States",
+            "description": "Consistently handle data states across Dashboard, Analytics, and Users.",
+            "dependencies": [],
+            "details": "Use Skeletons, Alert components, and empty state messaging.",
+            "status": "done",
+            "testStrategy": "Mock hooks to emit loading/error/empty and assert UI."
+          }
+        ]
       }
     ],
     "metadata": {
-      "created": "2025-09-21T20:43:05.174Z",
-      "updated": "2025-09-23T12:51:22.214Z",
+      "created": "2025-09-21T17:17:39.730Z",
+      "updated": "2025-09-21T19:20:00.000Z",
       "description": "Tasks for master context"
     }
   }
