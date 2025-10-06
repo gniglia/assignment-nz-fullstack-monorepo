@@ -1,6 +1,7 @@
 ---
 description: Front-End Developer Vite + React
 globs:
+  - apps/frontend/**/*
 alwaysApply: true
 ---
 

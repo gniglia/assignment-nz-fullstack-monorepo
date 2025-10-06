@@ -1,0 +1,7 @@
+# API-specific ignores
+
+# API-specific logs
+api-debug.log
+
+# Prisma generated files (if any)
+prisma/migrations/
