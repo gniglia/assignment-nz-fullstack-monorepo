@@ -154,23 +154,14 @@ export class UsersService {
     const sortField = queryParams._sort;
     const sortOrder = queryParams._order || "asc";
 
-    // Map sort fields to Prisma fields
-    const fieldMap: Record<string, keyof Prisma.UserOrderByWithRelationInput> = {
-      name: "name",
-      email: "email",
-      role: "role",
-      status: "status",
-      createdAt: "createdAt",
-      updatedAt: "updatedAt",
-      lastLogin: "lastLogin",
-    };
+    // Validate that the sort field is a valid Prisma field
+    const validFields = ["name", "email", "role", "status", "createdAt", "updatedAt", "lastLogin"];
 
-    const prismaField = fieldMap[sortField];
-    if (!prismaField) {
+    if (!validFields.includes(sortField)) {
       return { createdAt: "desc" }; // Fallback to default
     }
 
-    return { [prismaField]: sortOrder };
+    return { [sortField]: sortOrder };
   }
 
   private buildPagination(queryParams: UserQueryDto) {

@@ -29,5 +29,5 @@ export type User = {
   lastLogin?: string;
 };
 
-export type CreateUserData = Omit<User, "id" | "updatedAt" | "lastLogin">;
+export type CreateUserData = Omit<User, "id" | "createdAt" | "updatedAt" | "lastLogin">;
 export type UpdateUserData = Partial<Omit<User, "updatedAt" | "lastLogin">>;

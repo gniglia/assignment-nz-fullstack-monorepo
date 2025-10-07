@@ -20,6 +20,19 @@ async function bootstrap() {
   app.enableCors({
     origin: true,
     credentials: true,
+    methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: [
+      "Content-Type",
+      "Accept",
+      "Accept-Language",
+      "Referer",
+      "Sec-Fetch-Dest",
+      "Sec-Fetch-Mode",
+      "Sec-Fetch-Site",
+      "sec-ch-ua",
+      "sec-ch-ua-mobile",
+      "sec-ch-ua-platform",
+    ],
   });
 
   // Global validation pipe
@@ -36,8 +49,6 @@ async function bootstrap() {
 
   await app.listen(port, host);
 
-  // eslint-disable-next-line no-console
-  console.log(`🚀 Server running on http://${host}:${port}`);
   // eslint-disable-next-line no-console
   console.log(`📊 Dashboard API available at http://${host}:${port}/`);
 }

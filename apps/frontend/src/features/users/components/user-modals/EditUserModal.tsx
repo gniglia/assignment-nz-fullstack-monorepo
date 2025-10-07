@@ -47,13 +47,10 @@ export function EditUserModal({ user, children, onClose }: EditUserModalProps) {
       if (!isUnique) return;
     }
 
-    // Preserve existing fields that aren't in the form
+    // Only send fields that the API expects
     const updateData = {
-      ...user, // Start with existing user data
-      ...data, // Override with form data
+      ...data, // Form data (name, email, role, status)
       name: sanitizedName, // Use sanitized name
-      id: user.id, // Ensure ID is preserved
-      updatedAt: new Date().toISOString(), // Update updatedAt timestamp
     };
 
     // Close modal immediately after optimistic update
@@ -61,7 +58,7 @@ export function EditUserModal({ user, children, onClose }: EditUserModalProps) {
     onClose?.();
 
     // Perform the mutation (optimistic update happens in onMutate)
-    updateUserMutation.mutate(updateData, {
+    updateUserMutation.mutate({ id: user.id, ...updateData }, {
       onSuccess: () => {
         toast.success("User updated successfully!");
       },

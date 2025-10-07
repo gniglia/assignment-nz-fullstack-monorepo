@@ -79,7 +79,7 @@ export function useUpdateUserMutation() {
 
   return useMutation({
     mutationFn: async ({ id, ...userData }: UpdateUserData): Promise<User> => {
-      const response = await api.put<User>(`/users/${id}`, userData);
+      const response = await api.patch<User>(`/users/${id}`, userData);
       return response.data;
     },
     onMutate: async (updatedUserData): Promise<OptimisticContext> => {
@@ -148,7 +148,7 @@ export function useCreateUserMutation() {
       const optimisticUser: User = {
         ...newUserData,
         id: `temp-${Date.now()}`,
-        createdAt: newUserData.createdAt || new Date().toISOString(),
+        createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
 

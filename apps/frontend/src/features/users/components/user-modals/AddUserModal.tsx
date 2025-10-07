@@ -49,8 +49,6 @@ export function AddUserModal({ children }: AddUserModalProps) {
         ...data,
         name: sanitizedName, // Use sanitized name
         avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${sanitizedName}&size=150`,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
       };
 
       await createUserMutation.mutateAsync(userData);

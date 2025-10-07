@@ -14,7 +14,7 @@ vi.mock("@/utils/api", () => ({
   api: {
     get: vi.fn(),
     post: vi.fn(),
-    put: vi.fn(),
+    patch: vi.fn(),
     delete: vi.fn(),
   },
 }));
@@ -94,7 +94,6 @@ describe("useUsersQuery hooks", () => {
         email: "new@example.com",
         role: "user",
         status: "active",
-        createdAt: "2024-01-03T00:00:00.000Z",
       };
 
       const createdUser: User = {
@@ -140,7 +139,6 @@ describe("useUsersQuery hooks", () => {
             email: "test@example.com",
             role: "user",
             status: "active",
-            createdAt: "2024-01-03T00:00:00.000Z",
           });
         } catch (error) {
           expect(error).toBeDefined();
@@ -166,7 +164,7 @@ describe("useUsersQuery hooks", () => {
         status: "active" as const,
       };
 
-      mockApi.put.mockResolvedValue({
+      mockApi.patch.mockResolvedValue({
         data: updatedUser,
         headers: new Headers(),
       });
@@ -182,7 +180,7 @@ describe("useUsersQuery hooks", () => {
       });
 
       expect(mutationResult!).toEqual(updatedUser);
-      expect(mockApi.put).toHaveBeenCalledWith("/users/1", {
+      expect(mockApi.patch).toHaveBeenCalledWith("/users/1", {
         name: "Updated Name",
         email: "updated@example.com",
       });

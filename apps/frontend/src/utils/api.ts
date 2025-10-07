@@ -59,14 +59,18 @@ export const api = {
       method: "POST",
       body: JSON.stringify(data),
     }),
-  put: <T>(endpoint: string, data: unknown) =>
+  patch: <T>(endpoint: string, data: unknown) =>
     request<T>(endpoint, {
-      method: "PUT",
+      method: "PATCH",
       body: JSON.stringify(data),
     }),
   delete: <T>(endpoint: string) =>
     request<T>(endpoint, {
       method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({}),
     }),
 };
 

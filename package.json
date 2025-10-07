@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "build": "turbo run build",
-    "dev": "turbo run dev",
+    "dev": "turbo dev --ui=tui",
+    "dev:concurrent": "concurrently \"pnpm --filter @assignment/api dev\" \"pnpm --filter @repo/frontend dev\" --names \"API,FRONTEND\" --prefix-colors \"blue,green\"",
     "api": "turbo run api",
     "lint": "turbo run lint",
     "test": "turbo run test",
@@ -13,7 +14,8 @@
     "db:reset": "cd apps/api && pnpm db:reset"
   },
   "devDependencies": {
-    "turbo": "^1.10.12"
+    "concurrently": "^9.2.1",
+    "turbo": "^2.5.8"
   },
   "packageManager": "pnpm@8.0.0"
 }
