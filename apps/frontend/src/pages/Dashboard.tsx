@@ -105,8 +105,8 @@ export default function Dashboard() {
         className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6"
         variants={fadeInBottom}
       >
-        {/* <AnalyticsOverview />
-        <RecentActivity /> */}
+        <AnalyticsOverview />
+        {/* <RecentActivity /> */}
       </motion.div>
     </motion.div>
   );

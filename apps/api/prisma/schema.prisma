@@ -23,6 +23,17 @@ model Metric {
   @@map("metrics")
 }
 
+model Analytics {
+  id        String   @id @default(cuid())
+  label     String
+  value     Float
+  date      DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("analytics")
+}
+
 enum ChangeType {
   increase
   decrease
