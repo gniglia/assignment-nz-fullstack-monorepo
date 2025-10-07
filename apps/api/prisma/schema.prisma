@@ -34,7 +34,33 @@ model Analytics {
   @@map("analytics")
 }
 
+model User {
+  id        String     @id @default(cuid())
+  name      String
+  email     String     @unique
+  role      UserRole
+  status    UserStatus
+  avatar    String?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  lastLogin DateTime?
+
+  @@map("users")
+}
+
 enum ChangeType {
   increase
   decrease
+}
+
+enum UserRole {
+  admin
+  user
+  moderator
+}
+
+enum UserStatus {
+  active
+  inactive
+  pending
 }

@@ -106,7 +106,7 @@ export default function Dashboard() {
         variants={fadeInBottom}
       >
         <AnalyticsOverview />
-        {/* <RecentActivity /> */}
+        <RecentActivity />
       </motion.div>
     </motion.div>
   );
