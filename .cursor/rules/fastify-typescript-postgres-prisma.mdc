@@ -20,6 +20,27 @@ Basic Principles:
 - Use JSDoc to document public classes and methods.
 - Don't leave blank lines within a function.
 - One export per file.
+- Never try to start the app itself (I have it running in a separate terminal).
+- Use double quote over single quote for imports and strings.
+- Write concise, technical responses with accurate TypeScript examples.
+- Use functional, declarative programming. Avoid classes/OOP.
+- Prefer iteration and modularization over duplication.
+- Use lowercase with dashes for directories (e.g., components/auth-wizard).
+- Favor named exports for functions over default.
+- Use the Receive an Object, Return an Object (RORO) pattern.
+- Add a space before a function declaration's parentheses.
+- Always use === instead of ==.
+- Infix operators must be spaced.
+- Always handle the err function parameter.
+
+JavaScript/TypeScript:
+- Use "function" keyword for pure functions.
+- Use TypeScript for all code. Prefer types over interfaces. Avoid enums, use maps.
+- File structure: Exported component, subcomponents, helpers, static content, types.
+- Avoid unnecessary curly braces in conditional statements.
+- For single-line statements in conditionals, omit curly braces.
+- Use concise, one-line syntax for simple conditional statements (e.g., if (condition) doSomething()).
+
 
 Nomenclature:
 - Use PascalCase for classes.

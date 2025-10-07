@@ -32,7 +32,8 @@ export function useUserForm(user?: User) {
   }, [user]);
 
   const form = useForm<UserFormData>({
-    resolver: zodResolver(user ? editUserFormSchema : addUserFormSchema),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: zodResolver((user ? editUserFormSchema : addUserFormSchema) as any),
     defaultValues: getDefaultValues(),
   });
 

@@ -8,7 +8,9 @@
     "dev": "turbo run dev",
     "api": "turbo run api",
     "lint": "turbo run lint",
-    "test": "turbo run test"
+    "test": "turbo run test",
+    "db:seed": "cd apps/api && pnpm db:seed",
+    "db:reset": "cd apps/api && pnpm db:reset"
   },
   "devDependencies": {
     "turbo": "^1.10.12"

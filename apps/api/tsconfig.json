@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "ESNext",
+    "module": "CommonJS",
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
@@ -11,12 +11,7 @@
     "rootDir": "./src",
     "baseUrl": "./src",
     "paths": {
-      "@/*": ["./*"],
-      "@/lib/*": ["./lib/*"],
-      "@/schemas/*": ["./schemas/*"],
-      "@/repos/*": ["./repos/*"],
-      "@/usecases/*": ["./usecases/*"],
-      "@/routes/*": ["./routes/*"]
+      "@/*": ["./*"]
     },
     "strict": true,
     "noImplicitAny": true,
@@ -32,7 +27,9 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "declaration": true,
-    "declarationMap": true
+    "declarationMap": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "**/*.test.ts"]
